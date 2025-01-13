@@ -21,9 +21,26 @@ function selectOption(option) {
 
 function copyToClipboard() {
     const outputTextarea = document.getElementById('outputTextarea');
-    navigator.clipboard.writeText(outputTextarea.value)
-        .then(() => alert('Copied to clipboard!'))
-        .catch(err => alert('Failed to copy: ', err));
+    
+    // Check if there is text to copy
+    if (outputTextarea.value.trim() === "") {
+        alert("Nothing to copy. Please generate some text first.");
+        return;
+    }
+
+    // Use the clipboard API to copy the text
+    outputTextarea.select(); // Select the text
+    try {
+        const success = document.execCommand('copy'); // Execute the copy command
+        if (success) {
+            alert('Copied to clipboard!');
+        } else {
+            alert('Failed to copy. Please try again.');
+        }
+    } catch (err) {
+        console.error('Error copying to clipboard: ', err);
+        alert('Failed to copy due to an error.');
+    }
 }
 
 function clearFields() {
