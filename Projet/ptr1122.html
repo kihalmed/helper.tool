@@ -126,9 +126,7 @@
         try {
             const success = document.execCommand('copy');
             if (success) {
-                alert('Copied to clipboard!');
             } else {
-                alert('Failed to copy. Please try again.');
             }
         } catch (err) {
             console.error('Error copying to clipboard:', err);
