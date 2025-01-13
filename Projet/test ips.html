@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Tools Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #3368ff;
+        }
+        h1 {
+            color: #fff;
+        }
+        textarea {
+            width: 80%;
+            max-width: 500px;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff3333;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+        #results {
+            width: 80%;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+        .success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <h1>IP Tools Test</h1>
+    <textarea id="ipInput" rows="5" placeholder="e.g., 192.168.1.1, 8.8.8.8"></textarea><br>
+    <button onclick="testIPs()">Test IPs</button>
+
+    <div id="results">
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>Ping</th>
+                    <th>Port 22</th>
+                    <th>Port 22122</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
