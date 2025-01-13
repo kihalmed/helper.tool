@@ -55,48 +55,7 @@
       }
     }
 	////////////////////////////////////////////////////////////////////////
-	async function testIPs() {
-            const input = document.getElementById('ipInput').value;
-            const ipList = input.split(',').map(ip => ip.trim());
-            const tableBody = document.querySelector('#resultsTable tbody');
-            tableBody.innerHTML = '';
-
-            for (const ip of ipList) {
-                if (!ip) continue;
-
-                const row = document.createElement('tr');
-                const ipCell = document.createElement('td');
-                ipCell.textContent = ip;
-                row.appendChild(ipCell);
-
-                try {
-                    const response = await fetch('http://localhost:5000/test', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ip })
-                    });
-
-                    const { ping, port22, port22122 } = await response.json();
-
-                    row.appendChild(createCell(ping));
-                    row.appendChild(createCell(port22));
-                    row.appendChild(createCell(port22122));
-                } catch (error) {
-                    row.appendChild(createCell('Error', 'error'));
-                    row.appendChild(createCell('Error', 'error'));
-                    row.appendChild(createCell('Error', 'error'));
-                }
-
-                tableBody.appendChild(row);
-            }
-        }
-
-        function createCell(text, className = '') {
-            const cell = document.createElement('td');
-            cell.textContent = text;
-            if (className) cell.className = className;
-            return cell;
-        }
+	
 		///////////////////////////////////////////////////////////////////////
 		        
 document.getElementById('extractButton').addEventListener('click', function() {
