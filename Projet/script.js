@@ -1,7 +1,4 @@
-
-
-			////////////////////////////////////////////////////////////////////////////////////////////
-			function convert() {
+function convert() {
     var inputTextArea = document.getElementById('inputTextarea');
     var outputTextArea = document.getElementById('outputTextarea');
     
