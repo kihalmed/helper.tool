@@ -1,51 +1,5 @@
 
-///////////////////////////////////////////
-function convert() {
-    var inputTextArea = document.getElementById('inputTextarea');
-    var outputTextArea = document.getElementById('outputTextarea');
-    
-    var inputText = inputTextArea.value.trim();
-    var lines = inputText.split('\n');
-    
-    var outputText = '';
-    lines.forEach(function(line) {
-        var parts = line.split(',');
-        if(parts.length === 2) {
-            var domain = parts[0].trim();
-            var ip = parts[1].trim();
-            outputText += ip.split('.').reverse().join('.') + '.in-addr.arpa. IN PTR ' + domain + '.\n';
-        }
-    });
-    
-    outputTextArea.value = outputText.trim();
-}
 
-function copyToClipboard() {
-    var outputTextArea = document.getElementById('outputTextarea');
-    outputTextArea.select();
-    document.execCommand('copy');
-}
-
-function ptr() {
-    var inputTextArea = document.getElementById('inputTextarea');
-    var outputTextArea = document.getElementById('outputTextarea');
-    
-    var inputText = inputTextArea.value.trim();
-    var lines = inputText.split('\n');
-    
-    var outputText = '';
-    lines.forEach(function(line) {
-        var parts = line.split(',');
-        if(parts.length === 2) {
-            var domain = parts[0].trim();
-            var ipParts = parts[1].trim().split('.');
-            var ip = ipParts[ipParts.length - 1] + '.' + ipParts[ipParts.length - 2];
-            outputText += ip + ' IN PTR ' + domain +'.\n';
-        }
-    });
-    
-    outputTextArea.value = outputText.trim();
-}
 /////////////////////////////////////////////////////////////////////////////////
  function extractContent() {
       const input = document.getElementById("textInput").value;
