@@ -151,11 +151,7 @@ function selectOption(option) {
         }
         
     }
-    function copyToClipboard() {
-        const outputTextarea = document.getElementById('outputTextarea');
-        outputTextarea.select();
-        document.execCommand('copy');
-    }
+
 
     function clearFields() {
         document.getElementById("pingInput").value = "";
