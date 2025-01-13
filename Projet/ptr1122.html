@@ -5,27 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IP Domain Converter</title>
 <style>
+    body {
+        background-color: #3368ff;
+        font-family: Arial, sans-serif;
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h2 {
+        margin-top: 20px;
+    }
+
     textarea {
         width: 100%;
         height: 100px;
+        margin-bottom: 10px;
+        border: 2px solid #ff3333;
+        border-radius: 5px;
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    button {
+        background-color: #ff3333;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: #ff6666;
+    }
+
+    button:active {
+        background-color: #cc0000;
     }
 </style>
 </head>
-<body style="background-color: #3368ff;">
+<body>
 
 <h2>Enter Domain-IP Pairs</h2>
-<textarea id="inputTextarea" placeholder="Enter Domain-IP pairs (one per line)"></textarea>
+<textarea id="inputTextarea" placeholder="Enter Domain-IP pairs (one per line)&#10;Example: example.com,192.168.1.1"></textarea>
 
-<button style="background-color:#ff3333;" onclick="convert()">.in-addr.arpa. IN PTR</button>
-<button style="background-color:#ff3333;" onclick="ptr()">IN PTR</button>
-
+<button onclick="convert()">Generate .in-addr.arpa. IN PTR</button>
+<button onclick="ptr()">Generate IN PTR</button>
 
 <h2>Converted Format</h2>
-<textarea id="outputTextarea" placeholder="Converted format will appear here"></textarea>
+<textarea id="outputTextarea" placeholder="Converted format will appear here" readonly></textarea>
 
-<button style="background-color:#ff3333;" onclick="copyToClipboard()">Copy to Clipboard</button>
-<script src="script.js"> </script>
+<button onclick="copyToClipboard()">Copy to Clipboard</button>
+<button onclick="clearFields()">Clear Fields</button>
 
+<script>
+    function convert() {
+        const inputTextArea = document.getElementById('inputTextarea');
+        const outputTextArea = document.getElementById('outputTextarea');
+
+        const inputText = inputTextArea.value.trim();
+        const lines = inputText.split('\n');
+
+        let outputText = '';
+        lines.forEach((line) => {
+            const parts = line.split(',');
+            if (parts.length === 2) {
+                const domain = parts[0].trim();
+                const ip = parts[1].trim();
+
+                // Validate the IP format
+                if (isValidIP(ip)) {
+                    outputText += `${ip.split('.').reverse().join('.')}.in-addr.arpa. IN PTR ${domain}.\n`;
+                } else {
+                    outputText += `Invalid IP format: ${ip}\n`;
+                }
+            } else {
+                outputText += `Invalid format: ${line}\n`;
+            }
+        });
+
+        outputTextArea.value = outputText.trim();
+    }
+
+    function ptr() {
+        const inputTextArea = document.getElementById('inputTextarea');
+        const outputTextArea = document.getElementById('outputTextarea');
+
+        const inputText = inputTextArea.value.trim();
+        const lines = inputText.split('\n');
+
+        let outputText = '';
+        lines.forEach((line) => {
+            const parts = line.split(',');
+            if (parts.length === 2) {
+                const domain = parts[0].trim();
+                const ipParts = parts[1].trim().split('.');
+
+                // Validate the IP format
+                if (ipParts.length === 4 && isValidIP(parts[1].trim())) {
+                    const ip = `${ipParts[3]}.${ipParts[2]}`;
+                    outputText += `${ip} IN PTR ${domain}.\n`;
+                } else {
+                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
+                }
+            } else {
+                outputText += `Invalid format: ${line}\n`;
+            }
+        });
+
+        outputTextArea.value = outputText.trim();
+    }
+
+    function copyToClipboard() {
+        const outputTextArea = document.getElementById('outputTextarea');
+        outputTextArea.select();
+
+        try {
+            const success = document.execCommand('copy');
+            if (success) {
+                alert('Copied to clipboard!');
+            } else {
+                alert('Failed to copy. Please try again.');
+            }
+        } catch (err) {
+            console.error('Error copying to clipboard:', err);
+            alert('Error copying to clipboard.');
+        }
+    }
+
+    function clearFields() {
+        document.getElementById('inputTextarea').value = '';
+        document.getElementById('outputTextarea').value = '';
+    }
+
+    function isValidIP(ip) {
+        const regex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
+        return regex.test(ip);
+    }
+</script>
 
 </body>
 </html>
