@@ -1,205 +1,36 @@
- function selectOption(option) {
-        const pingInput = document.getElementById('pingInput').value;
-        const outputTextarea = document.getElementById('outputTextarea');
+function selectOption(option) {
+    const pingInput = document.getElementById('pingInput').value;
 
-        // Helper function to check if the message is already present
-        function isMessagePresent(message) {
-            return outputTextarea.value.includes(message);
-        }
-        if (option === 'down') {
-            outputTextarea.value = `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`;
-        } else if (option === 'stillDown') {
-            document.getElementById("outputTextarea").value = "";
-            const stillDownMessage = `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`;
+    const messages = {
+        down: `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
+        stillDown: `Hello,\nThis server is still down, please check it again.\n\n${pingInput}\n\nThanks.`,
+        password: `Hi,\n\nPlease provide the correct root password.\n\n${pingInput}\n\nThanks.`,
+        ssh: `Hello,\nWe can't access this server via SSH, please fix it asap.\n\n${pingInput}\n\nThanks.`,
+        unstable: `Hello,\nConnection is unstable. Please check and fix it ASAP.\n\n${pingInput}\n\nThanks.`
+    };
 
-            // Check if the message is already present before appending
-            if (!isMessagePresent(stillDownMessage)) {
-                outputTextarea.value = `${stillDownMessage}\n\n${outputTextarea.value}`;
-            }
-        } 
-		
-		else if (option === 'password') {
-            document.getElementById("outputTextarea").value = "";
-            const passwordDownMessage = `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
+    const outputTextarea = document.getElementById("outputTextarea");
+    const message = messages[option];
 
-            // Check if the message is already present before appending
-            if (!isMessagePresent(passwordDownMessage)) {
-                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
-            }
-        } 
-		
-		else if (option === 'password') {
-            document.getElementById("outputTextarea").value = "";
-            const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(passwordDownMessage)) {
-                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
-            }
-        } 
-		
-		else if (option === 'ssh') {
-            document.getElementById("outputTextarea").value = "";
-            const ssh= `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(ssh)) {
-                outputTextarea.value = `${ssh}\n\n${outputTextarea.value}`;
-            }
-        }
-				else if (option === 'unstable') {
-            document.getElementById("outputTextarea").value = "";
-            const unstable= `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(unstable)) {
-                outputTextarea.value = `${unstable}\n\n${outputTextarea.value}`;
-            }
-        }
-		
-		else if (option === 'connect') {
-            document.getElementById("outputTextarea").value = "";
-            const connect= `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(connect)) {
-                outputTextarea.value = `${connect}\n\n${outputTextarea.value}`;
-            }
-        }
-		
-		else if (option === 'password') {
-            document.getElementById("outputTextarea").value = "";
-            const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(passwordDownMessage)) {
-                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
-            }
-        } 
-        else if (option === 'S1') {
-            outputTextarea.value = `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance`;
-        } else if (option === 'S2') {
-            document.getElementById("outputTextarea").value = "";
-            const RDNS = `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(RDNS)) {
-                outputTextarea.value = `${RDNS}\n\n${outputTextarea.value}`;
-            }
-        }
-		else if (option === 'S3') {
-            document.getElementById("outputTextarea").value = "";
-            const S3= `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(S3)) {
-                outputTextarea.value = `${S3}\n\n${outputTextarea.value}`;
-            }
-        }
-		if (option === 'ips') {
-            outputTextarea.value = `Hello,\nPlease check these additional ips, they are not working.\n\-----\n\n${pingInput}\n\nThanks.`;
-        } else if (option === 'ips2') {
-            document.getElementById("outputTextarea").value = "";
-            const ips2= `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(ips2)) {
-                outputTextarea.value = `${ips2}\n\n${outputTextarea.value}`;
-            }
-        }
-                if (option === 'allow1') {
-            outputTextarea.value = `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`;
-        } else if (option === 'allow2') {
-            document.getElementById("outputTextarea").value = "";
-            const allow2= `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(allow2)) {
-                outputTextarea.value = `${allow2}\n\n${outputTextarea.value}`;
-            }
-        }
-             if (option === 'SBL') {
-            outputTextarea.value = `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`;
-        } else if (option === 'PBL') {
-            document.getElementById("outputTextarea").value = "";
-            const PBL= `Hi, \nplease we need you to delist the following IPs from PBL\n-----\n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(PBL)) {
-                outputTextarea.value = `${PBL}\n\n${outputTextarea.value}`;
-            }
-        }
-		             if (option === 'Speed1') {
-            outputTextarea.value = `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`;
-        } else if (option === 'Speed2') {
-            document.getElementById("outputTextarea").value = "";
-            const Speed2= `Hi, \nStill we have the same issue, we need you to upgrade the Download/upload speed of this server more, it's very slow\n-----\n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(Speed2)) {
-                outputTextarea.value = `${Speed2}\n\n${outputTextarea.value}`;
-            }
-        }
-		else if (option === 'Speed3') {
-            document.getElementById("outputTextarea").value = "";
-            const Speed3= `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(Speed3)) {
-                outputTextarea.value = `${Speed3}\n\n${outputTextarea.value}`;
-            }
-        }
-        
+    if (message && !outputTextarea.value.includes(message)) {
+        outputTextarea.value = `${message}\n\n${outputTextarea.value}`;
+    } else if (!message) {
+        console.error(`Unknown option: ${option}`);
     }
-    function copyToClipboard() {
-        const outputTextarea = document.getElementById('outputTextarea');
-        outputTextarea.select();
-        document.execCommand('copy');
-    }
+}
 
-    function clearFields() {
-        document.getElementById("pingInput").value = "";
-        document.getElementById("outputTextarea").value = "";
-    }
-	//////////////////////////////////////////////////////////////////////////////////////
-document.addEventListener("DOMContentLoaded", function () {
-    const generateButton = document.getElementById("generate-button");
-    generateButton.addEventListener("click", generateCommaSeparated);
+function copyToClipboard() {
+    const outputTextarea = document.getElementById('outputTextarea');
+    navigator.clipboard.writeText(outputTextarea.value)
+        .then(() => alert('Copied to clipboard!'))
+        .catch(err => alert('Failed to copy: ', err));
+}
 
-    function generateCommaSeparated() {
-        const inputText = document.getElementById("input-text").value;
-        const ipLines = inputText.split("\n");
+function clearFields() {
+    document.getElementById("pingInput").value = "";
+    document.getElementById("outputTextarea").value = "";
+}
 
-        const validIps = ipLines.map(line => line.split(" ")[0])
-            .filter(ip => isValidIp(ip));
-
-        const commaSeparatedIps = validIps.join(",");
-        document.getElementById("output-text").value = commaSeparatedIps;
-    }
-
-    function isValidIp(ip) {
-        const parts = ip.split(".");
-        return parts.length === 4 && parts.every(part => !isNaN(part) && parseInt(part) >= 0 && parseInt(part) <= 255);
-    }
-});
-document.addEventListener("DOMContentLoaded", 
-    function ()  {
-    const generateButton = document.getElementById("generate-button");
-    generateButton.addEventListener("click", generateCommaSeparated);
-
-    // Toggle between light and dark modes
-   
-
-    function generateCommaSeparated() {
-        // Your existing code for generating comma-separated IPs
-    }
-
-    function isValidIp(ip) {
-        // Your existing code for validating IP addresses
-    }
-
-	
-});
 			////////////////////////////////////////////////////////////////////////////////////////////
 			function convert() {
     var inputTextArea = document.getElementById('inputTextarea');
