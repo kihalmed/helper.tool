@@ -98,7 +98,8 @@
             return cell;
         }
 		///////////////////////////////////////////////////////////////////////
-		        document.getElementById('extractButton').addEventListener('click', function() {
+		        
+document.getElementById('extractButton').addEventListener('click', function() {
             const inputText = document.getElementById('inputText').value;
             const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
             const matches = inputText.match(ipRegex) || [];
@@ -110,4 +111,4 @@
             outputText.select();
             document.execCommand('copy');
            
-        });
+});
