@@ -57,4 +57,15 @@
         }
 ////////////////////////////////////////////////////////////////////////////////////
 
-		/////////////////////////////////////////////////////////////////////////////
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.body.style.backgroundColor = '#f4f4f4';
+                document.body.style.color = '#000';
+            } else if (theme === 'dark') {
+                document.body.style.backgroundColor = '#2b2b2b';
+                document.body.style.color = '#fff';
+            } else if (theme === 'twilight') {
+                document.body.style.backgroundColor = '#4e4376';
+                document.body.style.color = '#ffefeb';
+            }
+        }
