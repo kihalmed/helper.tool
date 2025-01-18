@@ -47,6 +47,8 @@
             margin-bottom: 30px;
             cursor: pointer;
             transition: opacity 0.3s ease;
+	    filter: invert(1) hue-rotate(180deg); /* Dark mode effect */
+            background-color: #121212; /* Prevents white flash in some cases */
         }
 
         .logo.hidden {
