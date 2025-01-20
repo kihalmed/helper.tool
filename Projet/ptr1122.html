@@ -170,6 +170,21 @@
         const regex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
         return regex.test(ip);
     }
+       // Apply night mode on page load if enabled
+    window.onload = function() {
+        if (localStorage.getItem('nightMode') === 'enabled') {
+            document.body.classList.add('night-mode');
+            document.querySelectorAll('.dropdown-content button').forEach(item => {
+                item.classList.add('night-mode');
+            });
+            document.querySelectorAll('textarea').forEach(item => {
+                item.classList.add('night-mode');
+            });
+            document.querySelectorAll('.button').forEach(item => {
+                item.classList.add('night-mode');
+            });
+        }
+    }
 </script>
 
 </body>
