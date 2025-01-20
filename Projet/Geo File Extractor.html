@@ -123,7 +123,22 @@
     </div>
   </div>
 
- <script src="script.js"> </script>
+ <script src="script.js">
+    // Apply night mode on page load if enabled
+    window.onload = function() {
+        if (localStorage.getItem('nightMode') === 'enabled') {
+            document.body.classList.add('night-mode');
+            document.querySelectorAll('.dropdown-content button').forEach(item => {
+                item.classList.add('night-mode');
+            });
+            document.querySelectorAll('textarea').forEach(item => {
+                item.classList.add('night-mode');
+            });
+            document.querySelectorAll('.button').forEach(item => {
+                item.classList.add('night-mode');
+            });
+        }
+    }</script>
 
 </body>
 </html>
