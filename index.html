@@ -125,39 +125,7 @@
             z-index: 1; /* Ensure it stays visible */
         }
 
-        /* Night Mode Styles */
-        body.night-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
 
-        .sidebar.night-mode {
-            background-color: #121212;
-        }
-
-        .menu-item.night-mode {
-            background-color: #1e1e1e;
-        }
-
-        .menu-item.night-mode:hover, .menu-item.night-mode.active {
-            background-color: #333333;
-        }
-
-        .content.night-mode {
-            background-color: #1e1e1e;
-        }
-    .toggle-btn0 {
-    background-color: #000000;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 20px;
-    left: 10px;
-}
     </style>
 </head>
 <body>
@@ -203,25 +171,9 @@
             iframe.src = url;
         }
 
-        function toggleNightMode() {
-            const body = document.body;
-            body.classList.toggle('night-mode');
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('night-mode');
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                item.classList.toggle('night-mode');
-            });
-            const content = document.querySelector('.content');
-            content.classList.toggle('night-mode');
 
-            // Store the night mode state in localStorage
-            if (body.classList.contains('night-mode')) {
-                localStorage.setItem('nightMode', 'enabled');
-            } else {
-                localStorage.setItem('nightMode', 'disabled');
-            }
-        }
+
+
 
        
     </script>
