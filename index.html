@@ -235,6 +235,27 @@
                 document.querySelector('.content').classList.add('night-mode');
             }
         }
+        function toggleNightMode() {
+    const body = document.body;
+    body.classList.toggle('night-mode');
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('night-mode');
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.classList.toggle('night-mode');
+    });
+    const content = document.querySelector('.content');
+    content.classList.toggle('night-mode');
+
+    // Store the night mode state in localStorage
+    if (body.classList.contains('night-mode')) {
+        localStorage.setItem('nightMode', 'enabled');
+        loadPage('Projet/MSG tk support.html'); // Load the affected page
+    } else {
+        localStorage.setItem('nightMode', 'disabled');
+        loadPage('Projet/Comma Separating Tool.html'); // Load another page
+    }
+}
     </script>
 </body>
 </html>
