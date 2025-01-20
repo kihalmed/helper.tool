@@ -59,8 +59,24 @@
         .dark-mode .label-maroon {
             color: #ff4444;
         }
-                /* Dark mode styles */
-
+        /* Light mode styles */
+        body {
+            background-color: #E9E9EB;
+            color: #333;
+        }
+        .container {
+            background-color: #FFFFFF;
+            color: #333;
+        }
+        button {
+            background-color: #2ecc71; /* Light green */
+            color: #fff;
+        }
+        textarea {
+            background-color: #FFFFFF;
+            color: #333;
+            border: 2px solid #c0392b; /* Border color */
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -80,7 +96,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const generateButton = document.getElementById("generate-button");
         const copyButton = document.getElementById("copy-button");
-        
+
         generateButton.addEventListener("click", generateCommaSeparated);
         copyButton.addEventListener("click", copyToClipboard);
 
@@ -106,8 +122,6 @@
             document.execCommand("copy");
         }
     });
-
 </script>
-
 </body>
 </html>
