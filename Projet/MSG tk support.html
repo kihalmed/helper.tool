@@ -106,29 +106,8 @@
         }
 
         /* Dark mode styles */
-        body.night-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
-
-        .dropdown-content button.night-mode {
-            background-color: #333333;
-            color: #ffffff;
-        }
-
-        .dropdown-content textarea.night-mode {
-            background-color: #333333;
-            color: #ffffff;
-        }
-
-        textarea.night-mode {
-            background-color: #333333;
-            color: #ffffff;
-        }
-
-        .button.night-mode {
-            background-color: #1e1e1e;
-        }
+      
+        
     </style>
     <title>Styled Dropdown Buttons with Text Areas</title>
 </head>
@@ -368,21 +347,8 @@ function selectOption(option) {
         document.execCommand('copy');
     }
 
-    // Apply night mode on page load if enabled
-    window.onload = function() {
-        if (localStorage.getItem('nightMode') === 'enabled') {
-            document.body.classList.add('night-mode');
-            document.querySelectorAll('.dropdown-content button').forEach(item => {
-                item.classList.add('night-mode');
-            });
-            document.querySelectorAll('textarea').forEach(item => {
-                item.classList.add('night-mode');
-            });
-            document.querySelectorAll('.button').forEach(item => {
-                item.classList.add('night-mode');
-            });
-        }
-    }
+   
+    
 </script>
 </body>
 </html>
