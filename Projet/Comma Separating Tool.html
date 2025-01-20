@@ -60,19 +60,7 @@
             color: #ff4444;
         }
                 /* Dark mode styles */
-        body.night-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
 
-        textarea.night-mode {
-            background-color: #333333;
-            color: #ffffff;
-        }
-
-        button.night-mode {
-            background-color: #1e1e1e;
-        }
     </style>
 </head>
 <body class="light-mode">
@@ -118,21 +106,7 @@
             document.execCommand("copy");
         }
     });
-       // Apply night mode on page load if enabled
-    window.onload = function() {
-        if (localStorage.getItem('nightMode') === 'enabled') {
-            document.body.classList.add('night-mode');
-            document.querySelectorAll('.dropdown-content button').forEach(item => {
-                item.classList.add('night-mode');
-            });
-            document.querySelectorAll('textarea').forEach(item => {
-                item.classList.add('night-mode');
-            });
-            document.querySelectorAll('.button').forEach(item => {
-                item.classList.add('night-mode');
-            });
-        }
-    }
+
 </script>
 
 </body>
