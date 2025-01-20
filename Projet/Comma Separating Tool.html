@@ -1,4 +1,4 @@
-the<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -77,6 +77,22 @@ the<!DOCTYPE html>
             color: #333;
             border: 2px solid #c0392b; /* Border color */
         }
+        /* Night mode styles */
+        body.night-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .container.night-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        button.night-mode {
+            background-color: #1e1e1e;
+        }
+        textarea.night-mode {
+            background-color: #333;
+            color: #fff;
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -92,36 +108,59 @@ the<!DOCTYPE html>
             <p>&copy; 2023 kihal</p>
         </div>
     </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const generateButton = document.getElementById("generate-button");
-        const copyButton = document.getElementById("copy-button");
+    <button id="night-mode-toggle" onclick="toggleNightMode()">Toggle Night Mode</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const generateButton = document.getElementById("generate-button");
+            const copyButton = document.getElementById("copy-button");
 
-        generateButton.addEventListener("click", generateCommaSeparated);
-        copyButton.addEventListener("click", copyToClipboard);
+            generateButton.addEventListener("click", generateCommaSeparated);
+            copyButton.addEventListener("click", copyToClipboard);
 
-        function generateCommaSeparated() {
-            const inputText = document.getElementById("input-text").value;
-            const ipLines = inputText.split("\n");
+            function generateCommaSeparated() {
+                const inputText = document.getElementById("input-text").value;
+                const ipLines = inputText.split("\n");
 
-            const validIps = ipLines.map(line => line.split(" ")[0])
-                .filter(ip => isValidIp(ip));
+                const validIps = ipLines.map(line => line.split(" ")[0])
+                    .filter(ip => isValidIp(ip));
 
-            const commaSeparatedIps = validIps.join(",");
-            document.getElementById("output-text").value = commaSeparatedIps;
-        }
+                const commaSeparatedIps = validIps.join(",");
+                document.getElementById("output-text").value = commaSeparatedIps;
+            }
 
-        function isValidIp(ip) {
-            const parts = ip.split(".");
-            return parts.length === 4 && parts.every(part => !isNaN(part) && parseInt(part) >= 0 && parseInt(part) <= 255);
-        }
+            function isValidIp(ip) {
+                const parts = ip.split(".");
+                return parts.length === 4 && parts.every(part => !isNaN(part) && parseInt(part) >= 0 && parseInt(part) <= 255);
+            }
 
-        function copyToClipboard() {
-            const outputText = document.getElementById("output-text");
-            outputText.select();
-            document.execCommand("copy");
-        }
-    });
-</script>
+            function copyToClipboard() {
+                const outputText = document.getElementById("output-text");
+                outputText.select();
+                document.execCommand("copy");
+            }
+
+            function toggleNightMode() {
+                const body = document.body;
+                const container = document.querySelector('.container');
+                const buttons = document.querySelectorAll('button');
+                const textareas = document.querySelectorAll('textarea');
+
+                body.classList.toggle('night-mode');
+                container.classList.toggle('night-mode');
+                buttons.forEach(button => button.classList.toggle('night-mode'));
+                textareas.forEach(textarea => textarea.classList.toggle('night-mode'));
+
+                if (body.classList.contains('night-mode')) {
+                    localStorage.setItem('nightMode', 'enabled');
+                } else {
+                    localStorage.setItem('nightMode', 'disabled');
+                }
+            }
+
+            if (localStorage.getItem('nightMode') === 'enabled') {
+                toggleNightMode();
+            }
+        });
+    </script>
 </body>
 </html>
