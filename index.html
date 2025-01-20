@@ -146,6 +146,18 @@
         .content.night-mode {
             background-color: #1e1e1e;
         }
+    .toggle-btn0 {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+}
     </style>
 </head>
 <body>
@@ -174,7 +186,7 @@
                 <i><span style="font-size: 20px;">🔍</span></i><span>IP Tools Test</span>
             </li>
         </ul>
-        <button class="toggle-btn" id="night-mode-toggle" onclick="toggleNightMode()">Night Mode</button>
+        <button class="toggle-btn0" id="night-mode-toggle" onclick="toggleNightMode()">Night Mode</button>
     </div>
     <div class="content">
         <iframe id="content-frame" src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"></iframe>
