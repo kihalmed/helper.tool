@@ -105,10 +105,34 @@
             text-align: center; /* Center align content */
         }
 
+        /* Dark mode styles */
+        body.night-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dropdown-content button.night-mode {
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        .dropdown-content textarea.night-mode {
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        textarea.night-mode {
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        .button.night-mode {
+            background-color: #1e1e1e;
+        }
     </style>
     <title>Styled Dropdown Buttons with Text Areas</title>
 </head>
-<body style="background-color: #3E5879;">
+<body>
 <div class="content2">
 <ul role="toolbar">
     <li class="dropdown">
@@ -116,8 +140,8 @@
         <div class="dropdown-content">
             <button onclick="selectOption('down')">down</button>
             <button onclick="selectOption('stillDown')">Still Down</button>
-			<button onclick="selectOption('connect')">can't connect</button>
-			<button onclick="selectOption('ssh')">via ssh</button>
+            <button onclick="selectOption('connect')">can't connect</button>
+            <button onclick="selectOption('ssh')">via ssh</button>
             <button onclick="selectOption('password')">reset password</button>
         </div>
     </li>
@@ -127,8 +151,7 @@
         <div class="dropdown-content">
             <button onclick="selectOption('S1')">RDNS s1</button>
             <button onclick="selectOption('S2')">RDNS s2</button>
-			<button onclick="selectOption('S3')">Remove RDNS</button>
-
+            <button onclick="selectOption('S3')">Remove RDNS</button>
         </div>
     </li>
 
@@ -154,14 +177,13 @@
             <button onclick="selectOption('PBL')">From PBL </button>
         </div>
     </li>
-	 <li class="dropdown">
+     <li class="dropdown">
         <button aria-setsize="4" aria-posinset="4">Speed issue	 </button>
         <div class="dropdown-content">
             <button onclick="selectOption('Speed1')">upgrade Speed</button>  
-			<button onclick="selectOption('Speed3')">upgrade Speed_ </button>
+            <button onclick="selectOption('Speed3')">upgrade Speed_ </button>
             <button onclick="selectOption('Speed2')">upgrade Speed more </button>
-			<button onclick="selectOption('unstable')">Connection is unstable</button>
-
+            <button onclick="selectOption('unstable')">Connection is unstable</button>
         </div>
     </li>
 </ul>
@@ -201,8 +223,8 @@ function selectOption(option) {
                 outputTextarea.value = `${stillDownMessage}\n\n${outputTextarea.value}`;
             }
         } 
-		
-		else if (option === 'password') {
+        
+        else if (option === 'password') {
             document.getElementById("outputTextarea").value = "";
             const passwordDownMessage = `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
 
@@ -211,8 +233,8 @@ function selectOption(option) {
                 outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
             }
         } 
-		
-		else if (option === 'password') {
+        
+        else if (option === 'password') {
             document.getElementById("outputTextarea").value = "";
             const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
 
@@ -221,8 +243,8 @@ function selectOption(option) {
                 outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
             }
         } 
-		
-		else if (option === 'ssh') {
+        
+        else if (option === 'ssh') {
             document.getElementById("outputTextarea").value = "";
             const ssh= `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`;
 
@@ -231,7 +253,7 @@ function selectOption(option) {
                 outputTextarea.value = `${ssh}\n\n${outputTextarea.value}`;
             }
         }
-				else if (option === 'unstable') {
+                else if (option === 'unstable') {
             document.getElementById("outputTextarea").value = "";
             const unstable= `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`;
 
@@ -240,8 +262,8 @@ function selectOption(option) {
                 outputTextarea.value = `${unstable}\n\n${outputTextarea.value}`;
             }
         }
-		
-		else if (option === 'connect') {
+        
+        else if (option === 'connect') {
             document.getElementById("outputTextarea").value = "";
             const connect= `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`;
 
@@ -250,8 +272,8 @@ function selectOption(option) {
                 outputTextarea.value = `${connect}\n\n${outputTextarea.value}`;
             }
         }
-		
-		else if (option === 'password') {
+        
+        else if (option === 'password') {
             document.getElementById("outputTextarea").value = "";
             const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
 
@@ -271,7 +293,7 @@ function selectOption(option) {
                 outputTextarea.value = `${RDNS}\n\n${outputTextarea.value}`;
             }
         }
-		else if (option === 'S3') {
+        else if (option === 'S3') {
             document.getElementById("outputTextarea").value = "";
             const S3= `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`;
 
@@ -280,7 +302,7 @@ function selectOption(option) {
                 outputTextarea.value = `${S3}\n\n${outputTextarea.value}`;
             }
         }
-		if (option === 'ips') {
+        if (option === 'ips') {
             outputTextarea.value = `Hello,\nPlease check these additional ips, they are not working.\n\-----\n\n${pingInput}\n\nThanks.`;
         } else if (option === 'ips2') {
             document.getElementById("outputTextarea").value = "";
@@ -313,7 +335,7 @@ function selectOption(option) {
                 outputTextarea.value = `${PBL}\n\n${outputTextarea.value}`;
             }
         }
-		             if (option === 'Speed1') {
+                     if (option === 'Speed1') {
             outputTextarea.value = `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`;
         } else if (option === 'Speed2') {
             document.getElementById("outputTextarea").value = "";
@@ -324,7 +346,7 @@ function selectOption(option) {
                 outputTextarea.value = `${Speed2}\n\n${outputTextarea.value}`;
             }
         }
-		else if (option === 'Speed3') {
+        else if (option === 'Speed3') {
             document.getElementById("outputTextarea").value = "";
             const Speed3= `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`;
 
@@ -336,7 +358,6 @@ function selectOption(option) {
         
     }
 
-
     function clearFields() {
         document.getElementById("pingInput").value = "";
         document.getElementById("outputTextarea").value = "";
@@ -345,6 +366,22 @@ function selectOption(option) {
         const outputTextarea = document.getElementById('outputTextarea');
         outputTextarea.select();
         document.execCommand('copy');
+    }
+
+    // Apply night mode on page load if enabled
+    window.onload = function() {
+        if (localStorage.getItem('nightMode') === 'enabled') {
+            document.body.classList.add('night-mode');
+            document.querySelectorAll('.dropdown-content button').forEach(item => {
+                item.classList.add('night-mode');
+            });
+            document.querySelectorAll('textarea').forEach(item => {
+                item.classList.add('night-mode');
+            });
+            document.querySelectorAll('.button').forEach(item => {
+                item.classList.add('night-mode');
+            });
+        }
     }
 </script>
 </body>
