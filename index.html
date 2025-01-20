@@ -3,259 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Helper Tools </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            display: flex;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #213555;
-            overflow: hidden;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: 250px;
-            background-color: #213555;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-            align-items: center;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .sidebar.hidden {
-            width: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        .logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
-        .logo.hidden {
-            opacity: 0;
-        }
-
-        .logo img {
-            width: 50px;
-            height: 50px;
-            margin-top: 50px; /* Pushes the image to the bottom */
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .menu {
-            list-style: none;
-            flex-grow: 1;
-            width: 100%;
-        }
-
-        .menu-item {
-            padding: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background-color: #336bff;
-            border-radius: 5px;
-        }
-
-        .menu-item a {
-            text-decoration: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-        }
-
-        /* Content Area */
-        .content {
-            flex-grow: 1;
+        ul[role="toolbar"] {
+            list-style-type: none;
             padding: 0;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .dropdown {
+            position: relative;
+            display: inline-block;
         }
 
-        .toggle-btn {
-            background-color: #000000;
-            color: white;
-            border: none;
-            padding: 10px 15px;
+        .dropdown button {
+            padding: 10px;
+            background-color: #e74c3c; /* Red color */
+            color: #fff; /* White text color */
+            border: 2px solid #c0392b; /* Border color */
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            border-radius: 5px;
+        }
+
+        .dropdown-content {
+            display: none;
             position: absolute;
-            top: 20px;
-            left: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
         }
 
-        .sidebar.hidden .toggle-btn {
-            left: 10px;
-            z-index: 1; /* Ensure it stays visible */
+        .dropdown-content button {
+            display: block;
+            width: 400px;
+            padding: 10px;
+            border: none;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: left;
         }
 
-        /* Night Mode Styles */
-        body.night-mode {
-            background-color: #121212;
-            color: #ffffff;
+        .dropdown-content textarea {
+            width: calc(100% - 24px); /* Adjusted width to accommodate the icon */
+            padding: 10px;
+            border: none;
+            background-color: #f9f9f9;
+            color: #333;
+            resize: none;
+            margin-top: 24px; /* Margin added to create space for the icon */
         }
 
-        .sidebar.night-mode {
-            background-color: #121212;
+        .icon-at-top {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 12px;
+            color: #3498db; /* Blue color */
+            cursor: pointer;
         }
 
-        .menu-item.night-mode {
-            background-color: #1e1e1e;
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
 
-        .menu-item.night-mode:hover, .menu-item.night-mode.active {
-            background-color: #333333;
+        textarea {
+            width: 60%;
+            height: 100px;
+            margin-bottom: 10px;
+            background-color: #E9E9EB;
+            border: 2px solid #c0392b; /* Border color */
         }
 
-        .content.night-mode {
-            background-color: #1e1e1e;
+        #outputTextarea {
+            width: 60%;
+            height: 200px;
+            margin-top: 20px;
         }
-    .toggle-btn0 {
-    background-color: #000000;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 20px;
-    left: 10px;
-}
+
+        /* Added style for the Clear button */
+        button {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 4px; /* Optional: Add rounded corners */
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px; /* Adjust padding to fit your design */
+            background-color: #007bff; /* Button background color */
+            color: #fff; /* Button text color */
+            text-decoration: none; /* Remove underline */
+            border: none; /* Remove border */
+            border-radius: 4px; /* Optional: Add rounded corners */
+            margin-left: 30px;
+        }
+
+        .content2 {
+            margin-top: 10px;
+            text-align: center; /* Center align content */
+        }
+
     </style>
+    <title>Styled Dropdown Buttons with Text Areas</title>
 </head>
-<body>
-    <div class="sidebar">
-        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
-            <img src="images/support.png" alt="Logo">
-            <div class="logo-text"></div>
+<body style="background-color: #3E5879;">
+<div class="content2">
+<ul role="toolbar">
+    <li class="dropdown">
+        <button aria-setsize="4" aria-posinset="1">Down</button>
+        <div class="dropdown-content">
+            <button onclick="selectOption('down')">down</button>
+            <button onclick="selectOption('stillDown')">Still Down</button>
+			<button onclick="selectOption('connect')">can't connect</button>
+			<button onclick="selectOption('ssh')">via ssh</button>
+            <button onclick="selectOption('password')">reset password</button>
         </div>
-        <ul class="menu">
-            <li class="menu-item" onclick="loadPage('Projet/MSG tk support.html')">
-                <i> <span style="font-size: 20px;">✉️</span> <!-- Large --></i><span>messages sms</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/Comma Separating Tool.html')">
-                <i><span style="font-size: 20px;">🔢</span></i><span>Comma Separating</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/ptr1122.html')">
-                <i><span style="font-size: 20px;">🧾</span></i><span>PTR Form</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/Geo File Extractor.html')">
-                <i><span style="font-size: 20px;">🌍</span></i><span>Geo File Extractor</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/Extractor ips.html')">
-                <i><span style="font-size: 20px;">⚙️</span></i><span>Extract IPs</span></li>
-            <li class="menu-item" onclick="loadPage('Projet/test ips.html')">
-                <i><span style="font-size: 20px;">🔍</span></i><span>IP Tools Test</span>
-            </li>
-        </ul>
-        <button class="toggle-btn0" id="night-mode-toggle" onclick="toggleNightMode()">Night Mode</button>
-    </div>
-    <div class="content">
-        <iframe id="content-frame" src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"></iframe>
-    </div>
+    </li>
 
-    <script src="script1.js"></script>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('hidden');
+    <li class="dropdown">
+        <button aria-setsize="4" aria-posinset="2">RDNS</button>
+        <div class="dropdown-content">
+            <button onclick="selectOption('S1')">RDNS s1</button>
+            <button onclick="selectOption('S2')">RDNS s2</button>
+			<button onclick="selectOption('S3')">Remove RDNS</button>
+
+        </div>
+    </li>
+
+    <li class="dropdown">
+        <button aria-setsize="4" aria-posinset="3">IPs not working</button>
+        <div class="dropdown-content">
+            <button onclick="selectOption('ips')">Additional IPs not working </button>
+            <button onclick="selectOption('ips2')">Additional IPs not working</button>
+        </div>
+    </li>
+
+    <li class="dropdown">
+        <button aria-setsize="4" aria-posinset="4">Allow port 25</button>
+        <div class="dropdown-content">
+            <button onclick="selectOption('allow1')">Allow port 25</button>
+            <button onclick="selectOption('allow2')">Allow port 25_</button>
+        </div>
+    </li>
+     <li class="dropdown">
+        <button aria-setsize="4" aria-posinset="4">Delisting Request </button>
+        <div class="dropdown-content">
+            <button onclick="selectOption('SBL')">From SBL</button>  
+            <button onclick="selectOption('PBL')">From PBL </button>
+        </div>
+    </li>
+	 <li class="dropdown">
+        <button aria-setsize="4" aria-posinset="4">Speed issue	 </button>
+        <div class="dropdown-content">
+            <button onclick="selectOption('Speed1')">upgrade Speed</button>  
+			<button onclick="selectOption('Speed3')">upgrade Speed_ </button>
+            <button onclick="selectOption('Speed2')">upgrade Speed more </button>
+			<button onclick="selectOption('unstable')">Connection is unstable</button>
+
+        </div>
+    </li>
+</ul>
+<textarea id="pingInput" placeholder="Enter the content here"></textarea><br><br>
+<i style="margin-left: 10px; background-color: ##1C0E0E ; color: #fff; " class="fas fa-copy copy-icon" onclick="copyToClipboard()"></i>
+<a href="https://itryio.com/ticket/create" class="button" target="_blank">Open Ticket</a>
+<button onclick="clearFields()"><i class="fas fa-broom"></i> Clear the content</button>
+<!-- Icon added to the top of the outputTextarea -->
+<br>
+<textarea id="outputTextarea" placeholder="Results will be displayed here" readonly></textarea>
+</div>
+<i style="background-color: rgb(251, 255, 0);" class="fas fa-info-circle icon-at-top" title="
+1. Enter your content in the first text area.
+2. Select an option from the dropdown menu.
+3. Click the Copy to Clipboard button to copy your results.
+4. then Click Open Ticket " 
+></i>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script>
+function selectOption(option) {
+        const pingInput = document.getElementById('pingInput').value;
+        const outputTextarea = document.getElementById('outputTextarea');
+
+        // Helper function to check if the message is already present
+        function isMessagePresent(message) {
+            return outputTextarea.value.includes(message);
         }
+        if (option === 'down') {
+            outputTextarea.value = `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`;
+        } else if (option === 'stillDown') {
+            document.getElementById("outputTextarea").value = "";
+            const stillDownMessage = `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`;
 
-        function loadPage(url) {
-            const iframe = document.getElementById('content-frame');
-            iframe.src = url;
-        }
+            // Check if the message is already present before appending
+            if (!isMessagePresent(stillDownMessage)) {
+                outputTextarea.value = `${stillDownMessage}\n\n${outputTextarea.value}`;
+            }
+        } 
+		
+		else if (option === 'password') {
+            document.getElementById("outputTextarea").value = "";
+            const passwordDownMessage = `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
 
-        function toggleNightMode() {
-            const body = document.body;
-            body.classList.toggle('night-mode');
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('night-mode');
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                item.classList.toggle('night-mode');
-            });
-            const content = document.querySelector('.content');
-            content.classList.toggle('night-mode');
+            // Check if the message is already present before appending
+            if (!isMessagePresent(passwordDownMessage)) {
+                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
+            }
+        } 
+		
+		else if (option === 'password') {
+            document.getElementById("outputTextarea").value = "";
+            const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
 
-            // Store the night mode state in localStorage
-            if (body.classList.contains('night-mode')) {
-                localStorage.setItem('nightMode', 'enabled');
-            } else {
-                localStorage.setItem('nightMode', 'disabled');
+            // Check if the message is already present before appending
+            if (!isMessagePresent(passwordDownMessage)) {
+                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
+            }
+        } 
+		
+		else if (option === 'ssh') {
+            document.getElementById("outputTextarea").value = "";
+            const ssh= `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(ssh)) {
+                outputTextarea.value = `${ssh}\n\n${outputTextarea.value}`;
             }
         }
+				else if (option === 'unstable') {
+            document.getElementById("outputTextarea").value = "";
+            const unstable= `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`;
 
-        // Apply the night mode state on page load
-        window.onload = function() {
-            if (localStorage.getItem('nightMode') === 'enabled') {
-                document.body.classList.add('night-mode');
-                document.querySelector('.sidebar').classList.add('night-mode');
-                document.querySelectorAll('.menu-item').forEach(item => {
-                    item.classList.add('night-mode');
-                });
-                document.querySelector('.content').classList.add('night-mode');
+            // Check if the message is already present before appending
+            if (!isMessagePresent(unstable)) {
+                outputTextarea.value = `${unstable}\n\n${outputTextarea.value}`;
             }
         }
-        function toggleNightMode() {
-    const body = document.body;
-    body.classList.toggle('night-mode');
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('night-mode');
-    const menuItems = document.querySelectorAll('.menu-item');
-    menuItems.forEach(item => {
-        item.classList.toggle('night-mode');
-    });
-    const content = document.querySelector('.content');
-    content.classList.toggle('night-mode');
+		
+		else if (option === 'connect') {
+            document.getElementById("outputTextarea").value = "";
+            const connect= `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`;
 
-    // Store the night mode state in localStorage
-    if (body.classList.contains('night-mode')) {
-        localStorage.setItem('nightMode', 'enabled');
-        loadPage('Projet/MSG tk support.html'); // Load the affected page
-    } else {
-        localStorage.setItem('nightMode', 'disabled');
-        loadPage('Projet/Comma Separating Tool.html'); // Load another page
+            // Check if the message is already present before appending
+            if (!isMessagePresent(connect)) {
+                outputTextarea.value = `${connect}\n\n${outputTextarea.value}`;
+            }
+        }
+		
+		else if (option === 'password') {
+            document.getElementById("outputTextarea").value = "";
+            const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(passwordDownMessage)) {
+                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
+            }
+        } 
+        else if (option === 'S1') {
+            outputTextarea.value = `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance`;
+        } else if (option === 'S2') {
+            document.getElementById("outputTextarea").value = "";
+            const RDNS = `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(RDNS)) {
+                outputTextarea.value = `${RDNS}\n\n${outputTextarea.value}`;
+            }
+        }
+		else if (option === 'S3') {
+            document.getElementById("outputTextarea").value = "";
+            const S3= `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(S3)) {
+                outputTextarea.value = `${S3}\n\n${outputTextarea.value}`;
+            }
+        }
+		if (option === 'ips') {
+            outputTextarea.value = `Hello,\nPlease check these additional ips, they are not working.\n\-----\n\n${pingInput}\n\nThanks.`;
+        } else if (option === 'ips2') {
+            document.getElementById("outputTextarea").value = "";
+            const ips2= `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(ips2)) {
+                outputTextarea.value = `${ips2}\n\n${outputTextarea.value}`;
+            }
+        }
+                if (option === 'allow1') {
+            outputTextarea.value = `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`;
+        } else if (option === 'allow2') {
+            document.getElementById("outputTextarea").value = "";
+            const allow2= `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(allow2)) {
+                outputTextarea.value = `${allow2}\n\n${outputTextarea.value}`;
+            }
+        }
+             if (option === 'SBL') {
+            outputTextarea.value = `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`;
+        } else if (option === 'PBL') {
+            document.getElementById("outputTextarea").value = "";
+            const PBL= `Hi, \nplease we need you to delist the following IPs from PBL\n-----\n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(PBL)) {
+                outputTextarea.value = `${PBL}\n\n${outputTextarea.value}`;
+            }
+        }
+		             if (option === 'Speed1') {
+            outputTextarea.value = `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`;
+        } else if (option === 'Speed2') {
+            document.getElementById("outputTextarea").value = "";
+            const Speed2= `Hi, \nStill we have the same issue, we need you to upgrade the Download/upload speed of this server more, it's very slow\n-----\n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(Speed2)) {
+                outputTextarea.value = `${Speed2}\n\n${outputTextarea.value}`;
+            }
+        }
+		else if (option === 'Speed3') {
+            document.getElementById("outputTextarea").value = "";
+            const Speed3= `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`;
+
+            // Check if the message is already present before appending
+            if (!isMessagePresent(Speed3)) {
+                outputTextarea.value = `${Speed3}\n\n${outputTextarea.value}`;
+            }
+        }
+        
     }
-}
-    </script>
+
+
+    function clearFields() {
+        document.getElementById("pingInput").value = "";
+        document.getElementById("outputTextarea").value = "";
+    }
+    function copyToClipboard() {
+        const outputTextarea = document.getElementById('outputTextarea');
+        outputTextarea.select();
+        document.execCommand('copy');
+    }
+</script>
 </body>
 </html>
