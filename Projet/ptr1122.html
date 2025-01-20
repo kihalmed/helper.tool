@@ -52,8 +52,9 @@
 <h2>Enter Domain-IP Pairs</h2>
 <textarea id="inputTextarea" placeholder="Enter Domain-IP pairs (one per line)&#10;Example: example.com,192.168.1.1"></textarea>
 
-<button onclick="convert()">Generate .in-addr.arpa. IN PTR</button>
-<button onclick="ptr()">Generate IN PTR</button>
+<button onclick="convert()"> .in-addr.arpa. IN PTR</button>
+<button onclick="ptr()">D.C IN PTR</button>
+<button onclick="convertWhenFourParts()">D.C.B.A IN PTR</button>
 
 <h2>Converted Format</h2>
 <textarea id="outputTextarea" placeholder="Converted format will appear here" readonly></textarea>
@@ -76,7 +77,6 @@
                 const domain = parts[0].trim();
                 const ip = parts[1].trim();
 
-                // Validate the IP format
                 if (isValidIP(ip)) {
                     outputText += `${ip.split('.').reverse().join('.')}.in-addr.arpa. IN PTR ${domain}.\n`;
                 } else {
@@ -104,9 +104,36 @@
                 const domain = parts[0].trim();
                 const ipParts = parts[1].trim().split('.');
 
-                // Validate the IP format
                 if (ipParts.length === 4 && isValidIP(parts[1].trim())) {
                     const ip = `${ipParts[3]}.${ipParts[2]}`;
+                    outputText += `${ip} IN PTR ${domain}.\n`;
+                } else {
+                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
+                }
+            } else {
+                outputText += `Invalid format: ${line}\n`;
+            }
+        });
+
+        outputTextArea.value = outputText.trim();
+    }
+
+    function convertWhenFourParts() {
+        const inputTextArea = document.getElementById('inputTextarea');
+        const outputTextArea = document.getElementById('outputTextarea');
+
+        const inputText = inputTextArea.value.trim();
+        const lines = inputText.split('\n');
+
+        let outputText = '';
+        lines.forEach((line) => {
+            const parts = line.split(',');
+            if (parts.length === 2) {
+                const domain = parts[0].trim();
+                const ipParts = parts[1].trim().split('.');
+
+                if (ipParts.length === 4) {
+                    const ip = `${ipParts[3]}.${ipParts[2]}.${ipParts[1]}.${ipParts[0]}`;
                     outputText += `${ip} IN PTR ${domain}.\n`;
                 } else {
                     outputText += `Invalid IP format: ${parts[1].trim()}\n`;
