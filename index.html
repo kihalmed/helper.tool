@@ -186,7 +186,6 @@
                 <i><span style="font-size: 20px;">🔍</span></i><span>IP Tools Test</span>
             </li>
         </ul>
-        <button class="toggle-btn0" id="night-mode-toggle" onclick="toggleNightMode()">Night Mode</button>
     </div>
     <div class="content">
         <iframe id="content-frame" src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"></iframe>
@@ -224,17 +223,7 @@
             }
         }
 
-        // Apply the night mode state on page load
-        window.onload = function() {
-            if (localStorage.getItem('nightMode') === 'enabled') {
-                document.body.classList.add('night-mode');
-                document.querySelector('.sidebar').classList.add('night-mode');
-                document.querySelectorAll('.menu-item').forEach(item => {
-                    item.classList.add('night-mode');
-                });
-                document.querySelector('.content').classList.add('night-mode');
-            }
-        }
+       
     </script>
 </body>
 </html>
