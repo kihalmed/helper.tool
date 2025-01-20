@@ -219,8 +219,10 @@
             // Store the night mode state in localStorage
             if (body.classList.contains('night-mode')) {
                 localStorage.setItem('nightMode', 'enabled');
+                loadPage('Projet/MSG tk support.html');
             } else {
                 localStorage.setItem('nightMode', 'disabled');
+                loadPage('Projet/Comma Separating Tool.html');
             }
         }
 
@@ -233,6 +235,7 @@
                     item.classList.add('night-mode');
                 });
                 document.querySelector('.content').classList.add('night-mode');
+                loadPage('Projet/MSG tk support.html');
             }
         }
     </script>
