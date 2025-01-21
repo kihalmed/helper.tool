@@ -114,11 +114,9 @@
                     body: JSON.stringify({ ip })
                 });
 
-                const { ping, port22, port22122 } = await response.json();
+                const { ping} = await response.json();
 
                 row.appendChild(createCell(ping, 'success'));
-                row.appendChild(createCell(port22, 'success'));
-                row.appendChild(createCell(port22122, 'success'));
             } catch (error) {
                 row.appendChild(createCell('Error', 'error'));
                 row.appendChild(createCell('Error', 'error'));
