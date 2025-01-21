@@ -59,8 +59,6 @@
         .dark-mode .label-maroon {
             color: #ff4444;
         }
-
-        
     </style>
 </head>
 <body style="background-color: #20172c;">
@@ -72,49 +70,38 @@
         <label for="output-text" class="label-maroon">Generated comma-separated IPs:</label>
         <textarea id="output-text" rows="5" cols="40" readonly></textarea>
         <button id="copy-button" style="background-color:#ff3333;">Copy to Clipboard</button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const generateButton = document.getElementById("generate-button");
+            generateButton.addEventListener("click", generateCommaSeparated);
 
-     </div>
-        <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const generateButton = document.getElementById("generate-button");
-    generateButton.addEventListener("click", generateCommaSeparated);
+            const copyButton = document.getElementById("copy-button");
+            copyButton.addEventListener("click", copyToClipboard);
 
-    function generateCommaSeparated() {
-        const inputText = document.getElementById("input-text").value;
-        const ipLines = inputText.split("\n");
+            function generateCommaSeparated() {
+                const inputText = document.getElementById("input-text").value;
+                const ipLines = inputText.split("\n");
 
-        const validIps = ipLines.map(line => line.split(" ")[0])
-            .filter(ip => isValidIp(ip));
+                const validIps = ipLines.map(line => line.split(" ")[0])
+                    .filter(ip => isValidIp(ip));
 
-        const commaSeparatedIps = validIps.join(",");
-        document.getElementById("output-text").value = commaSeparatedIps;
-    }
+                const commaSeparatedIps = validIps.join(",");
+                document.getElementById("output-text").value = commaSeparatedIps;
+            }
 
-    function isValidIp(ip) {
-        const parts = ip.split(".");
-        return parts.length === 4 && parts.every(part => !isNaN(part) && parseInt(part) >= 0 && parseInt(part) <= 255);
-    }
-});
-document.addEventListener("DOMContentLoaded", 
-    function ()  {
-    const generateButton = document.getElementById("generate-button");
-    generateButton.addEventListener("click", generateCommaSeparated);
+            function isValidIp(ip) {
+                const parts = ip.split(".");
+                return parts.length === 4 && parts.every(part => !isNaN(part) && parseInt(part) >= 0 && parseInt(part) <= 255);
+            }
 
-    // Toggle between light and dark modes
-   
-
-    function generateCommaSeparated() {
-        // Your existing code for generating comma-separated IPs
-    }
-
-    function isValidIp(ip) {
-        // Your existing code for validating IP addresses
-    }
-
-	
-});
-
-           
+            function copyToClipboard() {
+                const outputText = document.getElementById("output-text");
+                outputText.select();
+                document.execCommand("copy");
+                alert("Copied to clipboard!");
+            }
+        });
     </script>
 </body>
 </html>
