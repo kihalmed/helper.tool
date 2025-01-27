@@ -1,6 +1,5 @@
 
 
-/////////////////////////////////////////////////////////////////////////////////
  function extractContent() {
       const input = document.getElementById("textInput").value;
 
