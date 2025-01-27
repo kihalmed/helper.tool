@@ -54,9 +54,7 @@
         }
       }
     }
-	////////////////////////////////////////////////////////////////////////
 	
-		///////////////////////////////////////////////////////////////////////
 		        
 document.getElementById('extractButton').addEventListener('click', function() {
             const inputText = document.getElementById('inputText').value;
