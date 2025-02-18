@@ -122,6 +122,7 @@
             <button onclick="selectOption('connect')">can't connect</button>
             <button onclick="selectOption('ssh')">via ssh</button>
             <button onclick="selectOption('password')">reset password</button>
+            <button onclick="selectOption('ipv6')">Add ipv6</button>
         </div>
     </li>
 
@@ -213,15 +214,16 @@ function selectOption(option) {
             }
         } 
         
-        else if (option === 'password') {
+        else if (option === 'ipv6') {
             document.getElementById("outputTextarea").value = "";
-            const passwordDownMessage = `Hi, \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
+            const add = `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`;
 
             // Check if the message is already present before appending
-            if (!isMessagePresent(passwordDownMessage)) {
-                outputTextarea.value = `${passwordDownMessage}\n\n${outputTextarea.value}`;
+            if (!isMessagePresent(add)) {
+                outputTextarea.value = `${add}\n\n${outputTextarea.value}`;
             }
         } 
+        
         
         else if (option === 'ssh') {
             document.getElementById("outputTextarea").value = "";
