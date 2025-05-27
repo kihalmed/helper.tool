@@ -293,14 +293,6 @@ function selectOption(option) {
             if (!isMessagePresent(ips2)) {
                 outputTextarea.value = `${ips2}\n\n${outputTextarea.value}`;
             }
-            else if (option === 'ips3') {
-            document.getElementById("outputTextarea").value = "";
-            const ips3= `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`;
-
-            // Check if the message is already present before appending
-            if (!isMessagePresent(ips3)) {
-                outputTextarea.value = `${ips3}\n\n${outputTextarea.value}`;
-            }
         }
                 if (option === 'allow1') {
             outputTextarea.value = `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`;
