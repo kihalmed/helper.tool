@@ -1,78 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Helper Tools </title>
-    <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Helper Tools</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            display: flex;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #010003;
-            overflow: hidden;
-        }
+    body {
+      display: flex;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #010003;
+      overflow: hidden;
+    }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 250px;
-            height: 100%;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-            align-items: center;
-            transition: all 0.3s ease-in-out;
-        }
+    .sidebar {
+      width: 250px;
+      height: 100%;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+      align-items: center;
+      transition: all 0.3s ease-in-out;
+      position: relative;
+    }
 
-        .sidebar.hidden {
-            width: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+    .sidebar.hidden {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+    }
 
-        .logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
 
-        .logo.hidden {
-            opacity: 0;
-        }
+    .logo.hidden {
+      opacity: 0;
+    }
 
-        .logo img {
-            width: 50px;
-            height: 50px;
-            margin-top: 50px; /* Pushes the image to the bottom */
-        }
+    .logo img {
+      width: 50px;
+      height: 50px;
+      margin-top: 50px;
+    }
 
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 10px;
-            text-align: center;
-        }
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: center;
+    }
 
-        .menu {
-    list-style: none;
-    flex-grow: 1;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
+    .menu {
+      list-style: none;
+      flex-grow: 1;
+      width: 100%;
+    }
 
     .menu-item {
       width: 100%;
@@ -85,99 +82,127 @@
       position: relative;
     }
 
-        .menu-item:hover, .menu-item.active {
-            background-color: #336bff;
-            border-radius: 5px;
-        }
+    .menu-item:hover,
+    .menu-item.active {
+      background-color: #336bff;
+      border-radius: 5px;
+    }
 
-        .menu-item a {
-            text-decoration: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-        }
+    .menu-item a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
 
-        /* Content Area */
-        .content {
-            flex-grow: 1;
-            padding: 0;
-        }
+    .item-height {
+      position: absolute;
+      right: 10px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+    .content {
+      flex-grow: 1;
+    }
 
-        .toggle-btn {
-            background-color: #000000;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            border-radius: 5px;
-            position: absolute;
-            top: 20px;
-            left: 10px;
-        }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-        .sidebar.hidden .toggle-btn {
-            left: 10px;
-            z-index: 1; /* Ensure it stays visible */
-        }
+    .toggle-btn {
+      background-color: #000;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      z-index: 1;
+    }
 
-
-    </style>
+    canvas {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="sidebar">
-        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
-            <img src="images/support.png" alt="Logo">
-            <div class="logo-text"></div>
-        </div>
-        <ul class="menu">
-            <li class="menu-item" onclick="loadPage('Projet/MSG tk support.html')">
-                <i> <span style="font-size: 20px;">✉️</span> <!-- Large --></i><span>messages sms</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/Comma Separating Tool.html')">
-                <i><span style="font-size: 20px;">🔢</span></i><span>Comma Separating</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/ptr1122.html')">
-                <i><span style="font-size: 20px;">🧾</span></i><span>PTR Form</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/Geo File Extractor.html')">
-                <i><span style="font-size: 20px;">🌍</span></i><span>Geo File Extractor</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('Projet/Extractor ips.html')">
-                <i><span style="font-size: 20px;">⚙️</span></i><span>Extract IPs</span></li>
-            <li class="menu-item" onclick="loadPage('Projet/test ips.html')">
-                <i><span style="font-size: 20px;">🔍</span></i><span>IP Tools Test</span>
-            </li>
-        </ul>
+  <div class="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
+      <img src="images/support.png" alt="Logo" />
+      <div class="logo-text">Helper</div>
     </div>
-    <div class="content">
-        <iframe id="content-frame" src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
-        style="width:100%; height:600px; filter: invert(1) hue-rotate(180deg); border:0;"
-        frameborder="0" scrolling="no">
-            
-        </iframe>
-    </div>
+    <ul class="menu">
+      <li class="menu-item" onclick="loadPage('Projet/MSG tk support.html')">
+        <span style="font-size: 20px;">✉️</span><span>messages sms</span>
+        <span class="item-height"></span>
+      </li>
+      <li class="menu-item" onclick="loadPage('Projet/Comma Separating Tool.html')">
+        <span style="font-size: 20px;">🔢</span><span>Comma Separating</span>
+        <span class="item-height"></span>
+      </li>
+      <li class="menu-item" onclick="loadPage('Projet/ptr1122.html')">
+        <span style="font-size: 20px;">🧾</span><span>PTR Form</span>
+        <span class="item-height"></span>
+      </li>
+      <li class="menu-item" onclick="loadPage('Projet/Geo File Extractor.html')">
+        <span style="font-size: 20px;">🌍</span><span>Geo File Extractor</span>
+        <span class="item-height"></span>
+      </li>
+      <li class="menu-item" onclick="loadPage('Projet/Extractor ips.html')">
+        <span style="font-size: 20px;">⚙️</span><span>Extract IPs</span>
+        <span class="item-height"></span>
+      </li>
+      <li class="menu-item" onclick="loadPage('Projet/test ips.html')">
+        <span style="font-size: 20px;">🔍</span><span>IP Tools Test</span>
+        <span class="item-height"></span>
+      </li>
+    </ul>
+  </div>
+  <div class="content">
+    <iframe id="content-frame"
+            src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
+            style="filter: invert(1) hue-rotate(180deg); border:0;"
+            frameborder="0" scrolling="no">
+    </iframe>
+  </div>
 
-    <script src="script1.js"></script>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('hidden');
-        }
+  <canvas id="heightCanvas" width="300" height="300"></canvas>
 
-        function loadPage(url) {
-            const iframe = document.getElementById('content-frame');
-            iframe.src = url;
-        }
-    </script>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    function loadPage(url) {
+      document.getElementById('content-frame').src = url;
+    }
+
+    // Use canvas for measuring and displaying heights
+    window.onload = () => {
+      const items = document.querySelectorAll('.menu-item');
+      const canvas = document.getElementById('heightCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      items.forEach((item, index) => {
+        const height = item.offsetHeight;
+        const display = item.querySelector('.item-height');
+        display.textContent = `${height}px`;
+
+        // Optional: draw on canvas (example)
+        ctx.fillStyle = '#fff';
+        ctx.fillText(`Item ${index + 1}: ${height}px`, 10, 20 * (index + 1));
+      });
+    };
+  </script>
 </body>
 </html>
