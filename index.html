@@ -5,13 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Helper Tools</title>
   <style>
-    * {
+    /* Reset only inside this page */
+    #helper-tools-page * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    body {
+    /* Scoped body */
+    #helper-tools-page {
       display: flex;
       height: 100vh;
       font-family: Arial, sans-serif;
@@ -19,7 +21,7 @@
       overflow: hidden;
     }
 
-    .sidebar {
+    #helper-tools-page .sidebar {
       width: 250px;
       height: 100%;
       color: white;
@@ -32,13 +34,13 @@
       position: relative;
     }
 
-    .sidebar.hidden {
+    #helper-tools-page .sidebar.hidden {
       width: 0;
       padding: 0;
       overflow: hidden;
     }
 
-    .logo {
+    #helper-tools-page .logo {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -48,30 +50,30 @@
       transition: opacity 0.3s ease;
     }
 
-    .logo.hidden {
+    #helper-tools-page .logo.hidden {
       opacity: 0;
     }
 
-    .logo img {
+    #helper-tools-page .logo img {
       width: 50px;
       height: 50px;
       margin-top: 50px;
     }
 
-    .logo-text {
+    #helper-tools-page .logo-text {
       font-size: 1.5rem;
       font-weight: bold;
       margin-top: 10px;
       text-align: center;
     }
 
-    .menu {
+    #helper-tools-page .menu {
       list-style: none;
       flex-grow: 1;
       width: 100%;
     }
 
-    .menu-item {
+    #helper-tools-page .menu-item {
       width: 100%;
       padding: 15px;
       cursor: pointer;
@@ -82,13 +84,13 @@
       position: relative;
     }
 
-    .menu-item:hover,
-    .menu-item.active {
+    #helper-tools-page .menu-item:hover,
+    #helper-tools-page .menu-item.active {
       background-color: #336bff;
       border-radius: 5px;
     }
 
-    .menu-item a {
+    #helper-tools-page .menu-item a {
       text-decoration: none;
       color: white;
       display: flex;
@@ -97,7 +99,7 @@
       width: 100%;
     }
 
-    .item-height {
+    #helper-tools-page .item-height {
       position: absolute;
       right: 10px;
       font-size: 0.8rem;
@@ -105,17 +107,17 @@
       display: none;
     }
 
-    .content {
+    #helper-tools-page .content {
       flex-grow: 1;
     }
 
-    iframe {
+    #helper-tools-page iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
 
-    .toggle-btn {
+    #helper-tools-page .toggle-btn {
       background-color: #000;
       color: white;
       border: none;
@@ -128,12 +130,12 @@
       z-index: 1;
     }
 
-    canvas {
+    #helper-tools-page canvas {
       display: none;
     }
   </style>
 </head>
-<body>
+<body id="helper-tools-page">
   <div class="sidebar">
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
@@ -179,17 +181,16 @@
 
   <script>
     function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
+      const sidebar = document.querySelector('#helper-tools-page .sidebar');
       sidebar.classList.toggle('hidden');
     }
 
     function loadPage(url) {
-      document.getElementById('content-frame').src = url;
+      document.querySelector('#helper-tools-page #content-frame').src = url;
     }
 
-    // Use canvas for measuring and displaying heights
     window.onload = () => {
-      const items = document.querySelectorAll('.menu-item');
+      const items = document.querySelectorAll('#helper-tools-page .menu-item');
       const canvas = document.getElementById('heightCanvas');
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -199,7 +200,6 @@
         const display = item.querySelector('.item-height');
         display.textContent = `${height}px`;
 
-        // Optional: draw on canvas (example)
         ctx.fillStyle = '#fff';
         ctx.fillText(`Item ${index + 1}: ${height}px`, 10, 20 * (index + 1));
       });
@@ -207,4 +207,3 @@
   </script>
 </body>
 </html>
-
