@@ -6,14 +6,14 @@
   <title>Helper Tools</title>
   <style>
     /* Reset only inside this page */
-    #helper-tools-page * {
+    #helper-tools * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
     /* Scoped body */
-    #helper-tools-page {
+    #helper-tools {
       display: flex;
       height: 100vh;
       font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
       overflow: hidden;
     }
 
-    #helper-tools-page .sidebar {
+    #helper-sidebar {
       width: 250px;
       height: 100%;
       color: white;
@@ -34,13 +34,13 @@
       position: relative;
     }
 
-    #helper-tools-page .sidebar.hidden {
+    #helper-sidebar.hidden {
       width: 0;
       padding: 0;
       overflow: hidden;
     }
 
-    #helper-tools-page .logo {
+    #helper-logo {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -50,30 +50,30 @@
       transition: opacity 0.3s ease;
     }
 
-    #helper-tools-page .logo.hidden {
+    #helper-logo.hidden {
       opacity: 0;
     }
 
-    #helper-tools-page .logo img {
+    #helper-logo img {
       width: 50px;
       height: 50px;
       margin-top: 50px;
     }
 
-    #helper-tools-page .logo-text {
+    #helper-logo-text {
       font-size: 1.5rem;
       font-weight: bold;
       margin-top: 10px;
       text-align: center;
     }
 
-    #helper-tools-page .menu {
+    #helper-menu {
       list-style: none;
       flex-grow: 1;
       width: 100%;
     }
 
-    #helper-tools-page .menu-item {
+    .helper-menu-item {
       width: 100%;
       padding: 15px;
       cursor: pointer;
@@ -84,13 +84,13 @@
       position: relative;
     }
 
-    #helper-tools-page .menu-item:hover,
-    #helper-tools-page .menu-item.active {
+    .helper-menu-item:hover,
+    .helper-menu-item.active {
       background-color: #336bff;
       border-radius: 5px;
     }
 
-    #helper-tools-page .menu-item a {
+    .helper-menu-item a {
       text-decoration: none;
       color: white;
       display: flex;
@@ -99,7 +99,7 @@
       width: 100%;
     }
 
-    #helper-tools-page .item-height {
+    .helper-item-height {
       position: absolute;
       right: 10px;
       font-size: 0.8rem;
@@ -107,17 +107,17 @@
       display: none;
     }
 
-    #helper-tools-page .content {
+    #helper-content {
       flex-grow: 1;
     }
 
-    #helper-tools-page iframe {
+    #helper-frame {
       width: 100%;
       height: 100%;
       border: none;
     }
 
-    #helper-tools-page .toggle-btn {
+    #helper-toggle-btn {
       background-color: #000;
       color: white;
       border: none;
@@ -130,74 +130,75 @@
       z-index: 1;
     }
 
-    #helper-tools-page canvas {
+    #helper-canvas {
       display: none;
     }
   </style>
 </head>
-<body id="helper-tools-page">
-  <div class="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
+<body id="helper-tools">
+  <div id="helper-sidebar">
+    <button id="helper-toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div id="helper-logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
       <img src="images/support.png" alt="Logo" />
-      <div class="logo-text">Helper</div>
+      <div id="helper-logo-text">Helper</div>
     </div>
-    <ul class="menu">
-      <li class="menu-item" onclick="loadPage('Projet/MSG tk support.html')">
+    <ul id="helper-menu">
+      <li class="helper-menu-item" onclick="loadPage('Projet/MSG tk support.html')">
         <span style="font-size: 20px;">✉️</span><span>messages sms</span>
-        <span class="item-height"></span>
+        <span class="helper-item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/Comma Separating Tool.html')">
+      <li class="helper-menu-item" onclick="loadPage('Projet/Comma Separating Tool.html')">
         <span style="font-size: 20px;">🔢</span><span>Comma Separating</span>
-        <span class="item-height"></span>
+        <span class="helper-item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/ptr1122.html')">
+      <li class="helper-menu-item" onclick="loadPage('Projet/ptr1122.html')">
         <span style="font-size: 20px;">🧾</span><span>PTR Form</span>
-        <span class="item-height"></span>
+        <span class="helper-item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/Geo File Extractor.html')">
+      <li class="helper-menu-item" onclick="loadPage('Projet/Geo File Extractor.html')">
         <span style="font-size: 20px;">🌍</span><span>Geo File Extractor</span>
-        <span class="item-height"></span>
+        <span class="helper-item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/Extractor ips.html')">
+      <li class="helper-menu-item" onclick="loadPage('Projet/Extractor ips.html')">
         <span style="font-size: 20px;">⚙️</span><span>Extract IPs</span>
-        <span class="item-height"></span>
+        <span class="helper-item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/format pre-intsall.html')">
+      <li class="helper-menu-item" onclick="loadPage('Projet/format pre-intsall.html')">
         <span style="font-size: 20px;">🔍</span><span>Pre-install Command Generator</span>
-        <span class="item-height"></span>
+        <span class="helper-item-height"></span>
       </li>
     </ul>
   </div>
-  <div class="content">
-    <iframe id="content-frame"
+
+  <div id="helper-content">
+    <iframe id="helper-frame"
             src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
             style="filter: invert(1) hue-rotate(180deg); border:0;"
             frameborder="0" scrolling="no">
     </iframe>
   </div>
 
-  <canvas id="heightCanvas" width="300" height="300"></canvas>
+  <canvas id="helper-canvas" width="300" height="300"></canvas>
 
   <script>
     function toggleSidebar() {
-      const sidebar = document.querySelector('#helper-tools-page .sidebar');
+      const sidebar = document.getElementById('helper-sidebar');
       sidebar.classList.toggle('hidden');
     }
 
     function loadPage(url) {
-      document.querySelector('#helper-tools-page #content-frame').src = url;
+      document.getElementById('helper-frame').src = url;
     }
 
     window.onload = () => {
-      const items = document.querySelectorAll('#helper-tools-page .menu-item');
-      const canvas = document.getElementById('heightCanvas');
+      const items = document.querySelectorAll('.helper-menu-item');
+      const canvas = document.getElementById('helper-canvas');
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       items.forEach((item, index) => {
         const height = item.offsetHeight;
-        const display = item.querySelector('.item-height');
+        const display = item.querySelector('.helper-item-height');
         display.textContent = `${height}px`;
 
         ctx.fillStyle = '#fff';
