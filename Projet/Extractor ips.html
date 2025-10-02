@@ -1,80 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP Extractor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IP Extractor</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa6bf; --accent:#7c5cff;
+      --glass: rgba(255,255,255,0.04); --success:#16a34a; --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg, #021026 0%, #071229 100%); color:#e6eef8; -webkit-font-smoothing:antialiased;
+      padding:36px; display:flex; align-items:flex-start; justify-content:center;
+    }
+    .wrap{max-width:720px; width:100%;}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px; padding:20px;
+      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03)
+    }
+    h1{font-size:20px;margin:0 0 12px}
+    p.lead{color:var(--muted); margin:6px 0 16px; font-size:14px}
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 80%;
-            max-width: 800px;
-        }
+    label{display:block; margin:12px 0 6px; font-size:14px; font-weight:600; color:#facc15;}
+    textarea{
+      width:100%; min-height:120px; resize:vertical;
+      border-radius:10px; padding:14px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size:13px; color:#dff0ff;
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.03)
+    }
+    textarea[readonly]{opacity:.85}
 
-        textarea {
-            width: 90%;
-            height: 150px;
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: none;
-            border: 2px solid #c0392b;
-        }
+    .controls{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    button.btn{
+      background:linear-gradient(180deg,var(--accent),#5b3ffd);
+      border:0; color:white; padding:8px 14px;
+      border-radius:10px; cursor:pointer; font-weight:600
+    }
+    button.btn.warn{background:linear-gradient(180deg,#f97316,#ef4444)}
+    button.btn.ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+    button.btn:hover{opacity:.9}
 
-        #inputText {
-            width: calc(100% - 20%);
-            margin-left: 20%;
-        }
-
-        #output {
-            width: calc(100% - 20%);
-            margin-left: 20%;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: white;
-            background-color: #2ecc71;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-    </style>
+    .footer{margin-top:12px; font-size:13px; color:var(--muted); text-align:center}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <textarea id="inputText" placeholder="Paste your text here..."></textarea>
-        <button id="extractButton">Extract IPs</button>
-        <textarea id="output" placeholder="Extracted IPs will appear here..." readonly></textarea>
-        <button id="copyButton">Copy Extracted IPs</button>
-    </div>
+  <div class="wrap">
+    <div class="card">
+      <h1>IP Extractor</h1>
+      <p class="lead">Paste raw text — this tool will automatically extract all valid IPv4 addresses.</p>
 
- <script src="script.js"> </script>
+      <label for="inputText">Input Text</label>
+      <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+
+      <div class="controls">
+        <button class="btn" id="extractButton">Extract IPs</button>
+        <button class="btn ghost" id="clear">Clear</button>
+      </div>
+
+      <label for="output">Extracted IPs</label>
+      <textarea id="output" placeholder="Extracted IPs will appear here..." readonly></textarea>
+
+      <div class="controls">
+        <button class="btn warn" id="copyButton">Copy Extracted IPs</button>
+      </div>
+
+      <div class="footer">All processing is client-side. No data is sent anywhere.</div>
+    </div>
+  </div>
+
+  <script>
+  const inputText = document.getElementById("inputText");
+  const output = document.getElementById("output");
+
+  document.getElementById("extractButton").addEventListener("click", extractIPs);
+  document.getElementById("copyButton").addEventListener("click", copyIPs);
+  document.getElementById("clear").addEventListener("click", () => {
+    inputText.value = "";
+    output.value = "";
+  });
+
+  function extractIPs() {
+    const text = inputText.value;
+    // ✅ Correct regex (no double escaping)
+    const regex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+    const matches = text.match(regex) || [];
+    const valid = matches.filter(ip => isValidIp(ip));
+    output.value = valid.join("\n");
+  }
+
+  function isValidIp(ip) {
+    const parts = ip.split(".");
+    return parts.length === 4 && parts.every(x => Number(x) >= 0 && Number(x) <= 255);
+  }
+
+  function copyIPs() {
+    output.select();
+    document.execCommand("copy");
+  }
+</script>
 
 </body>
 </html>
-
-
