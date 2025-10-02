@@ -1,110 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comma Separating Tool</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        .light-mode {
-            background-color: #3E5879;
-        }
-        .container {
-          
-            border-radius: 5px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-            padding: 110px;
-            margin-left: 0px;
-            margin-top: 0px;
-            height: 100%;
-        }
-        h1 {
-            text-align: center;
-            font-family: "Constantia", sans-serif;
-            margin-top: 0;
-        }
-        label, textarea, button {
-            display: block;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-        button {
-            background-color: #ff3333;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 200px;
-        }
-        textarea {
-            resize: vertical;
-            border: 2px solid #c0392b;
-        }
-        .label-maroon {
-            color: maroon;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
-        .dark-mode .container {
-            background-color: #333;
-            color: #fff;
-        }
-        .dark-mode h1 {
-            color: #ff8800;
-        }
-        .dark-mode .label-maroon {
-            color: #ff4444;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comma Separating Tool</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa6bf; --accent:#7c5cff; --glass: rgba(255,255,255,0.04);
+      --success:#16a34a; --danger:#ef4444; --highlight:#facc15;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg, #021026 0%, #071229 100%); color:#e6eef8; -webkit-font-smoothing:antialiased;
+      padding:36px; display:flex; align-items:flex-start; justify-content:center;
+    }
+    .wrap{max-width:720px; width:100%;}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+          border-radius:14px; padding:20px;
+          box-shadow:0 8px 30px rgba(2,6,23,0.6);
+          border:1px solid rgba(255,255,255,0.03)}
+    h1{font-size:20px;margin:0 0 12px}
+    p.lead{color:var(--muted); margin:6px 0 16px; font-size:14px}
+
+    label{display:block; margin:12px 0 6px; font-size:14px; font-weight:600; color:var(--highlight);}
+    textarea{
+      width:100%; min-height:120px; resize:vertical;
+      border-radius:10px; padding:14px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size:13px; color:#dff0ff;
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.03)
+    }
+    textarea[readonly]{opacity:.85}
+
+    .controls{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    button.btn{
+      background:linear-gradient(180deg,var(--accent),#5b3ffd);
+      border:0; color:white; padding:8px 14px;
+      border-radius:10px; cursor:pointer; font-weight:600
+    }
+    button.btn.warn{background:linear-gradient(180deg,#f97316,#ef4444)}
+    button.btn.ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+    button.btn:hover{opacity:.9}
+
+    .footer{margin-top:12px; font-size:13px; color:var(--muted); text-align:center}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Comma Separating Tool</h1>
-        <label for="input-text" class="label-maroon">Enter IP addresses and counts (one per line):</label>
-        <textarea id="input-text" rows="5" cols="40"></textarea>
-        <button id="generate-button">Generate</button>
-        <label for="output-text" class="label-maroon">Generated comma-separated IPs:</label>
-        <textarea id="output-text" rows="5" cols="40" readonly></textarea>
-        <button id="copy-button" style="background-color:#ff3333;">Copy to Clipboard</button>
+  <div class="wrap">
+    <div class="card">
+      <h1>Comma Separating Tool</h1>
+      <p class="lead">Paste your IP addresses (with optional counts) — one per line. Tool will generate valid comma-separated IPs.</p>
+
+      <label for="input-text">Enter IP addresses and counts:</label>
+      <textarea id="input-text" rows="5"></textarea>
+
+      <div class="controls">
+        <button class="btn" id="generate-button">Generate</button>
+        <button class="btn ghost" id="clear">Clear</button>
+      </div>
+
+      <label for="output-text">Generated comma-separated IPs:</label>
+      <textarea id="output-text" rows="5" readonly></textarea>
+
+      <div class="controls">
+        <button class="btn warn" id="copy-button">Copy to Clipboard</button>
+      </div>
+
+      <div class="footer">All processing is client-side. No data is sent anywhere.</div>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const generateButton = document.getElementById("generate-button");
-            generateButton.addEventListener("click", generateCommaSeparated);
+  </div>
 
-            const copyButton = document.getElementById("copy-button");
-            copyButton.addEventListener("click", copyToClipboard);
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const inputEl = document.getElementById("input-text");
+      const outputEl = document.getElementById("output-text");
 
-            function generateCommaSeparated() {
-                const inputText = document.getElementById("input-text").value;
-                const ipLines = inputText.split("\n");
+      document.getElementById("generate-button").addEventListener("click", generateCommaSeparated);
+      document.getElementById("copy-button").addEventListener("click", copyToClipboard);
+      document.getElementById("clear").addEventListener("click", ()=>{inputEl.value="";outputEl.value="";});
 
-                const validIps = ipLines.map(line => line.split(" ")[0])
-                    .filter(ip => isValidIp(ip));
+      function generateCommaSeparated() {
+        const ipLines = inputEl.value.split("\n");
+        const validIps = ipLines.map(line => line.split(" ")[0])
+          .filter(ip => isValidIp(ip));
+        outputEl.value = validIps.join(",");
+      }
 
-                const commaSeparatedIps = validIps.join(",");
-                document.getElementById("output-text").value = commaSeparatedIps;
-            }
+      function isValidIp(ip) {
+        const parts = ip.split(".");
+        return parts.length === 4 && parts.every(part => !isNaN(part) && +part >= 0 && +part <= 255);
+      }
 
-            function isValidIp(ip) {
-                const parts = ip.split(".");
-                return parts.length === 4 && parts.every(part => !isNaN(part) && parseInt(part) >= 0 && parseInt(part) <= 255);
-            }
-
-            function copyToClipboard() {
-                const outputText = document.getElementById("output-text");
-                outputText.select();
-                document.execCommand("copy");
-            }
-        });
-    </script>
+      function copyToClipboard() {
+        outputEl.select();
+        document.execCommand("copy");
+      }
+    });
+  </script>
 </body>
 </html>
-
-
-
