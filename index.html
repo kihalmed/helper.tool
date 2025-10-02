@@ -168,46 +168,45 @@
       </li>
     </ul>
   </div>
-  <div class="content">
-    <iframe id="content-frame"
-            src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
-            style="filter: invert(1) hue-rotate(180deg); border:0;"
-            frameborder="0" scrolling="no">
-    </iframe>
-  </div>
+<div class="content">
+  <iframe id="content-frame"
+          src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
+          style="border:0;"
+          frameborder="0" scrolling="no">
+  </iframe>
+</div>
 
   <canvas id="heightCanvas" width="300" height="300"></canvas>
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      sidebar.classList.toggle('hidden');
+ <script>
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('hidden');
+  }
+
+  function loadPage(url) {
+    const iframe = document.getElementById('content-frame');
+    iframe.src = url;
+
+    // Apply filter only for Google Calendar
+    if (url.includes("calendar.google.com")) {
+      iframe.style.filter = "invert(1) hue-rotate(180deg)";
+    } else {
+      iframe.style.filter = "none";
     }
+  }
 
-    function loadPage(url) {
-      document.getElementById('content-frame').src = url;
+  // Initial setup for default page (calendar)
+  window.onload = () => {
+    const iframe = document.getElementById('content-frame');
+    if (iframe.src.includes("calendar.google.com")) {
+      iframe.style.filter = "invert(1) hue-rotate(180deg)";
     }
-
-    // Use canvas for measuring and displaying heights
-    window.onload = () => {
-      const items = document.querySelectorAll('.menu-item');
-      const canvas = document.getElementById('heightCanvas');
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      items.forEach((item, index) => {
-        const height = item.offsetHeight;
-        const display = item.querySelector('.item-height');
-        display.textContent = `${height}px`;
-
-        // Optional: draw on canvas (example)
-        ctx.fillStyle = '#fff';
-        ctx.fillText(`Item ${index + 1}: ${height}px`, 10, 20 * (index + 1));
-      });
-    };
-  </script>
+  };
+</script>
 </body>
 </html>
+
 
 
 
