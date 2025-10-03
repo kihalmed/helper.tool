@@ -5,63 +5,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IP Domain Converter</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        color: white;
-        text-align: center;
-        padding: 20px;
-    }
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --muted: #9aa6bf;
+  --accent: #7c5cff;
+  --glass: rgba(255,255,255,0.04);
+  --danger: #ef4444;
+}
 
-    h2 {
-        margin-top: 20px;
-    }
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 
-    textarea {
-        width: 100%;
-        height: 100px;
-        margin-bottom: 10px;
-        border: 2px solid #ff3333;
-        border-radius: 5px;
-        font-size: 14px;
-        padding: 5px;
-        border: 2px solid #c0392b;
-    }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #021026 0%, #071229 100%);
+  color: #e6eef8;
+  -webkit-font-smoothing: antialiased;
+  padding: 36px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
 
-    button {
-        background-color: #ff3333;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        margin: 5px;
-    }
+.wrap {
+  max-width: 880px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
-    button:hover {
-        background-color: #ff6666;
-    }
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  border: 1px solid rgba(255,255,255,0.03);
+}
 
-    button:active {
-        background-color: #cc0000;
-    }
+h2 {
+  font-size: 18px;
+  margin: 0 0 12px 0;
+  color: #fff;
+}
+
+textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  font-size: 13px;
+  color: #dff0ff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 12px;
+}
+
+button {
+  background: linear-gradient(180deg, var(--accent), #5b3ffd);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 4px;
+  transition: background .2s ease, transform .1s ease;
+}
+
+button:hover {
+  background: linear-gradient(180deg, #9170ff, #6742ff);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+button.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--muted);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
 </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="card">
+      <h2>Enter Domain-IP Pairs</h2>
+      <textarea id="inputTextarea" placeholder="Enter Domain-IP pairs (one per line)&#10;Example: example.com,192.168.1.1"></textarea>
 
-<h2>Enter Domain-IP Pairs</h2>
-<textarea id="inputTextarea" placeholder="Enter Domain-IP pairs (one per line)&#10;Example: example.com,192.168.1.1"></textarea>
+      <div class="controls">
+        <button onclick="convert()">.in-addr.arpa. IN PTR</button>
+        <button onclick="ptr()">D.C IN PTR</button>
+        <button onclick="convertWhenFourParts()">D.C.B.A IN PTR</button>
+        <button onclick="convertToSimplePTR()">86400 IN PTR</button>
+      </div>
+    </div>
 
-<button onclick="convert()">.in-addr.arpa. IN PTR</button>
-<button onclick="ptr()">D.C IN PTR</button>
-<button onclick="convertWhenFourParts()">D.C.B.A IN PTR</button>
-<button onclick="convertToSimplePTR()"> 86400 IN PTR </button>
+    <div class="card">
+      <h2>Converted Format</h2>
+      <textarea id="outputTextarea" placeholder="Converted format will appear here" readonly></textarea>
 
-<h2>Converted Format</h2>
-<textarea id="outputTextarea" placeholder="Converted format will appear here" readonly></textarea>
-
-<button onclick="copyToClipboard()">Copy to Clipboard</button>
-<button onclick="clearFields()">Clear Fields</button>
+      <div class="controls">
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+        <button class="ghost" onclick="clearFields()">Clear Fields</button>
+      </div>
+    </div>
+  </div>
 
 <script>
     function convert() {
@@ -79,15 +142,12 @@
                 const ip = parts[1].trim();
 
                 if (isValidIP(ip)) {
-                    outputText += `${ip.split('.').reverse().join('.')}.in-addr.arpa. IN PTR ${domain}.
-`;
+                    outputText += `${ip.split('.').reverse().join('.')}.in-addr.arpa. IN PTR ${domain}.\n`;
                 } else {
-                    outputText += `Invalid IP format: ${ip}
-`;
+                    outputText += `Invalid IP format: ${ip}\n`;
                 }
             } else {
-                outputText += `Invalid format: ${line}
-`;
+                outputText += `Invalid format: ${line}\n`;
             }
         });
 
@@ -110,15 +170,12 @@
 
                 if (ipParts.length === 4 && isValidIP(parts[1].trim())) {
                     const ip = `${ipParts[3]}.${ipParts[2]}`;
-                    outputText += `${ip} IN PTR ${domain}.
-`;
+                    outputText += `${ip} IN PTR ${domain}.\n`;
                 } else {
-                    outputText += `Invalid IP format: ${parts[1].trim()}
-`;
+                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
                 }
             } else {
-                outputText += `Invalid format: ${line}
-`;
+                outputText += `Invalid format: ${line}\n`;
             }
         });
 
@@ -141,15 +198,12 @@
 
                 if (ipParts.length === 4) {
                     const ip = `${ipParts[3]}.${ipParts[2]}.${ipParts[1]}.${ipParts[0]}`;
-                    outputText += `${ip} IN PTR ${domain}.
-`;
+                    outputText += `${ip} IN PTR ${domain}.\n`;
                 } else {
-                    outputText += `Invalid IP format: ${parts[1].trim()}
-`;
+                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
                 }
             } else {
-                outputText += `Invalid format: ${line}
-`;
+                outputText += `Invalid format: ${line}\n`;
             }
         });
 
@@ -172,15 +226,12 @@
                 const lastSegment = ipParts[ipParts.length - 1];
 
                 if (isValidIP(parts[1].trim())) {
-                    outputText += `${lastSegment} 86400 IN PTR ${domain}.
-`;
+                    outputText += `${lastSegment} 86400 IN PTR ${domain}.\n`;
                 } else {
-                    outputText += `Invalid IP format: ${parts[1].trim()}
-`;
+                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
                 }
             } else {
-                outputText += `Invalid format: ${line}
-`;
+                outputText += `Invalid format: ${line}\n`;
             }
         });
 
@@ -190,14 +241,9 @@
     function copyToClipboard() {
         const outputTextArea = document.getElementById('outputTextarea');
         outputTextArea.select();
-
         try {
-            const success = document.execCommand('copy');
-            if (success) {
-            } else {
-            }
+            document.execCommand('copy');
         } catch (err) {
-            console.error('Error copying to clipboard:', err);
             alert('Error copying to clipboard.');
         }
     }
@@ -212,8 +258,5 @@
         return regex.test(ip);
     }
 </script>
-
 </body>
 </html>
-
-
