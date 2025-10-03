@@ -123,54 +123,61 @@
       return {results, errors};
     }
 
-    function renderResults(results){
-      outList.innerHTML='';
-      if(results.length===0){
-        outList.innerHTML = '<div style="color:var(--muted)">No commands generated.</div>';
-        return;
+  function renderResults(results){
+  outList.innerHTML='';
+  if(results.length===0){
+    outList.innerHTML = '<div style="color:var(--muted)">No commands generated.</div>';
+    return;
+  }
+  results.forEach((r, idx)=>{
+    const div = document.createElement('div'); div.className='line';
+    const pre = document.createElement('div'); pre.className='cmd';
+    const preInner = document.createElement('pre'); preInner.textContent = r.cmd;
+    pre.appendChild(preInner);
+    div.appendChild(pre);
+
+    const meta = document.createElement('div'); meta.className='meta';
+
+    // Extract server name (last part after "/")
+    const serverName = r.original.split('/').pop();
+
+    // Copy button shows server name instead of "Copy"
+    const copyBtn = document.createElement('button'); 
+    copyBtn.className='copy-btn'; 
+    copyBtn.textContent=serverName;  
+
+    copyBtn.addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(r.cmd);
+        copyBtn.textContent='Copied';
+
+        if(lastClicked && lastClicked !== copyBtn){
+          lastClicked.classList.remove('highlighted','rotated');
+        }
+
+        if(lastClicked === copyBtn){
+          copyBtn.classList.add('rotated');
+        } else {
+          copyBtn.classList.add('highlighted'); // yellow background
+        }
+
+        lastClicked = copyBtn;
+
+        setTimeout(()=>{
+          copyBtn.textContent=serverName; // revert back to server name
+        },1200);
+      }catch(e){
+        copyBtn.textContent='Failed';
+        setTimeout(()=>copyBtn.textContent=serverName,1200);
       }
-      results.forEach((r, idx)=>{
-        const div = document.createElement('div'); div.className='line';
-        const pre = document.createElement('div'); pre.className='cmd';
-        const preInner = document.createElement('pre'); preInner.textContent = r.cmd;
-        pre.appendChild(preInner);
-        div.appendChild(pre);
+    });
 
-        const meta = document.createElement('div'); meta.className='meta';
-        const copyBtn = document.createElement('button'); copyBtn.className='copy-btn'; copyBtn.textContent='Copy';
-        copyBtn.addEventListener('click', async ()=>{
-          try{
-            await navigator.clipboard.writeText(r.cmd);
-            copyBtn.textContent='Copied';
+    meta.appendChild(copyBtn);
+    div.appendChild(meta);
+    outList.appendChild(div);
+  });
+}
 
-            // Remove previous effects
-            if(lastClicked && lastClicked !== copyBtn){
-              lastClicked.classList.remove('highlighted','rotated');
-            }
-
-            // Apply effects
-            if(lastClicked === copyBtn){
-              copyBtn.classList.add('rotated');
-            } else {
-              copyBtn.classList.add('highlighted');
-            }
-
-            lastClicked = copyBtn;
-
-            setTimeout(()=>{
-              copyBtn.textContent='Copy';
-            },1200);
-          }catch(e){
-            copyBtn.textContent='Failed';
-            setTimeout(()=>copyBtn.textContent='Copy',1200);
-          }
-        });
-        meta.appendChild(copyBtn);
-
-        div.appendChild(meta);
-        outList.appendChild(div);
-      });
-    }
 
     document.getElementById('generate').addEventListener('click', ()=>{
       const {results, errors} = parseLines(inputEl.value);
