@@ -41,7 +41,7 @@ body {
   padding: 20px;
   overflow-y: auto;
   align-items: center;
-  transition: all 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
   position: relative;
 }
 
@@ -156,10 +156,10 @@ iframe {
   padding: 10px 14px;
   cursor: pointer;
   border-radius: 8px;
-  position: absolute;
+  position: fixed; /* fixed position so it stays in one place */
   top: 20px;
-  left: 10px;
-  z-index: 10;
+  left: 20px;
+  z-index: 1000;
   font-size: 16px;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -182,8 +182,9 @@ canvas {
   </style>
 </head>
 <body>
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
   <div class="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
       <img src="images/support.png" alt="Logo" />
       <div class="logo-text">Helper</div>
@@ -215,13 +216,14 @@ canvas {
       </li>
     </ul>
   </div>
-<div class="content">
-  <iframe id="content-frame"
-          src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
-          style="border:0;"
-          frameborder="0" scrolling="no">
-  </iframe>
-</div>
+
+  <div class="content">
+    <iframe id="content-frame"
+            src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
+            style="border:0;"
+            frameborder="0" scrolling="no">
+    </iframe>
+  </div>
 
   <canvas id="heightCanvas" width="300" height="300"></canvas>
 
@@ -235,7 +237,7 @@ canvas {
     const iframe = document.getElementById('content-frame');
     iframe.src = url;
 
-    // Apply filter only for Google Calendar
+    // Apply dark filter only for Google Calendar
     if (url.includes("calendar.google.com")) {
       iframe.style.filter = "invert(1) hue-rotate(180deg)";
     } else {
@@ -253,9 +255,3 @@ canvas {
 </script>
 </body>
 </html>
-
-
-
-
-
-
