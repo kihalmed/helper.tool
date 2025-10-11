@@ -11,12 +11,15 @@
       --card: #0b1220;
       --muted: #9aa6bf;
       --accent: #7c5cff;
-      --glass: rgba(255,255,255,0.04);
-      --danger: #ef4444;
-      --highlight: #facc15;
+      --accent-dark: #5b3ffd;
+      --hover: #275BF5;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       margin: 0;
@@ -46,58 +49,63 @@
       flex-wrap: wrap;
       gap: 10px;
       list-style: none;
-      padding: 0;
-      margin: 0 0 20px 0;
+      margin-bottom: 20px;
     }
 
     .dropdown {
       position: relative;
-	  display: inline-block;
-
+      display: inline-block;
     }
 
-    .dropdown button {
-      background: linear-gradient(180deg, var(--accent), #5b3ffd);
+    .dropdown > button {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
       color: #fff;
       padding: 8px 12px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
       font-weight: 600;
+      transition: opacity 0.2s ease;
     }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #5b8ba8;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    overflow: hidden;
-    min-width: 160px;
-    z-index: 1;
-    /* REMOVE THIS LINE ↓ */
-    /* margin-top: 5px; */
-}
+    .dropdown > button:hover {
+      opacity: 0.9;
+    }
 
+    /* dropdown box clean and attached */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--accent-dark);
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 160px;
+      z-index: 10;
+      border: none;
+      padding: 0;
+      margin-top: 0; /* <-- no space between button and box */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
 
-
-.dropdown-content button {
-    background: transparent;
-    border: none;
-    color: #ffffff;
-    width: 100%;
-    padding: 12px 16px;
-    text-align: left;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    display: block;
-}
+    .dropdown-content button {
+      background: var(--accent-dark);
+      border: none;
+      color: #ffffff;
+      width: 100%;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: block;
+      border-radius: 0;
+      outline: none;
+    }
 
     .dropdown-content button:hover {
-      background: var(--glass);
-	      background-color: rgba(255, 255, 255, 0.15);
-
+      background-color: var(--hover);
     }
 
     .dropdown:hover .dropdown-content {
@@ -130,13 +138,10 @@
       margin: 14px 0;
       align-items: center;
     }
-	.dropdown-content button:active {
-    background-color: rgba(255, 255, 255, 0.25);
-}
 
     button,
     a.button {
-      background: linear-gradient(180deg, var(--accent), #5b3ffd);
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
       border: 0;
       color: white;
       padding: 8px 12px;
@@ -147,6 +152,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: opacity 0.2s ease;
     }
 
     button:hover,
@@ -158,16 +164,9 @@
       position: absolute;
       top: 20px;
       right: 20px;
-      color: var(--highlight);
+      color: #facc15;
       font-size: 18px;
     }
-	.dropdown {
-  position: relative; /* needed for absolute positioning of content */
-  display: inline-block;
-}
-
-	
-	
   </style>
 </head>
 <body>
@@ -245,87 +244,41 @@
 4. Then Click Open Ticket"></i>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
   <script>
     function selectOption(option) {
       const pingInput = document.getElementById('pingInput').value;
       const outputTextarea = document.getElementById('outputTextarea');
 
-      function isMessagePresent(message) {
-        return outputTextarea.value.includes(message);
-      }
+      const templates = {
+        down: `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
+        stillDown: `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`,
+        connect: `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`,
+        ssh: `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`,
+        password: `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`,
+        ipv6: `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`,
+        unstable: `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`,
+        S1: `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance.`,
+        S2: `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`,
+        S3: `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`,
+        ips: `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
+        ips2: `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
+        allow1: `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`,
+        allow2: `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`,
+        SBL: `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`,
+        PBL: `Hi, \nplease we need you to delist the following IPs from PBL\n-----\n\n${pingInput}\n\nThanks.`,
+        Speed1: `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`,
+        Speed2: `Hi, \nStill we have the same issue, we need you to upgrade the Download/upload speed of this server more, it's very slow\n-----\n\n${pingInput}\n\nThanks.`,
+        Speed3: `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`
+      };
 
-      if (option === 'down') {
-        outputTextarea.value = `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`;
-      } else if (option === 'stillDown') {
-        outputTextarea.value = "";
-        const stillDownMessage = `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(stillDownMessage)) outputTextarea.value = `${stillDownMessage}\n\n${outputTextarea.value}`;
-      } else if (option === 'password') {
-        outputTextarea.value = "";
-        const passwordMsg = `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(passwordMsg)) outputTextarea.value = `${passwordMsg}\n\n${outputTextarea.value}`;
-      } else if (option === 'ipv6') {
-        outputTextarea.value = "";
-        const add = `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(add)) outputTextarea.value = `${add}\n\n${outputTextarea.value}`;
-      } else if (option === 'ssh') {
-        outputTextarea.value = "";
-        const ssh= `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(ssh)) outputTextarea.value = `${ssh}\n\n${outputTextarea.value}`;
-      } else if (option === 'unstable') {
-        outputTextarea.value = "";
-        const unstable= `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(unstable)) outputTextarea.value = `${unstable}\n\n${outputTextarea.value}`;
-      } else if (option === 'connect') {
-        outputTextarea.value = "";
-        const connect= `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(connect)) outputTextarea.value = `${connect}\n\n${outputTextarea.value}`;
-      } else if (option === 'S1') {
-        outputTextarea.value = `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance`;
-      } else if (option === 'S2') {
-        outputTextarea.value = "";
-        const RDNS = `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`;
-        if (!isMessagePresent(RDNS)) outputTextarea.value = `${RDNS}\n\n${outputTextarea.value}`;
-      } else if (option === 'S3') {
-        outputTextarea.value = "";
-        const S3= `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`;
-        if (!isMessagePresent(S3)) outputTextarea.value = `${S3}\n\n${outputTextarea.value}`;
-      } else if (option === 'ips') {
-        outputTextarea.value = `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`;
-      } else if (option === 'ips2') {
-        outputTextarea.value = "";
-        const ips2= `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(ips2)) outputTextarea.value = `${ips2}\n\n${outputTextarea.value}`;
-      } else if (option === 'allow1') {
-        outputTextarea.value = `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`;
-      } else if (option === 'allow2') {
-        outputTextarea.value = "";
-        const allow2= `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(allow2)) outputTextarea.value = `${allow2}\n\n${outputTextarea.value}`;
-      } else if (option === 'SBL') {
-        outputTextarea.value = `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`;
-      } else if (option === 'PBL') {
-        outputTextarea.value = "";
-        const PBL= `Hi, \nplease we need you to delist the following IPs from PBL\n-----\n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(PBL)) outputTextarea.value = `${PBL}\n\n${outputTextarea.value}`;
-      } else if (option === 'Speed1') {
-        outputTextarea.value = `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`;
-      } else if (option === 'Speed2') {
-        outputTextarea.value = "";
-        const Speed2= `Hi, \nStill we have the same issue, we need you to upgrade the Download/upload speed of this server more, it's very slow\n-----\n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(Speed2)) outputTextarea.value = `${Speed2}\n\n${outputTextarea.value}`;
-      } else if (option === 'Speed3') {
-        outputTextarea.value = "";
-        const Speed3= `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`;
-        if (!isMessagePresent(Speed3)) outputTextarea.value = `${Speed3}\n\n${outputTextarea.value}`;
-      }
+      outputTextarea.value = templates[option] || "";
     }
 
     function clearFields() {
       document.getElementById("pingInput").value = "";
       document.getElementById("outputTextarea").value = "";
     }
+
     function copyToClipboard() {
       const outputTextarea = document.getElementById('outputTextarea');
       outputTextarea.select();
