@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Helper Tools</title>
   <style>
+/* ---------------- ROOT THEME VARIABLES ---------------- */
 :root {
   --bg: #0f1724;
   --sidebar: #0b1220;
@@ -13,6 +14,15 @@
   --glass: rgba(255,255,255,0.04);
 }
 
+:root.light-mode {
+  --bg: #f5f7fa;
+  --sidebar: #ffffff;
+  --muted: #6b7280;
+  --accent: #7c5cff;
+  --glass: rgba(0,0,0,0.04);
+}
+
+/* ---------------- GLOBAL RESET ---------------- */
 * {
   margin: 0;
   padding: 0;
@@ -26,9 +36,15 @@ body {
   background: linear-gradient(180deg, #021026 0%, #071229 100%);
   color: #e6eef8;
   overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Sidebar */
+body.light-mode {
+  background: linear-gradient(180deg, #e8ecf3 0%, #f5f7fa 100%);
+  color: #1f2937;
+}
+
+/* ---------------- SIDEBAR ---------------- */
 .sidebar {
   width: 250px;
   height: 100%;
@@ -41,8 +57,14 @@ body {
   padding: 20px;
   overflow-y: auto;
   align-items: center;
-  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
-  position: relative;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out, background 0.3s ease;
+}
+
+body.light-mode .sidebar {
+  background: linear-gradient(180deg, rgba(255,255,255,1), rgba(245,247,250,1));
+  box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  border-right: 1px solid rgba(0,0,0,0.08);
+  color: #1f2937;
 }
 
 .sidebar.hidden {
@@ -51,7 +73,7 @@ body {
   overflow: hidden;
 }
 
-/* Logo */
+/* ---------------- LOGO ---------------- */
 .logo {
   display: flex;
   flex-direction: column;
@@ -62,27 +84,31 @@ body {
   transition: opacity 0.3s ease;
 }
 
-.logo.hidden {
-  opacity: 0;
-}
-
 .logo img {
   width: 60px;
   height: 60px;
   margin-top: 40px;
   border-radius: 50%;
   box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+body.light-mode .logo img {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
 }
 
 .logo-text {
   font-size: 1.4rem;
   font-weight: bold;
   margin-top: 10px;
-  text-align: center;
   color: #fff;
 }
 
-/* Menu */
+body.light-mode .logo-text {
+  color: #1f2937;
+}
+
+/* ---------------- MENU ---------------- */
 .menu {
   list-style: none;
   flex-grow: 1;
@@ -97,10 +123,14 @@ body {
   align-items: center;
   gap: 10px;
   transition: all 0.2s;
-  position: relative;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 500;
+  color: #e6eef8;
+}
+
+body.light-mode .menu-item {
+  color: #374151;
 }
 
 .menu-item:hover {
@@ -114,41 +144,92 @@ body {
   color: var(--accent);
 }
 
-.menu-item a {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-}
-
-/* Sidebar item details */
-.item-height {
-  position: absolute;
-  right: 10px;
-  font-size: 0.75rem;
-  color: var(--muted);
-  display: none;
-}
-
-/* Content */
+/* ---------------- CONTENT ---------------- */
 .content {
   flex-grow: 1;
   background: var(--bg);
   display: flex;
   flex-direction: column;
+  transition: background 0.3s ease;
 }
 
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px 30px;
+  background: transparent;
+}
+
+/* ---------------- THEME TOGGLE ---------------- */
+.theme-toggle {
+  width: 60px;
+  height: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+body.light-mode .theme-toggle {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.theme-toggle .icon {
+  font-size: 16px;
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.theme-toggle .sun {
+  left: 8px;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+.theme-toggle .moon {
+  right: 8px;
+  opacity: 1;
+}
+
+body.light-mode .theme-toggle .sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+body.light-mode .theme-toggle .moon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  left: 3px;
+  transition: transform 0.3s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+
+body.light-mode .theme-toggle::after {
+  transform: translateX(30px);
+}
+
+/* ---------------- IFRAME ---------------- */
 iframe {
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 12px 0 0 12px;
   background: #000;
+  transition: filter 0.3s ease;
 }
 
-/* Toggle Button */
+/* ---------------- SIDEBAR BUTTON ---------------- */
 .toggle-btn {
   background: linear-gradient(180deg, var(--accent), #5b3ffd);
   color: white;
@@ -156,29 +237,22 @@ iframe {
   padding: 10px 14px;
   cursor: pointer;
   border-radius: 8px;
-  position: fixed; /* fixed position so it stays in one place */
+  position: fixed;
   top: 20px;
   left: 20px;
   z-index: 1000;
   font-size: 16px;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+body.light-mode .toggle-btn {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .toggle-btn:hover {
   background: linear-gradient(180deg, #9170ff, #6742ff);
 }
-
-.toggle-btn:active {
-  transform: scale(0.96);
-}
-
-/* Hide default canvas */
-canvas {
-  display: none;
-}
-
   </style>
 </head>
 <body>
@@ -189,16 +263,16 @@ canvas {
       <img src="images/support.png" alt="Logo" />
       <div class="logo-text">Helper</div>
     </div>
+
     <ul class="menu">
-      <li class="menu-item" onclick="loadPage('Projet/MSG tk support.html')">
+      <li class="menu-item" onclick="loadPage('MSG tk support.html', event)">
         <span style="font-size: 20px;">✉️</span><span>messages sms</span>
-        <span class="item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/Comma Separating Tool.html')">
+	   <li class="menu-item" onclick="loadPage('Comma Separating Tool.html')">
         <span style="font-size: 20px;">🔢</span><span>Comma Separating</span>
         <span class="item-height"></span>
       </li>
-      <li class="menu-item" onclick="loadPage('Projet/ptr1122.html')">
+      <li class="menu-item" onclick="loadPage('ptr1122.html')">
         <span style="font-size: 20px;">🧾</span><span>PTR Form</span>
         <span class="item-height"></span>
       </li>
@@ -218,40 +292,95 @@ canvas {
   </div>
 
   <div class="content">
+    <div class="top-bar">
+      <div id="themeToggle" class="theme-toggle">
+        <span class="icon sun">☀️</span>
+        <span class="icon moon">🌙</span>
+      </div>
+    </div>
     <iframe id="content-frame"
-            src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
-            style="border:0;"
-            frameborder="0" scrolling="no">
-    </iframe>
+      src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
+      frameborder="0"></iframe>
   </div>
 
-  <canvas id="heightCanvas" width="300" height="300"></canvas>
-
- <script>
-  function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('hidden');
+  <script>
+  // ---------------- THEME LOAD ----------------
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-mode');
+    document.documentElement.classList.add('light-mode');
   }
 
-  function loadPage(url) {
-    const iframe = document.getElementById('content-frame');
-    iframe.src = url;
+  // ---------------- TOGGLE THEME ----------------
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    document.body.classList.toggle('light-mode');
+    document.documentElement.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    applyThemeToIframe();
+  });
 
-    // Apply dark filter only for Google Calendar
-    if (url.includes("calendar.google.com")) {
-      iframe.style.filter = "invert(1) hue-rotate(180deg)";
+  // ---------------- APPLY THEME TO IFRAME ----------------
+  function applyThemeToIframe() {
+    const iframe = document.getElementById('content-frame');
+    if (!iframe) return;
+
+    const isLight = document.body.classList.contains('light-mode');
+
+    // Apply theme to same-origin iframes (like MSG tk support.html)
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      if (iframeDoc && iframeDoc.documentElement) {
+        if (isLight) {
+          iframeDoc.documentElement.classList.add('light-mode');
+        } else {
+          iframeDoc.documentElement.classList.remove('light-mode');
+        }
+      }
+    } catch (err) {
+      console.log("Cross-origin iframe (Google Calendar) - cannot modify directly");
+    }
+
+    // Google Calendar dark mode (invert filter)
+    if (iframe.src.includes("calendar.google.com")) {
+      iframe.style.filter = isLight ? "none" : "invert(1) hue-rotate(180deg)";
     } else {
       iframe.style.filter = "none";
     }
   }
 
-  // Initial setup for default page (calendar)
+  // ---------------- SIDEBAR TOGGLE ----------------
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('hidden');
+  }
+
+  // ---------------- PAGE LOAD ----------------
+  function loadPage(url, event) {
+    const iframe = document.getElementById('content-frame');
+    iframe.src = url;
+
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => item.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    iframe.onload = () => {
+      applyThemeToIframe();
+      // Tell iframe that theme changed
+      const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+      iframe.contentWindow.postMessage({ theme }, '*');
+    };
+  }
+
+  // ---------------- INITIAL LOAD ----------------
   window.onload = () => {
     const iframe = document.getElementById('content-frame');
-    if (iframe.src.includes("calendar.google.com")) {
-      iframe.style.filter = "invert(1) hue-rotate(180deg)";
-    }
+    iframe.onload = () => {
+      applyThemeToIframe();
+      const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+      iframe.contentWindow.postMessage({ theme }, '*');
+    };
   };
 </script>
+
 </body>
 </html>
