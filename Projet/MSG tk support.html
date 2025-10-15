@@ -6,13 +6,28 @@
   <title>Support Ticket Helper</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
-    :root {
+ :root {
       --bg: #0f1724;
       --card: #0b1220;
       --muted: #9aa6bf;
       --accent: #7c5cff;
       --accent-dark: #5b3ffd;
       --hover: #275BF5;
+      --text: #e6eef8;
+      --border: rgba(255,255,255,0.03);
+      --shadow: rgba(2,6,23,0.6);
+    }
+
+    :root.light-mode {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #7c5cff;
+      --accent-dark: #6846ff;
+      --hover: #8e6eff;
+      --text: #1f2937;
+      --border: rgba(0,0,0,0.08);
+      --shadow: rgba(0,0,0,0.1);
     }
 
     * {
@@ -24,24 +39,26 @@
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #021026 0%, #071229 100%);
-      color: #e6eef8;
+      background: var(--bg);
+      color: var(--text);
       -webkit-font-smoothing: antialiased;
       padding: 36px;
       display: flex;
       align-items: flex-start;
       justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .content2 {
       width: 100%;
       max-width: 980px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      background: var(--card);
       border-radius: 14px;
       padding: 20px;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-      border: 1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 8px 30px var(--shadow);
+      border: 1px solid var(--border);
       position: relative;
+      transition: background 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
     }
 
     ul[role="toolbar"] {
@@ -72,7 +89,6 @@
       opacity: 0.9;
     }
 
-    /* dropdown box clean and attached */
     .dropdown-content {
       display: none;
       position: absolute;
@@ -85,7 +101,7 @@
       z-index: 10;
       border: none;
       padding: 0;
-      margin-top: 0; /* <-- no space between button and box */
+      margin-top: 0;
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
 
@@ -115,15 +131,16 @@
     textarea {
       width: 100%;
       min-height: 120px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.03);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
       border-radius: 10px;
       padding: 14px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
       font-size: 13px;
-      color: #dff0ff;
+      color: var(--text);
       resize: vertical;
       margin-top: 14px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     #outputTextarea {
@@ -284,6 +301,96 @@
       outputTextarea.select();
       document.execCommand('copy');
     }
+	
+	 // Generate templates
+  function selectOption(option) {
+    const pingInput = document.getElementById('pingInput').value;
+    const outputTextarea = document.getElementById('outputTextarea');
+    const templates = {
+      down: `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
+      stillDown: `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`,
+      connect: `Hello,\nWe can't connect to this server, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
+      ssh: `Hello,\nWe can't access this server via ssh, please fix it asap.\n\n${pingInput}\n\nThanks.`,
+      password: `Hello,\nPlease provide the correct root password.\n\n${pingInput}\n\nThanks.`,
+      ipv6: `Hello,\nPlease we need you to add ipv6 /64 to This server.\n\n${pingInput}\n\nThanks.`
+    };
+    outputTextarea.value = templates[option] || "";
+  }
+
+  function clearFields() {
+    document.getElementById("pingInput").value = "";
+    document.getElementById("outputTextarea").value = "";
+  }
+
+  function copyToClipboard() {
+    const outputTextarea = document.getElementById('outputTextarea');
+    outputTextarea.select();
+    document.execCommand('copy');
+  }
+
+  // Function to apply theme
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light-mode');
+    } else {
+      document.documentElement.classList.remove('light-mode');
+    }
+  }
+
+  // Check parent window theme immediately on load
+  function checkParentTheme() {
+    try {
+      // Try to access parent's theme
+      if (window.parent && window.parent !== window) {
+        const parentHasLightMode = window.parent.document.body.classList.contains('light-mode');
+        applyTheme(parentHasLightMode ? 'light' : 'dark');
+        return true;
+      }
+    } catch (e) {
+      // If cross-origin, fall back to localStorage
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      applyTheme(savedTheme);
+      return false;
+    }
+  }
+
+  // Apply theme immediately when page loads
+  checkParentTheme();
+
+  // Listen for theme messages from parent
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.theme) {
+      applyTheme(event.data.theme);
+      localStorage.setItem('theme', event.data.theme);
+    }
+  });
+
+  // Continuous polling to always stay in sync with parent
+  setInterval(() => {
+    checkParentTheme();
+  }, 200);
+
+  // Re-check theme when window regains focus (user comes back to tab)
+  window.addEventListener('focus', () => {
+    checkParentTheme();
+  });
+
+  // Re-check theme when page becomes visible again
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      checkParentTheme();
+    }
+  });
+
+  // Re-check when mouse enters the iframe
+  window.addEventListener('mouseenter', () => {
+    checkParentTheme();
+  });
+
+  // Re-check on any user interaction
+  window.addEventListener('click', () => {
+    checkParentTheme();
+  });
   </script>
 </body>
 </html>
