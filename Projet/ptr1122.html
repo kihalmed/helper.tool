@@ -1,262 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IP Domain Converter</title>
-<style>
-:root {
-  --bg: #0f1724;
-  --card: #0b1220;
-  --muted: #9aa6bf;
-  --accent: #7c5cff;
-  --glass: rgba(255,255,255,0.04);
-  --danger: #ef4444;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IP Domain Converter</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa6bf;
+      --accent: #7c5cff;
+      --accent-dark: #5b3ffd;
+      --glass: rgba(255,255,255,0.04);
+      --success: #16a34a;
+      --danger: #ef4444;
+      --highlight: #facc15;
+      --text: #e6eef8;
+      --border: rgba(255,255,255,0.03);
+      --shadow: rgba(2,6,23,0.6);
+    }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+    :root.light-mode {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #7c5cff;
+      --accent-dark: #6846ff;
+      --glass: rgba(0,0,0,0.04);
+      --success: #16a34a;
+      --danger: #ef4444;
+      --highlight: #d97706;
+      --text: #1f2937;
+      --border: rgba(0,0,0,0.08);
+      --shadow: rgba(0,0,0,0.1);
+    }
 
-body {
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: linear-gradient(180deg, #021026 0%, #071229 100%);
-  color: #e6eef8;
-  -webkit-font-smoothing: antialiased;
-  padding: 36px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
 
-.wrap {
-  max-width: 880px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding: 36px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
 
-.card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-  border: 1px solid rgba(255,255,255,0.03);
-}
+    .wrap {
+      max-width: 880px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-h2 {
-  font-size: 18px;
-  margin: 0 0 12px 0;
-  color: #fff;
-}
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 30px var(--shadow);
+      border: 1px solid var(--border);
+      transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+    }
 
-textarea {
-  width: 100%;
-  min-height: 150px;
-  resize: vertical;
-  border-radius: 10px;
-  padding: 14px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-  font-size: 13px;
-  color: #dff0ff;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.05);
-  margin-bottom: 12px;
-}
+    h1 {
+      font-size: 20px;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
 
-button {
-  background: linear-gradient(180deg, var(--accent), #5b3ffd);
-  border: none;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  margin: 4px;
-  transition: background .2s ease, transform .1s ease;
-}
+    p.lead {
+      color: var(--muted);
+      margin: 6px 0 16px;
+      font-size: 14px;
+    }
 
-button:hover {
-  background: linear-gradient(180deg, #9170ff, #6742ff);
-}
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size: 13px;
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+    }
 
-button:active {
-  transform: scale(0.97);
-}
+    textarea[readonly] {
+      opacity: .85;
+    }
 
-button.ghost {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.06);
-  color: var(--muted);
-}
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
 
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-</style>
+    button.btn {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      border: 0;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+    }
+
+    button.btn:hover { opacity: .9; }
+    button.btn:active { transform: scale(0.97); }
+
+    button.btn.warn { background: linear-gradient(180deg, #f97316, #ef4444); }
+    button.btn.ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--highlight);
+    }
+
+    .footer {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h2>Enter Domain-IP Pairs</h2>
-      <textarea id="inputTextarea" placeholder="Enter Domain-IP pairs (one per line)&#10;Example: example.com,192.168.1.1"></textarea>
+      <h1>IP Domain Converter</h1>
+      <p class="lead">Enter your Domain and IP pairs below. This tool generates formatted PTR records and related DNS entries.</p>
+
+      <label for="inputTextarea">Enter Domain-IP Pairs:</label>
+      <textarea id="inputTextarea" placeholder="example.com,192.168.1.1"></textarea>
 
       <div class="controls">
-        <button onclick="convert()">.in-addr.arpa. IN PTR</button>
-        <button onclick="ptr()">D.C IN PTR</button>
-        <button onclick="convertWhenFourParts()">D.C.B.A IN PTR</button>
-        <button onclick="convertToSimplePTR()">86400 IN PTR</button>
+        <button class="btn" onclick="convert()">.in-addr.arpa. IN PTR</button>
+        <button class="btn" onclick="ptr()">D.C IN PTR</button>
+        <button class="btn" onclick="convertWhenFourParts()">D.C.B.A IN PTR</button>
+        <button class="btn" onclick="convertToSimplePTR()">86400 IN PTR</button>
+        <button class="btn ghost" onclick="clearFields()">Clear</button>
       </div>
     </div>
 
     <div class="card">
-      <h2>Converted Format</h2>
-      <textarea id="outputTextarea" placeholder="Converted format will appear here" readonly></textarea>
+      <label for="outputTextarea">Converted Format:</label>
+      <textarea id="outputTextarea" readonly placeholder="Converted format will appear here"></textarea>
 
       <div class="controls">
-        <button onclick="copyToClipboard()">Copy to Clipboard</button>
-        <button class="ghost" onclick="clearFields()">Clear Fields</button>
+        <button class="btn warn" onclick="copyToClipboard()">Copy to Clipboard</button>
       </div>
+
+      <div class="footer">All processing is client-side. No data is sent anywhere.</div>
     </div>
   </div>
 
-<script>
+  <script>
     function convert() {
-        const inputTextArea = document.getElementById('inputTextarea');
-        const outputTextArea = document.getElementById('outputTextarea');
-
-        const inputText = inputTextArea.value.trim();
-        const lines = inputText.split('\n');
-
-        let outputText = '';
-        lines.forEach((line) => {
-            const parts = line.split(',');
-            if (parts.length === 2) {
-                const domain = parts[0].trim();
-                const ip = parts[1].trim();
-
-                if (isValidIP(ip)) {
-                    outputText += `${ip.split('.').reverse().join('.')}.in-addr.arpa. IN PTR ${domain}.\n`;
-                } else {
-                    outputText += `Invalid IP format: ${ip}\n`;
-                }
-            } else {
-                outputText += `Invalid format: ${line}\n`;
-            }
-        });
-
-        outputTextArea.value = outputText.trim();
+      processLines((domain, ip) => `${ip.split('.').reverse().join('.')}.in-addr.arpa. IN PTR ${domain}.`);
     }
 
     function ptr() {
-        const inputTextArea = document.getElementById('inputTextarea');
-        const outputTextArea = document.getElementById('outputTextarea');
-
-        const inputText = inputTextArea.value.trim();
-        const lines = inputText.split('\n');
-
-        let outputText = '';
-        lines.forEach((line) => {
-            const parts = line.split(',');
-            if (parts.length === 2) {
-                const domain = parts[0].trim();
-                const ipParts = parts[1].trim().split('.');
-
-                if (ipParts.length === 4 && isValidIP(parts[1].trim())) {
-                    const ip = `${ipParts[3]}.${ipParts[2]}`;
-                    outputText += `${ip} IN PTR ${domain}.\n`;
-                } else {
-                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
-                }
-            } else {
-                outputText += `Invalid format: ${line}\n`;
-            }
-        });
-
-        outputTextArea.value = outputText.trim();
+      processLines((domain, ip) => {
+        const parts = ip.split('.');
+        return `${parts[3]}.${parts[2]} IN PTR ${domain}.`;
+      });
     }
 
     function convertWhenFourParts() {
-        const inputTextArea = document.getElementById('inputTextarea');
-        const outputTextArea = document.getElementById('outputTextarea');
-
-        const inputText = inputTextArea.value.trim();
-        const lines = inputText.split('\n');
-
-        let outputText = '';
-        lines.forEach((line) => {
-            const parts = line.split(',');
-            if (parts.length === 2) {
-                const domain = parts[0].trim();
-                const ipParts = parts[1].trim().split('.');
-
-                if (ipParts.length === 4) {
-                    const ip = `${ipParts[3]}.${ipParts[2]}.${ipParts[1]}.${ipParts[0]}`;
-                    outputText += `${ip} IN PTR ${domain}.\n`;
-                } else {
-                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
-                }
-            } else {
-                outputText += `Invalid format: ${line}\n`;
-            }
-        });
-
-        outputTextArea.value = outputText.trim();
+      processLines((domain, ip) => {
+        const parts = ip.split('.');
+        return `${parts[3]}.${parts[2]}.${parts[1]}.${parts[0]} IN PTR ${domain}.`;
+      });
     }
 
     function convertToSimplePTR() {
-        const inputTextArea = document.getElementById('inputTextarea');
-        const outputTextArea = document.getElementById('outputTextarea');
+      processLines((domain, ip) => {
+        const last = ip.split('.').pop();
+        return `${last} 86400 IN PTR ${domain}.`;
+      });
+    }
 
-        const inputText = inputTextArea.value.trim();
-        const lines = inputText.split('\n');
+    function processLines(formatFn) {
+      const input = document.getElementById('inputTextarea').value.trim();
+      const outputEl = document.getElementById('outputTextarea');
+      const lines = input.split('\n');
+      let output = '';
 
-        let outputText = '';
-        lines.forEach((line) => {
-            const parts = line.split(',');
-            if (parts.length === 2) {
-                const domain = parts[0].trim();
-                const ipParts = parts[1].trim().split('.');
-                const lastSegment = ipParts[ipParts.length - 1];
+      lines.forEach(line => {
+        const [domain, ip] = line.split(',').map(x => x?.trim());
+        if (!domain || !ip) {
+          output += `Invalid format: ${line}\n`;
+        } else if (!isValidIP(ip)) {
+          output += `Invalid IP format: ${ip}\n`;
+        } else {
+          output += formatFn(domain, ip) + '\n';
+        }
+      });
 
-                if (isValidIP(parts[1].trim())) {
-                    outputText += `${lastSegment} 86400 IN PTR ${domain}.\n`;
-                } else {
-                    outputText += `Invalid IP format: ${parts[1].trim()}\n`;
-                }
-            } else {
-                outputText += `Invalid format: ${line}\n`;
-            }
-        });
-
-        outputTextArea.value = outputText.trim();
+      outputEl.value = output.trim();
     }
 
     function copyToClipboard() {
-        const outputTextArea = document.getElementById('outputTextarea');
-        outputTextArea.select();
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            alert('Error copying to clipboard.');
-        }
+      const output = document.getElementById('outputTextarea');
+      output.select();
+      document.execCommand('copy');
     }
 
     function clearFields() {
-        document.getElementById('inputTextarea').value = '';
-        document.getElementById('outputTextarea').value = '';
+      document.getElementById('inputTextarea').value = '';
+      document.getElementById('outputTextarea').value = '';
     }
 
     function isValidIP(ip) {
-        const regex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
-        return regex.test(ip);
+      const regex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/;
+      return regex.test(ip);
     }
-</script>
+
+    // === Theme sync with parent (same as index) ===
+    function applyTheme(theme) {
+      if (theme === 'light') document.documentElement.classList.add('light-mode');
+      else document.documentElement.classList.remove('light-mode');
+    }
+
+    function checkParentTheme() {
+      try {
+        if (window.parent && window.parent !== window) {
+          const isLight = window.parent.document.body.classList.contains('light-mode');
+          applyTheme(isLight ? 'light' : 'dark');
+          return true;
+        }
+      } catch {
+        const saved = localStorage.getItem('theme') || 'dark';
+        applyTheme(saved);
+      }
+    }
+
+    checkParentTheme();
+
+    window.addEventListener('message', (event) => {
+      if (event.data?.theme) {
+        applyTheme(event.data.theme);
+        localStorage.setItem('theme', event.data.theme);
+      }
+    });
+
+    setInterval(checkParentTheme, 200);
+    window.addEventListener('focus', checkParentTheme);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkParentTheme(); });
+    window.addEventListener('mouseenter', checkParentTheme);
+    window.addEventListener('click', checkParentTheme);
+  </script>
 </body>
 </html>
