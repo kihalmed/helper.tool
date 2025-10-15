@@ -10,30 +10,44 @@
       --card: #0b1220;
       --muted: #9aa6bf;
       --accent: #7c5cff;
-      --glass: rgba(255, 255, 255, 0.04);
+      --accent-dark: #5b3ffd;
+      --glass: rgba(255,255,255,0.04);
       --success: #16a34a;
       --danger: #ef4444;
       --highlight: #facc15;
+      --text: #e6eef8;
+      --border: rgba(255,255,255,0.05);
+      --shadow: rgba(2,6,23,0.6);
     }
 
-    * {
-      box-sizing: border-box;
+    :root.light-mode {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #7c5cff;
+      --accent-dark: #6846ff;
+      --glass: rgba(0,0,0,0.04);
+      --danger: #ef4444;
+      --success: #16a34a;
+      --highlight: #d97706;
+      --text: #1f2937;
+      --border: rgba(0,0,0,0.08);
+      --shadow: rgba(0,0,0,0.1);
     }
 
-    html, body {
-      height: 100%;
-    }
-
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #021026 0%, #071229 100%);
-      color: #e6eef8;
+      background: var(--bg);
+      color: var(--text);
       -webkit-font-smoothing: antialiased;
       padding: 36px;
       display: flex;
       align-items: flex-start;
       justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .wrap {
@@ -45,45 +59,29 @@
     }
 
     @media (max-width: 980px) {
-      .wrap {
-        grid-template-columns: 1fr;
-      }
+      .wrap { grid-template-columns: 1fr; }
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      background: var(--card);
       border-radius: 14px;
       padding: 18px;
-      box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      box-shadow: 0 8px 30px var(--shadow);
+      border: 1px solid var(--border);
+      transition: background 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
     }
 
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    h1 { font-size: 18px; margin: 0; }
+    p.lead { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
 
-    h1 {
-      font-size: 18px;
-      margin: 0;
-    }
-
-    p.lead {
-      color: var(--muted);
-      margin: 6px 0 0;
-      font-size: 13px;
-    }
-
-    /* === TEXTAREA WITH LINE NUMBERS === */
     .textarea-wrapper {
       display: flex;
-      height: 480px; /* ~30 lines */
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      height: 480px;
+      border: 1px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
+      background: var(--glass);
     }
 
     .line-numbers {
@@ -94,24 +92,14 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
       font-size: 13px;
       user-select: none;
-      background: rgba(255, 255, 255, 0.02);
-      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.02);
+      border-right: 1px solid rgba(255,255,255,0.05);
       min-width: 40px;
       overflow-y: auto;
-
-	  
     }
 
-    .line-numbers span {
-      display: block;
-      counter-increment: line;
-      line-height: 1.6em;
-    }
-
-    .line-numbers span::before {
-      content: counter(line);
-      display: block;
-    }
+    .line-numbers span { display: block; counter-increment: line; line-height: 1.6em; }
+    .line-numbers span::before { content: counter(line); display: block; }
 
     textarea.input {
       flex: 1;
@@ -120,7 +108,7 @@
       border: none;
       outline: none;
       background: transparent;
-      color: #dff0ff;
+      color: var(--text);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
       font-size: 13px;
       line-height: 1.6em;
@@ -128,110 +116,34 @@
       height: 100%;
     }
 
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
+    .controls { display: flex; gap: 8px; margin-top: 12px; }
     button.btn {
-      background: linear-gradient(180deg, var(--accent), #5b3ffd);
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
       border: 0;
       color: white;
       padding: 8px 12px;
       border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
+      transition: opacity 0.2s ease;
     }
-
     button.btn.ghost {
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
       color: var(--muted);
       font-weight: 600;
     }
+    button.btn:hover { opacity: .9; }
 
-    .right {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .output-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 520px;
-      overflow: auto;
-      padding-right: 6px;
-    }
-
-    .line {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      background: var(--glass);
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.02);
-    }
-
-    .cmd {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size: 13px;
-      color: #e6f7ff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cmd pre {
-      margin: 0;
-      font-family: inherit;
-    }
-
-    .line .meta {
-      display: flex;
-      gap: 8px;
-      margin-left: auto;
-    }
-
-    .copy-btn {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 6px 9px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--muted);
-      transition: all .3s ease;
-    }
-
-    .copy-btn.highlighted {
-      background: var(--highlight);
-      color: #000;
-    }
-
-    .copy-btn.rotated {
-      transform: rotate(360deg);
-    }
-
-    .help {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .status {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .footer {
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--muted);
-    }
+    .right { display: flex; flex-direction: column; gap: 12px; }
+    .output-list { display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow: auto; padding-right: 6px; }
+    .line { display: flex; gap: 8px; align-items: center; background: var(--glass); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.02); }
+    .cmd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .line .meta { display: flex; gap: 8px; margin-left: auto; }
+    .copy-btn { background: transparent; border: 1px solid var(--border); padding: 6px 9px; border-radius: 8px; cursor: pointer; color: var(--muted); transition: all .3s ease; }
+    .copy-btn.highlighted { background: var(--highlight); color: #000; }
+    .copy-btn.rotated { transform: rotate(360deg); }
+    .help, .status, .footer { font-size: 13px; color: var(--muted); margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -268,7 +180,7 @@
 
       <div class="card" style="padding:12px">
         <strong>Notes</strong>
-        <ul style="color:var(--muted); margin-top:8px">
+        <ul style="margin-top:8px">
           <li>Passwords containing single quotes will use a double-quoted wrapper automatically.</li>
           <li>Blank lines are ignored.</li>
           <li>This is client-side only — nothing is sent to a server.</li>
@@ -278,6 +190,44 @@
   </div>
 
   <script>
+    // Dark/Light mode theme sync
+    document.addEventListener("DOMContentLoaded", function () {
+      function applyTheme(theme) {
+        if (theme === 'light') document.documentElement.classList.add('light-mode');
+        else document.documentElement.classList.remove('light-mode');
+      }
+
+      function checkParentTheme() {
+        try {
+          if (window.parent && window.parent !== window) {
+            const parentHasLightMode = window.parent.document.body.classList.contains('light-mode');
+            applyTheme(parentHasLightMode ? 'light' : 'dark');
+            return true;
+          }
+        } catch(e) {
+          const savedTheme = localStorage.getItem('theme') || 'dark';
+          applyTheme(savedTheme);
+          return false;
+        }
+      }
+
+      checkParentTheme();
+
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.theme) {
+          applyTheme(event.data.theme);
+          localStorage.setItem('theme', event.data.theme);
+        }
+      });
+
+      setInterval(() => { checkParentTheme(); }, 200);
+      window.addEventListener('focus', () => checkParentTheme());
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) checkParentTheme(); });
+      window.addEventListener('mouseenter', () => checkParentTheme());
+      window.addEventListener('click', () => checkParentTheme());
+    });
+
+    // ================= Original functionality =================
     const inputEl = document.getElementById('input');
     const outList = document.getElementById('outputList');
     const statusEl = document.getElementById('status');
@@ -338,17 +288,11 @@
           try {
             await navigator.clipboard.writeText(r.cmd);
             copyBtn.textContent = 'Copied';
-            if (lastClicked && lastClicked !== copyBtn) {
-              lastClicked.classList.remove('highlighted', 'rotated');
-            }
-            if (lastClicked === copyBtn) {
-              copyBtn.classList.add('rotated');
-            } else {
-              copyBtn.classList.add('highlighted');
-            }
+            if (lastClicked && lastClicked !== copyBtn) lastClicked.classList.remove('highlighted','rotated');
+            if (lastClicked === copyBtn) copyBtn.classList.add('rotated'); else copyBtn.classList.add('highlighted');
             lastClicked = copyBtn;
             setTimeout(() => copyBtn.textContent = serverName, 1200);
-          } catch (e) {
+          } catch(e) {
             copyBtn.textContent = 'Failed';
             setTimeout(() => copyBtn.textContent = serverName, 1200);
           }
@@ -361,13 +305,11 @@
 
     function updateLineNumbers() {
       const lines = inputEl.value.split(/\r?\n/).length;
-      lineNumbers.innerHTML = Array.from({ length: lines }, () => "<span></span>").join("");
+      lineNumbers.innerHTML = Array.from({length: lines}, () => "<span></span>").join("");
     }
 
     inputEl.addEventListener("input", updateLineNumbers);
-    inputEl.addEventListener("scroll", () => {
-      lineNumbers.scrollTop = inputEl.scrollTop;
-    });
+    inputEl.addEventListener("scroll", () => { lineNumbers.scrollTop = inputEl.scrollTop; });
     updateLineNumbers();
 
     document.getElementById('generate').addEventListener('click', () => {
@@ -375,9 +317,7 @@
       renderResults(results);
       if (errors.length > 0) {
         statusEl.innerHTML = `<span style=color:var(--danger)>Skipped ${errors.length} line(s):</span> ` + errors.map(e => `(line ${e.lineNumber})`).join(' ');
-      } else {
-        statusEl.textContent = `OK — ${results.length} command(s) generated.`;
-      }
+      } else statusEl.textContent = `OK — ${results.length} command(s) generated.`;
     });
 
     document.getElementById('clear').addEventListener('click', () => {
@@ -394,6 +334,3 @@
   </script>
 </body>
 </html>
-
-
-
