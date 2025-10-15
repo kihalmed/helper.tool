@@ -304,21 +304,17 @@ body.light-mode .toggle-btn {
   </div>
 
   <script>
-  // ---------------- THEME LOAD ----------------
+  // ---------------- THEME LOAD (REMEMBER LAST STATE) ----------------
   const savedTheme = localStorage.getItem('theme') || 'dark';
-  if (savedTheme === 'light') {
+  const isLight = savedTheme === 'light';
+
+  if (isLight) {
     document.body.classList.add('light-mode');
     document.documentElement.classList.add('light-mode');
+  } else {
+    document.body.classList.remove('light-mode');
+    document.documentElement.classList.remove('light-mode');
   }
-
-  // ---------------- TOGGLE THEME ----------------
-  document.getElementById('themeToggle').addEventListener('click', function() {
-    document.body.classList.toggle('light-mode');
-    document.documentElement.classList.toggle('light-mode');
-    const isLight = document.body.classList.contains('light-mode');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    applyThemeToIframe();
-  });
 
   // ---------------- APPLY THEME TO IFRAME ----------------
   function applyThemeToIframe() {
@@ -327,15 +323,11 @@ body.light-mode .toggle-btn {
 
     const isLight = document.body.classList.contains('light-mode');
 
-    // Apply theme to same-origin iframes (like MSG tk support.html)
+    // Apply theme to same-origin iframes (like internal project pages)
     try {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       if (iframeDoc && iframeDoc.documentElement) {
-        if (isLight) {
-          iframeDoc.documentElement.classList.add('light-mode');
-        } else {
-          iframeDoc.documentElement.classList.remove('light-mode');
-        }
+        iframeDoc.documentElement.classList.toggle('light-mode', isLight);
       }
     } catch (err) {
       console.log("Cross-origin iframe (Google Calendar) - cannot modify directly");
@@ -348,6 +340,14 @@ body.light-mode .toggle-btn {
       iframe.style.filter = "none";
     }
   }
+
+  // ---------------- THEME TOGGLE ----------------
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    const isLight = document.body.classList.toggle('light-mode');
+    document.documentElement.classList.toggle('light-mode', isLight);
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    applyThemeToIframe();
+  });
 
   // ---------------- SIDEBAR TOGGLE ----------------
   function toggleSidebar() {
@@ -365,23 +365,24 @@ body.light-mode .toggle-btn {
 
     iframe.onload = () => {
       applyThemeToIframe();
-      // Tell iframe that theme changed
       const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
       iframe.contentWindow.postMessage({ theme }, '*');
     };
   }
 
   // ---------------- INITIAL LOAD ----------------
-  window.onload = () => {
+  window.addEventListener('load', () => {
+    applyThemeToIframe(); // ✅ make sure iframe matches saved theme
     const iframe = document.getElementById('content-frame');
     iframe.onload = () => {
       applyThemeToIframe();
       const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
       iframe.contentWindow.postMessage({ theme }, '*');
     };
-  };
+  });
 </script>
 
 </body>
 </html>
+
 
