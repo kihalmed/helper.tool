@@ -306,13 +306,26 @@
   function selectOption(option) {
     const pingInput = document.getElementById('pingInput').value;
     const outputTextarea = document.getElementById('outputTextarea');
-    const templates = {
-      down: `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
-      stillDown: `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`,
-      connect: `Hello,\nWe can't connect to this server, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
-      ssh: `Hello,\nWe can't access this server via ssh, please fix it asap.\n\n${pingInput}\n\nThanks.`,
-      password: `Hello,\nPlease provide the correct root password.\n\n${pingInput}\n\nThanks.`,
-      ipv6: `Hello,\nPlease we need you to add ipv6 /64 to This server.\n\n${pingInput}\n\nThanks.`
+      const templates = {
+        down: `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
+        stillDown: `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`,
+        connect: `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`,
+        ssh: `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`,
+        password: `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`,
+        ipv6: `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`,
+        unstable: `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`,
+        S1: `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance.`,
+        S2: `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`,
+        S3: `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`,
+        ips: `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
+        ips2: `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
+        allow1: `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`,
+        allow2: `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`,
+        SBL: `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`,
+        PBL: `Hi, \nplease we need you to delist the following IPs from PBL\n-----\n\n${pingInput}\n\nThanks.`,
+        Speed1: `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`,
+        Speed2: `Hi, \nStill we have the same issue, we need you to upgrade the Download/upload speed of this server more, it's very slow\n-----\n\n${pingInput}\n\nThanks.`,
+        Speed3: `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`
     };
     outputTextarea.value = templates[option] || "";
   }
@@ -394,3 +407,4 @@
   </script>
 </body>
 </html>
+
