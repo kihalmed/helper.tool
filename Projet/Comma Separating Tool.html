@@ -5,47 +5,147 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Comma Separating Tool</title>
   <style>
-    :root{
-      --bg:#0f1724; --card:#0b1220; --muted:#9aa6bf; --accent:#7c5cff; --glass: rgba(255,255,255,0.04);
-      --success:#16a34a; --danger:#ef4444; --highlight:#facc15;
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa6bf;
+      --accent: #7c5cff;
+      --accent-dark: #5b3ffd;
+      --glass: rgba(255,255,255,0.04);
+      --success: #16a34a;
+      --danger: #ef4444;
+      --highlight: #facc15;
+      --text: #e6eef8;
+      --border: rgba(255,255,255,0.03);
+      --shadow: rgba(2,6,23,0.6);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:linear-gradient(180deg, #021026 0%, #071229 100%); color:#e6eef8; -webkit-font-smoothing:antialiased;
-      padding:36px; display:flex; align-items:flex-start; justify-content:center;
-    }
-    .wrap{max-width:720px; width:100%;}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-          border-radius:14px; padding:20px;
-          box-shadow:0 8px 30px rgba(2,6,23,0.6);
-          border:1px solid rgba(255,255,255,0.03)}
-    h1{font-size:20px;margin:0 0 12px}
-    p.lead{color:var(--muted); margin:6px 0 16px; font-size:14px}
 
-    label{display:block; margin:12px 0 6px; font-size:14px; font-weight:600; color:var(--highlight);}
-    textarea{
-      width:100%; min-height:120px; resize:vertical;
-      border-radius:10px; padding:14px;
-      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size:13px; color:#dff0ff;
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-      border:1px solid rgba(255,255,255,0.03)
+    :root.light-mode {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #7c5cff;
+      --accent-dark: #6846ff;
+      --glass: rgba(0,0,0,0.04);
+      --success: #16a34a;
+      --danger: #ef4444;
+      --highlight: #d97706;
+      --text: #1f2937;
+      --border: rgba(0,0,0,0.08);
+      --shadow: rgba(0,0,0,0.1);
     }
-    textarea[readonly]{opacity:.85}
 
-    .controls{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
-    button.btn{
-      background:linear-gradient(180deg,var(--accent),#5b3ffd);
-      border:0; color:white; padding:8px 14px;
-      border-radius:10px; cursor:pointer; font-weight:600
+    * {
+      box-sizing: border-box;
     }
-    button.btn.warn{background:linear-gradient(180deg,#f97316,#ef4444)}
-    button.btn.ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
-    button.btn:hover{opacity:.9}
 
-    .footer{margin-top:12px; font-size:13px; color:var(--muted); text-align:center}
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding: 36px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .wrap {
+      max-width: 720px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 30px var(--shadow);
+      border: 1px solid var(--border);
+      transition: background 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
+
+    p.lead {
+      color: var(--muted);
+      margin: 6px 0 16px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--highlight);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size: 13px;
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+    }
+
+    textarea[readonly] {
+      opacity: .85;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    button.btn {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      border: 0;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    button.btn.warn {
+      background: linear-gradient(180deg, #f97316, #ef4444);
+    }
+
+    button.btn.ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    button.btn:hover {
+      opacity: .9;
+    }
+
+    .footer {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -80,7 +180,10 @@
 
       document.getElementById("generate-button").addEventListener("click", generateCommaSeparated);
       document.getElementById("copy-button").addEventListener("click", copyToClipboard);
-      document.getElementById("clear").addEventListener("click", ()=>{inputEl.value="";outputEl.value="";});
+      document.getElementById("clear").addEventListener("click", () => {
+        inputEl.value = "";
+        outputEl.value = "";
+      });
 
       function generateCommaSeparated() {
         const ipLines = inputEl.value.split("\n");
@@ -98,6 +201,72 @@
         outputEl.select();
         document.execCommand("copy");
       }
+
+      // ========== THEME SYNC (Same as MSG tk support.html) ==========
+      
+      // Function to apply theme
+      function applyTheme(theme) {
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-mode');
+        } else {
+          document.documentElement.classList.remove('light-mode');
+        }
+      }
+
+      // Check parent window theme immediately on load
+      function checkParentTheme() {
+        try {
+          // Try to access parent's theme
+          if (window.parent && window.parent !== window) {
+            const parentHasLightMode = window.parent.document.body.classList.contains('light-mode');
+            applyTheme(parentHasLightMode ? 'light' : 'dark');
+            return true;
+          }
+        } catch (e) {
+          // If cross-origin, fall back to localStorage
+          const savedTheme = localStorage.getItem('theme') || 'dark';
+          applyTheme(savedTheme);
+          return false;
+        }
+      }
+
+      // Apply theme immediately when page loads
+      checkParentTheme();
+
+      // Listen for theme messages from parent
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.theme) {
+          applyTheme(event.data.theme);
+          localStorage.setItem('theme', event.data.theme);
+        }
+      });
+
+      // Continuous polling to always stay in sync with parent
+      setInterval(() => {
+        checkParentTheme();
+      }, 200);
+
+      // Re-check theme when window regains focus (user comes back to tab)
+      window.addEventListener('focus', () => {
+        checkParentTheme();
+      });
+
+      // Re-check theme when page becomes visible again
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          checkParentTheme();
+        }
+      });
+
+      // Re-check when mouse enters the iframe
+      window.addEventListener('mouseenter', () => {
+        checkParentTheme();
+      });
+
+      // Re-check on any user interaction
+      window.addEventListener('click', () => {
+        checkParentTheme();
+      });
     });
   </script>
 </body>
