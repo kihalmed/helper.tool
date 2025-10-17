@@ -1,9 +1,3 @@
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,8 +21,7 @@
 --glass: rgba(0,0,0,0.04);
 }
 /* ---------------- GLOBAL RESET ---------------- */
-
-{
+* {
 margin: 0;
 padding: 0;
 box-sizing: border-box;
@@ -983,14 +976,20 @@ margin-left: 10px;
       document.getElementById('authOverlay').classList.add('hidden');
       document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.username}!`;
       
-      // Update menu items based on role
+      // Update menu and content based on user role
       updateMenuAccess();
       
       if (currentUser.role === 'root') {
+        // Root user: show admin panel by default and allow access to all tools
         document.getElementById('content-frame').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
         loadPendingUsers();
         loadAllUsers();
+      } else {
+        // Regular user: show only dashboard (iframe) and hide admin panel
+        document.getElementById('content-frame').classList.remove('hidden');
+        document.getElementById('adminPanel').classList.add('hidden');
+        loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com');
       }
 
       // Start session timer
@@ -1005,6 +1004,7 @@ margin-left: 10px;
         const isRestricted = item.getAttribute('data-restricted') === 'true';
         
         if (isRestricted && currentUser.role !== 'root') {
+          // Lock restricted items for non-root users
           item.classList.add('locked');
           item.onclick = function(e) {
             e.stopPropagation();
@@ -1012,6 +1012,7 @@ margin-left: 10px;
             setTimeout(clearAlerts, 3000);
           };
         } else {
+          // Unlock all items for root user
           item.classList.remove('locked');
         }
       });
@@ -1195,7 +1196,12 @@ margin-left: 10px;
         }
       }
 
-      iframe.src = url;
+      // Only load iframe for non-root users or if root explicitly selects a tool
+      if (currentUser.role !== 'root' || (event && event.currentTarget)) {
+        iframe.src = url;
+        document.getElementById('content-frame').classList.remove('hidden');
+        document.getElementById('adminPanel').classList.add('hidden');
+      }
 
       const menuItems = document.querySelectorAll('.menu-item');
       menuItems.forEach(item => item.classList.remove('active'));
@@ -1264,36 +1270,3 @@ margin-left: 10px;
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
