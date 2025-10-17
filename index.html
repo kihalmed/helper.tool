@@ -14,642 +14,678 @@
   --glass: rgba(255,255,255,0.04);
 }
 :root.light-mode {
---bg: #f5f7fa;
---sidebar: #ffffff;
---muted: #6b7280;
---accent: #7c5cff;
---glass: rgba(0,0,0,0.04);
+  --bg: #f5f7fa;
+  --sidebar: #ffffff;
+  --muted: #6b7280;
+  --accent: #7c5cff;
+  --glass: rgba(0,0,0,0.04);
 }
 /* ---------------- GLOBAL RESET ---------------- */
 * {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-display: flex;
-height: 100vh;
-font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-background: linear-gradient(180deg, #021026 0%, #071229 100%);
-color: #e6eef8;
-overflow: hidden;
-transition: background 0.3s ease, color 0.3s ease;
+  display: flex;
+  height: 100vh;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #021026 0%, #071229 100%);
+  color: #e6eef8;
+  overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 body.light-mode {
-background: linear-gradient(180deg, #e8ecf3 0%, #f5f7fa 100%);
-color: #1f2937;
+  background: linear-gradient(180deg, #e8ecf3 0%, #f5f7fa 100%);
+  color: #1f2937;
 }
 /* ---------------- AUTH CONTAINER ---------------- */
 .auth-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.7);
-backdrop-filter: blur(10px);
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 .auth-container {
-background: linear-gradient(135deg, rgba(15, 23, 36, 0.95), rgba(11, 18, 32, 0.95));
-border: 1px solid rgba(124, 92, 255, 0.3);
-border-radius: 20px;
-padding: 40px;
-width: 90%;
-max-width: 450px;
-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-animation: slideIn 0.4s ease-out;
+  background: linear-gradient(135deg, rgba(15, 23, 36, 0.95), rgba(11, 18, 32, 0.95));
+  border: 1px solid rgba(124, 92, 255, 0.3);
+  border-radius: 20px;
+  padding: 40px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.4s ease-out;
 }
 body.light-mode .auth-container {
-background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.98));
-border: 1px solid rgba(124, 92, 255, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.98));
+  border: 1px solid rgba(124, 92, 255, 0.2);
 }
 @keyframes slideIn {
-from {
-opacity: 0;
-transform: translateY(-30px);
-}
-to {
-opacity: 1;
-transform: translateY(0);
-}
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .auth-header {
-text-align: center;
-margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 .auth-logo {
-width: 80px;
-height: 80px;
-margin: 0 auto 15px;
-border-radius: 50%;
-box-shadow: 0 8px 20px rgba(124, 92, 255, 0.4);
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(124, 92, 255, 0.4);
 }
 .auth-title {
-font-size: 28px;
-font-weight: 700;
-color: #fff;
-margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
 }
 body.light-mode .auth-title {
-color: #1f2937;
+  color: #1f2937;
 }
 .auth-subtitle {
-font-size: 14px;
-color: var(--muted);
+  font-size: 14px;
+  color: var(--muted);
 }
 /* ---------------- FORM STYLES ---------------- */
 .auth-form {
-display: flex;
-flex-direction: column;
-gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 .form-group {
-display: flex;
-flex-direction: column;
-gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .form-label {
-font-size: 14px;
-font-weight: 600;
-color: #e6eef8;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e6eef8;
 }
 body.light-mode .form-label {
-color: #374151;
+  color: #374151;
 }
 .form-input {
-padding: 14px 16px;
-border: 1px solid rgba(124, 92, 255, 0.2);
-border-radius: 10px;
-background: rgba(255, 255, 255, 0.05);
-color: #fff;
-font-size: 15px;
-transition: all 0.3s ease;
-outline: none;
+  padding: 14px 16px;
+  border: 1px solid rgba(124, 92, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  outline: none;
 }
 body.light-mode .form-input {
-background: rgba(0, 0, 0, 0.03);
-color: #1f2937;
-border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  color: #1f2937;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .form-input:focus {
-border-color: var(--accent);
-background: rgba(124, 92, 255, 0.1);
-box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.1);
+  border-color: var(--accent);
+  background: rgba(124, 92, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.1);
 }
 .form-input::placeholder {
-color: var(--muted);
-opacity: 0.6;
+  color: var(--muted);
+  opacity: 0.6;
+}
+/* ---------------- CHECKBOX STYLES ---------------- */
+.permissions-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(124, 92, 255, 0.2);
+}
+body.light-mode .permissions-checkboxes {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #e6eef8;
+  cursor: pointer;
+}
+body.light-mode .checkbox-label {
+  color: #374151;
+}
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.checkbox-label input[type="checkbox"]:hover {
+  outline: 2px solid rgba(124, 92, 255, 0.3);
 }
 /* ---------------- BUTTONS ---------------- */
 .btn {
-padding: 14px 24px;
-border: none;
-border-radius: 10px;
-font-size: 16px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.3s ease;
-outline: none;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
 }
 .btn-primary {
-background: linear-gradient(135deg, var(--accent), #5b3ffd);
-color: white;
-box-shadow: 0 8px 20px rgba(124, 92, 255, 0.3);
+  background: linear-gradient(135deg, var(--accent), #5b3ffd);
+  color: white;
+  box-shadow: 0 8px 20px rgba(124, 92, 255, 0.3);
 }
 .btn-primary:hover {
-transform: translateY(-2px);
-box-shadow: 0 12px 28px rgba(124, 92, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(124, 92, 255, 0.4);
 }
 .btn-secondary {
-background: transparent;
-color: var(--accent);
-border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
 }
 .btn-secondary:hover {
-background: rgba(124, 92, 255, 0.1);
+  background: rgba(124, 92, 255, 0.1);
 }
 .btn:disabled {
-opacity: 0.5;
-cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 /* ---------------- TOGGLE LINK ---------------- */
 .auth-toggle {
-text-align: center;
-margin-top: 20px;
-font-size: 14px;
-color: var(--muted);
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--muted);
 }
 .auth-link {
-color: var(--accent);
-text-decoration: none;
-font-weight: 600;
-cursor: pointer;
-transition: color 0.2s;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 .auth-link:hover {
-color: #9170ff;
-text-decoration: underline;
+  color: #9170ff;
+  text-decoration: underline;
 }
 /* ---------------- ALERT MESSAGES ---------------- */
 .alert {
-padding: 12px 16px;
-border-radius: 8px;
-font-size: 14px;
-margin-bottom: 20px;
-animation: fadeIn 0.3s ease;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn {
-from { opacity: 0; }
-to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .alert-success {
-background: rgba(16, 185, 129, 0.15);
-border: 1px solid rgba(16, 185, 129, 0.3);
-color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
 }
 .alert-error {
-background: rgba(239, 68, 68, 0.15);
-border: 1px solid rgba(239, 68, 68, 0.3);
-color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
 }
 .alert-info {
-background: rgba(59, 130, 246, 0.15);
-border: 1px solid rgba(59, 130, 246, 0.3);
-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
 }
 /* ---------------- HIDDEN CLASS ---------------- */
 .hidden {
-display: none !important;
+  display: none !important;
 }
 /* ---------------- SIDEBAR ---------------- */
 .sidebar {
-width: 250px;
-height: 100%;
-background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-box-shadow: 4px 0 20px rgba(0,0,0,0.4);
-border-right: 1px solid rgba(255,255,255,0.05);
-color: white;
-display: flex;
-flex-direction: column;
-padding: 20px;
-overflow-y: auto;
-align-items: center;
-transition: width 0.3s ease-in-out, padding 0.3s ease-in-out, background 0.3s ease;
+  width: 250px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+  align-items: center;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out, background 0.3s ease;
 }
 body.light-mode .sidebar {
-background: linear-gradient(180deg, rgba(255,255,255,1), rgba(245,247,250,1));
-box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-border-right: 1px solid rgba(0,0,0,0.08);
-color: #1f2937;
+  background: linear-gradient(180deg, rgba(255,255,255,1), rgba(245,247,250,1));
+  box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  border-right: 1px solid rgba(0,0,0,0.08);
+  color: #1f2937;
 }
 .sidebar.hidden {
-width: 0;
-padding: 0;
-overflow: hidden;
+  width: 0;
+  padding: 0;
+  overflow: hidden;
 }
 /* ---------------- LOGO ---------------- */
 .logo {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-margin-bottom: 30px;
-cursor: pointer;
-transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
 .logo img {
-width: 60px;
-height: 60px;
-margin-top: 40px;
-border-radius: 50%;
-box-shadow: 0 4px 14px rgba(0,0,0,0.5);
-transition: box-shadow 0.3s ease;
+  width: 60px;
+  height: 60px;
+  margin-top: 40px;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+  transition: box-shadow 0.3s ease;
 }
 body.light-mode .logo img {
-box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
 }
 .logo-text {
-font-size: 1.4rem;
-font-weight: bold;
-margin-top: 10px;
-color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #fff;
 }
 body.light-mode .logo-text {
-color: #1f2937;
+  color: #1f2937;
 }
 /* ---------------- MENU ---------------- */
 .menu {
-list-style: none;
-flex-grow: 1;
-width: 100%;
+  list-style: none;
+  flex-grow: 1;
+  width: 100%;
 }
 .menu-item {
-width: 100%;
-padding: 14px 16px;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 10px;
-transition: all 0.2s;
-border-radius: 8px;
-font-size: 15px;
-font-weight: 500;
-color: #e6eef8;
-position: relative;
+  width: 100%;
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #e6eef8;
+  position: relative;
 }
 body.light-mode .menu-item {
-color: #374151;
+  color: #374151;
 }
 .menu-item:hover {
-background: linear-gradient(90deg, rgba(124,92,255,0.2), rgba(124,92,255,0.05));
-color: var(--accent);
-transform: translateX(4px);
+  background: linear-gradient(90deg, rgba(124,92,255,0.2), rgba(124,92,255,0.05));
+  color: var(--accent);
+  transform: translateX(4px);
 }
 .menu-item.active {
-background: linear-gradient(90deg, rgba(124,92,255,0.35), rgba(124,92,255,0.15));
-color: var(--accent);
+  background: linear-gradient(90deg, rgba(124,92,255,0.35), rgba(124,92,255,0.15));
+  color: var(--accent);
 }
 .menu-item.locked {
-opacity: 0.5;
-cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .menu-item.locked::after {
-content: '🔒';
-position: absolute;
-right: 16px;
-font-size: 14px;
+  content: '🔒';
+  position: absolute;
+  right: 16px;
+  font-size: 14px;
 }
 /* ---------------- CONTENT ---------------- */
 .content {
-flex-grow: 1;
-background: var(--bg);
-display: flex;
-flex-direction: column;
-transition: background 0.3s ease;
+  flex-grow: 1;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s ease;
 }
 .top-bar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 20px 30px;
-background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: transparent;
 }
 .user-info {
-display: flex;
-align-items: center;
-gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 .welcome-message {
-font-size: 16px;
-font-weight: 600;
-color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
 }
 body.light-mode .welcome-message {
-color: #1f2937;
+  color: #1f2937;
 }
 .user-email {
-font-size: 14px;
-color: var(--muted);
+  font-size: 14px;
+  color: var(--muted);
 }
 .btn-logout {
-padding: 8px 16px;
-background: rgba(239, 68, 68, 0.2);
-color: #ef4444;
-border: 1px solid rgba(239, 68, 68, 0.3);
-border-radius: 8px;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 .btn-logout:hover {
-background: rgba(239, 68, 68, 0.3);
-transform: translateY(-1px);
+  background: rgba(239, 68, 68, 0.3);
+  transform: translateY(-1px);
 }
 /* ---------------- THEME TOGGLE ---------------- */
 .theme-toggle {
-width: 60px;
-height: 30px;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-border-radius: 30px;
-cursor: pointer;
-display: flex;
-align-items: center;
-position: relative;
-box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  width: 60px;
+  height: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 body.light-mode .theme-toggle {
-background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
 }
 .theme-toggle .icon {
-font-size: 16px;
-position: absolute;
-transition: opacity 0.3s ease, transform 0.3s ease;
+  font-size: 16px;
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .theme-toggle .sun {
-left: 8px;
-opacity: 0;
-transform: rotate(-90deg) scale(0.5);
+  left: 8px;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
 }
 .theme-toggle .moon {
-right: 8px;
-opacity: 1;
+  right: 8px;
+  opacity: 1;
 }
 body.light-mode .theme-toggle .sun {
-opacity: 1;
-transform: rotate(0deg) scale(1);
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 body.light-mode .theme-toggle .moon {
-opacity: 0;
-transform: rotate(90deg) scale(0.5);
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
 }
 .theme-toggle::after {
-content: '';
-position: absolute;
-width: 24px;
-height: 24px;
-background: white;
-border-radius: 50%;
-left: 3px;
-transition: transform 0.3s cubic-bezier(0.68,-0.55,0.265,1.55);
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  left: 3px;
+  transition: transform 0.3s cubic-bezier(0.68,-0.55,0.265,1.55);
 }
 body.light-mode .theme-toggle::after {
-transform: translateX(30px);
+  transform: translateX(30px);
 }
 /* ---------------- IFRAME ---------------- */
 iframe {
-width: 100%;
-height: 100%;
-border: none;
-background: #000;
-transition: filter 0.3s ease;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
+  transition: filter 0.3s ease;
 }
 /* ---------------- SIDEBAR BUTTON ---------------- */
 .toggle-btn {
-background: linear-gradient(180deg, var(--accent), #5b3ffd);
-color: white;
-border: none;
-padding: 10px 14px;
-cursor: pointer;
-border-radius: 8px;
-position: fixed;
-top: 20px;
-left: 20px;
-z-index: 1000;
-font-size: 16px;
-font-weight: 600;
-box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  background: linear-gradient(180deg, var(--accent), #5b3ffd);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 body.light-mode .toggle-btn {
-box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .toggle-btn:hover {
-background: linear-gradient(180deg, #9170ff, #6742ff);
+  background: linear-gradient(180deg, #9170ff, #6742ff);
 }
 /* ---------------- ADMIN PANEL ---------------- */
 .admin-panel {
-padding: 30px;
-overflow-y: auto;
+  padding: 30px;
+  overflow-y: auto;
 }
 .admin-header {
-margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 .admin-title {
-font-size: 28px;
-font-weight: 700;
-margin-bottom: 10px;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 .admin-tabs {
-display: flex;
-gap: 10px;
-margin-bottom: 30px;
-border-bottom: 2px solid rgba(124, 92, 255, 0.2);
-padding-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(124, 92, 255, 0.2);
+  padding-bottom: 10px;
 }
 .tab-btn {
-padding: 10px 20px;
-background: transparent;
-border: none;
-color: var(--muted);
-cursor: pointer;
-font-size: 16px;
-font-weight: 600;
-transition: all 0.2s;
-border-radius: 8px 8px 0 0;
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-radius: 8px 8px 0 0;
 }
 .tab-btn.active {
-background: rgba(124, 92, 255, 0.2);
-color: var(--accent);
+  background: rgba(124, 92, 255, 0.2);
+  color: var(--accent);
 }
 .tab-content {
-display: none;
+  display: none;
 }
 .tab-content.active {
-display: block;
+  display: block;
 }
 .pending-users, .all-users {
-background: rgba(255, 255, 255, 0.05);
-border: 1px solid rgba(124, 92, 255, 0.2);
-border-radius: 12px;
-padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(124, 92, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
 }
 body.light-mode .pending-users,
 body.light-mode .all-users {
-background: rgba(0, 0, 0, 0.02);
-border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .users-table {
-width: 100%;
-border-collapse: collapse;
-margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
 .users-table th,
 .users-table td {
-padding: 12px;
-text-align: left;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 body.light-mode .users-table th,
 body.light-mode .users-table td {
-border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 .users-table th {
-font-weight: 600;
-color: var(--accent);
-background: rgba(124, 92, 255, 0.1);
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(124, 92, 255, 0.1);
 }
 .users-table tr:hover {
-background: rgba(124, 92, 255, 0.05);
+  background: rgba(124, 92, 255, 0.05);
 }
 .user-card {
-background: rgba(255, 255, 255, 0.03);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 10px;
-padding: 20px;
-margin-bottom: 15px;
-display: flex;
-justify-content: space-between;
-align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 body.light-mode .user-card {
-background: rgba(0, 0, 0, 0.01);
-border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.01);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .user-details h4 {
-margin-bottom: 5px;
-color: #fff;
+  margin-bottom: 5px;
+  color: #fff;
 }
 body.light-mode .user-details h4 {
-color: #1f2937;
+  color: #1f2937;
 }
 .user-details p {
-font-size: 14px;
-color: var(--muted);
+  font-size: 14px;
+  color: var(--muted);
 }
 .user-actions {
-display: flex;
-gap: 10px;
-flex-wrap: wrap;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .btn-approve {
-padding: 8px 16px;
-background: rgba(16, 185, 129, 0.2);
-color: #10b981;
-border: 1px solid rgba(16, 185, 129, 0.3);
-border-radius: 8px;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
+  padding: 8px 16px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 .btn-approve:hover {
-background: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.3);
 }
 .btn-reject, .btn-delete {
-padding: 8px 16px;
-background: rgba(239, 68, 68, 0.2);
-color: #ef4444;
-border: 1px solid rgba(239, 68, 68, 0.3);
-border-radius: 8px;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 .btn-reject:hover, .btn-delete:hover {
-background: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.3);
 }
 .btn-edit {
-padding: 8px 16px;
-background: rgba(59, 130, 246, 0.2);
-color: #3b82f6;
-border: 1px solid rgba(59, 130, 246, 0.3);
-border-radius: 8px;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
+  padding: 8px 16px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 .btn-edit:hover {
-background: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.3);
 }
 /* ---------------- MODAL ---------------- */
 .modal-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.7);
-backdrop-filter: blur(10px);
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 10000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
 }
 .modal-content {
-background: linear-gradient(135deg, rgba(15, 23, 36, 0.95), rgba(11, 18, 32, 0.95));
-border: 1px solid rgba(124, 92, 255, 0.3);
-border-radius: 20px;
-padding: 30px;
-width: 90%;
-max-width: 500px;
-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(15, 23, 36, 0.95), rgba(11, 18, 32, 0.95));
+  border: 1px solid rgba(124, 92, 255, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 body.light-mode .modal-content {
-background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.98));
-border: 1px solid rgba(124, 92, 255, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 250, 0.98));
+  border: 1px solid rgba(124, 92, 255, 0.2);
 }
 .modal-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 .modal-title {
-font-size: 22px;
-font-weight: 700;
+  font-size: 22px;
+  font-weight: 700;
 }
 .modal-close {
-background: none;
-border: none;
-font-size: 24px;
-cursor: pointer;
-color: var(--muted);
-transition: color 0.2s;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: color 0.2s;
 }
 .modal-close:hover {
-color: #ef4444;
+  color: #ef4444;
 }
 .session-indicator {
-font-size: 12px;
-color: var(--muted);
-margin-left: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 10px;
 }
 </style>
 </head>
@@ -662,48 +698,49 @@ margin-left: 10px;
         <h1 class="auth-title">Welcome to Helper Tools</h1>
         <p class="auth-subtitle" id="authSubtitle">Please login to continue</p>
       </div>
-  <div id="alertContainer"></div>
+      <div id="alertContainer"></div>
 
-  <!-- Login Form -->
-  <form id="loginForm" class="auth-form">
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-  </form>
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
 
-  <!-- Register Form -->
-  <form id="registerForm" class="auth-form hidden">
-    <div class="form-group">
-      <label class="form-label">Username</label>
-      <input type="text" class="form-input" id="registerUsername" placeholder="Choose a username" required />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="registerEmail" placeholder="Enter your email" required />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" class="form-input" id="registerPassword" placeholder="Create a password" required minlength="6" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Confirm Password</label>
-      <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Confirm your password" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Create Account</button>
-  </form>
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form hidden">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="registerUsername" placeholder="Choose a username" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="registerEmail" placeholder="Enter your email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="registerPassword" placeholder="Create a password" required minlength="6" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Confirm your password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </form>
 
-  <div class="auth-toggle">
-    <span id="toggleText">Don't have an account?</span>
-    <a class="auth-link" id="toggleLink" onclick="toggleAuthMode()">Create Account</a>
+      <div class="auth-toggle">
+        <span id="toggleText">Don't have an account?</span>
+        <a class="auth-link" id="toggleLink" onclick="toggleAuthMode()">Create Account</a>
+      </div>
+    </div>
   </div>
-</div>
-  </div>
+
   <!-- Edit User Modal -->
   <div id="editModal" class="modal-overlay hidden">
     <div class="modal-content">
@@ -734,46 +771,59 @@ margin-left: 10px;
         </div>
         <div class="form-group">
           <label class="form-label">Page Permissions</label>
-          <select class="form-input" id="editPermissions" multiple>
-            <option value="Projet/MSG tk support.html">Messages SMS</option>
-            <option value="Projet/Comma Separating Tool.html">Comma Separating</option>
-            <option value="Projet/ptr1122.html">PTR Form</option>
-            <option value="Projet/Geo File Extractor.html">Geo File Extractor</option>
-            <option value="Projet/Extractor ips.html">Extract IPs</option>
-            <option value="Projet/format pre-intsall.html">Pre-install</option>
-          </select>
+          <div class="permissions-checkboxes">
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/MSG tk support.html"> Messages SMS
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/Comma Separating Tool.html"> Comma Separating
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/ptr1122.html"> PTR Form
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/Geo File Extractor.html"> Geo File Extractor
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/Extractor ips.html"> Extract IPs
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/format pre-intsall.html"> Pre-install
+            </label>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
       </form>
     </div>
   </div>
+
   <!-- Main Application -->
-<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
   <div class="sidebar">
     <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
       <img src="images/support.png" alt="Logo" onerror="this.style.display='none'" />
       <div class="logo-text">Helper</div>
     </div>
-<ul class="menu" id="menuItems">
-  <li class="menu-item" data-page="Projet/MSG tk support.html" onclick="loadPage('Projet/MSG tk support.html', event)">
-    <span style="font-size: 20px;">✉️</span><span>Messages SMS</span>
-  </li>
-  <li class="menu-item" data-page="Projet/Comma Separating Tool.html" onclick="loadPage('Projet/Comma Separating Tool.html', event)">
-    <span style="font-size: 20px;">🔢</span><span>Comma Separating</span>
-  </li>
-  <li class="menu-item" data-page="Projet/ptr1122.html" onclick="loadPage('Projet/ptr1122.html', event)">
-    <span style="font-size: 20px;">🧾</span><span>PTR Form</span>
-  </li>
-  <li class="menu-item" data-page="Projet/Geo File Extractor.html" onclick="loadPage('Projet/Geo File Extractor.html', event)">
-    <span style="font-size: 20px;">🌍</span><span>Geo File Extractor</span>
-  </li>
-  <li class="menu-item" data-page="Projet/Extractor ips.html" onclick="loadPage('Projet/Extractor ips.html', event)">
-    <span style="font-size: 20px;">⚙️</span><span>Extract IPs</span>
-  </li>
-  <li class="menu-item" data-page="Projet/format pre-intsall.html" onclick="loadPage('Projet/format pre-intsall.html', event)">
-    <span style="font-size: 20px;">🔍</span><span>Pre-install</span>
-  </li>
-</ul>
+    <ul class="menu" id="menuItems">
+      <li class="menu-item" data-page="Projet/MSG tk support.html" onclick="loadPage('Projet/MSG tk support.html', event)">
+        <span style="font-size: 20px;">✉️</span><span>Messages SMS</span>
+      </li>
+      <li class="menu-item" data-page="Projet/Comma Separating Tool.html" onclick="loadPage('Projet/Comma Separating Tool.html', event)">
+        <span style="font-size: 20px;">🔢</span><span>Comma Separating</span>
+      </li>
+      <li class="menu-item" data-page="Projet/ptr1122.html" onclick="loadPage('Projet/ptr1122.html', event)">
+        <span style="font-size: 20px;">🧾</span><span>PTR Form</span>
+      </li>
+      <li class="menu-item" data-page="Projet/Geo File Extractor.html" onclick="loadPage('Projet/Geo File Extractor.html', event)">
+        <span style="font-size: 20px;">🌍</span><span>Geo File Extractor</span>
+      </li>
+      <li class="menu-item" data-page="Projet/Extractor ips.html" onclick="loadPage('Projet/Extractor ips.html', event)">
+        <span style="font-size: 20px;">⚙️</span><span>Extract IPs</span>
+      </li>
+      <li class="menu-item" data-page="Projet/format pre-intsall.html" onclick="loadPage('Projet/format pre-intsall.html', event)">
+        <span style="font-size: 20px;">🔍</span><span>Pre-install</span>
+      </li>
+    </ul>
   </div>
   <div class="content">
     <div class="top-bar">
@@ -787,51 +837,47 @@ margin-left: 10px;
         <span class="icon moon">🌙</span>
       </div>
     </div>
-<!-- Admin Panel (only visible for root user) -->
-<div id="adminPanel" class="admin-panel hidden">
-  <div class="admin-header">
-    <h2 class="admin-title">Admin Dashboard</h2>
-    <p class="auth-subtitle">Manage users and registrations</p>
-  </div>
-
-  <div class="admin-tabs">
-    <button class="tab-btn active" onclick="switchTab('pending')">Pending Users</button>
-    <button class="tab-btn" onclick="switchTab('all')">All Users</button>
-  </div>
-
-  <!-- Pending Users Tab -->
-  <div id="pendingTab" class="tab-content active">
-    <div class="pending-users" id="pendingUsersList">
-      <p style="text-align: center; color: var(--muted);">No pending users</p>
+    <!-- Admin Panel (only visible for root user) -->
+    <div id="adminPanel" class="admin-panel hidden">
+      <div class="admin-header">
+        <h2 class="admin-title">Admin Dashboard</h2>
+        <p class="auth-subtitle">Manage users and registrations</p>
+      </div>
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchTab('pending')">Pending Users</button>
+        <button class="tab-btn" onclick="switchTab('all')">All Users</button>
+      </div>
+      <!-- Pending Users Tab -->
+      <div id="pendingTab" class="tab-content active">
+        <div class="pending-users" id="pendingUsersList">
+          <p style="text-align: center; color: var(--muted);">No pending users</p>
+        </div>
+      </div>
+      <!-- All Users Tab -->
+      <div id="allUsersTab" class="tab-content">
+        <div class="all-users">
+          <table class="users-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Registered</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="allUsersTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--muted);">No users found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- All Users Tab -->
-  <div id="allUsersTab" class="tab-content">
-    <div class="all-users">
-      <table class="users-table">
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Registered</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="allUsersTableBody">
-          <tr>
-            <td colspan="5" style="text-align: center; color: var(--muted);">No users found</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<iframe id="content-frame"
-  src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
-  frameborder="0"></iframe>
+    <iframe id="content-frame"
+      src="https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com"
+      frameborder="0"></iframe>
   </div>
   <script>
     // ==================== SESSION MANAGEMENT ====================
@@ -1170,9 +1216,10 @@ margin-left: 10px;
       document.getElementById('editPassword').value = '';
       document.getElementById('editRole').value = user.role;
       
-      const permissionsSelect = document.getElementById('editPermissions');
-      Array.from(permissionsSelect.options).forEach(option => {
-        option.selected = user.permissions && user.permissions.includes(option.value);
+      // Update checkbox states
+      const checkboxes = document.querySelectorAll('.permissions-checkboxes input[name="permissions"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = user.permissions && user.permissions.includes(checkbox.value);
       });
       
       document.getElementById('editModal').classList.remove('hidden');
@@ -1189,7 +1236,7 @@ margin-left: 10px;
       const email = document.getElementById('editEmail').value;
       const password = document.getElementById('editPassword').value;
       const role = document.getElementById('editRole').value;
-      const permissions = Array.from(document.getElementById('editPermissions').selectedOptions).map(option => option.value);
+      const permissions = Array.from(document.querySelectorAll('.permissions-checkboxes input[name="permissions"]:checked')).map(checkbox => checkbox.value);
 
       users[index].username = username;
       users[index].email = email;
