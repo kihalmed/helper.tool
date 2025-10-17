@@ -722,10 +722,25 @@ margin-left: 10px;
           <input type="email" class="form-input" id="editEmail" required />
         </div>
         <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="editPassword" placeholder="Enter new password (leave blank to keep unchanged)" minlength="6" />
+        </div>
+        <div class="form-group">
           <label class="form-label">Role</label>
           <select class="form-input" id="editRole">
             <option value="user">User</option>
             <option value="root">Root</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Page Permissions</label>
+          <select class="form-input" id="editPermissions" multiple>
+            <option value="Projet/MSG tk support.html">Messages SMS</option>
+            <option value="Projet/Comma Separating Tool.html">Comma Separating</option>
+            <option value="Projet/ptr1122.html">PTR Form</option>
+            <option value="Projet/Geo File Extractor.html">Geo File Extractor</option>
+            <option value="Projet/Extractor ips.html">Extract IPs</option>
+            <option value="Projet/format pre-intsall.html">Pre-install</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -740,23 +755,23 @@ margin-left: 10px;
       <div class="logo-text">Helper</div>
     </div>
 <ul class="menu" id="menuItems">
-  <li class="menu-item" data-restricted="false" onclick="loadPage('Projet/MSG tk support.html', event)">
-    <span style="font-size: 20px;">✉️</span><span>messages sms</span>
+  <li class="menu-item" data-page="Projet/MSG tk support.html" onclick="loadPage('Projet/MSG tk support.html', event)">
+    <span style="font-size: 20px;">✉️</span><span>Messages SMS</span>
   </li>
-  <li class="menu-item" data-restricted="true" onclick="loadPage('Projet/Comma Separating Tool.html', event)">
+  <li class="menu-item" data-page="Projet/Comma Separating Tool.html" onclick="loadPage('Projet/Comma Separating Tool.html', event)">
     <span style="font-size: 20px;">🔢</span><span>Comma Separating</span>
   </li>
-  <li class="menu-item" data-restricted="true" onclick="loadPage('Projet/ptr1122.html', event)">
+  <li class="menu-item" data-page="Projet/ptr1122.html" onclick="loadPage('Projet/ptr1122.html', event)">
     <span style="font-size: 20px;">🧾</span><span>PTR Form</span>
   </li>
-  <li class="menu-item" data-restricted="true" onclick="loadPage('Projet/Geo File Extractor.html', event)">
+  <li class="menu-item" data-page="Projet/Geo File Extractor.html" onclick="loadPage('Projet/Geo File Extractor.html', event)">
     <span style="font-size: 20px;">🌍</span><span>Geo File Extractor</span>
   </li>
-  <li class="menu-item" data-restricted="true" onclick="loadPage('Projet/Extractor ips.html', event)">
+  <li class="menu-item" data-page="Projet/Extractor ips.html" onclick="loadPage('Projet/Extractor ips.html', event)">
     <span style="font-size: 20px;">⚙️</span><span>Extract IPs</span>
   </li>
-  <li class="menu-item" data-restricted="true" onclick="loadPage('Projet/format pre-intsall.html', event)">
-    <span style="font-size: 20px;">🔍</span><span>pre-intsall</span>
+  <li class="menu-item" data-page="Projet/format pre-intsall.html" onclick="loadPage('Projet/format pre-intsall.html', event)">
+    <span style="font-size: 20px;">🔍</span><span>Pre-install</span>
   </li>
 </ul>
   </div>
@@ -871,6 +886,14 @@ margin-left: 10px;
       password: 'admin123', 
       username: 'Admin', 
       role: 'root',
+      permissions: [
+        'Projet/MSG tk support.html',
+        'Projet/Comma Separating Tool.html',
+        'Projet/ptr1122.html',
+        'Projet/Geo File Extractor.html',
+        'Projet/Extractor ips.html',
+        'Projet/format pre-intsall.html'
+      ],
       registeredAt: new Date().toISOString()
     };
     
@@ -960,6 +983,7 @@ margin-left: 10px;
         email, 
         password, 
         status: 'pending',
+        permissions: [],
         registeredAt: new Date().toISOString()
       };
       pendingUsers.push(newUser);
@@ -1000,22 +1024,34 @@ margin-left: 10px;
     // ==================== MENU ACCESS CONTROL ====================
     function updateMenuAccess() {
       const menuItems = document.querySelectorAll('.menu-item');
-      menuItems.forEach(item => {
-        const isRestricted = item.getAttribute('data-restricted') === 'true';
-        
-        if (isRestricted && currentUser.role !== 'root') {
-          // Lock restricted items for non-root users
-          item.classList.add('locked');
-          item.onclick = function(e) {
-            e.stopPropagation();
-            showAlert('Access denied. This tool is only available for administrators.', 'error');
-            setTimeout(clearAlerts, 3000);
-          };
-        } else {
-          // Unlock all items for root user
+      const menu = document.getElementById('menuItems');
+      
+      if (currentUser.role === 'root') {
+        // Root user: show all menu items and unlock them
+        menu.style.display = 'block';
+        menuItems.forEach(item => {
           item.classList.remove('locked');
+          item.style.display = 'flex';
+        });
+      } else {
+        // Non-root user: hide menu items unless they have specific permissions
+        menuItems.forEach(item => {
+          const pageUrl = item.getAttribute('data-page');
+          if (currentUser.permissions && currentUser.permissions.includes(pageUrl)) {
+            item.classList.remove('locked');
+            item.style.display = 'flex';
+          } else {
+            item.classList.add('locked');
+            item.style.display = 'none';
+          }
+        });
+        // Hide the entire menu if no permissions are granted
+        if (!currentUser.permissions || currentUser.permissions.length === 0) {
+          menu.style.display = 'none';
+        } else {
+          menu.style.display = 'block';
         }
-      });
+      }
     }
 
     // ==================== ADMIN PANEL ====================
@@ -1091,6 +1127,7 @@ margin-left: 10px;
       users.push({ 
         ...user, 
         role: 'user',
+        permissions: [],
         registeredAt: user.registeredAt || new Date().toISOString()
       });
       pendingUsers.splice(index, 1);
@@ -1130,7 +1167,14 @@ margin-left: 10px;
       document.getElementById('editUserIndex').value = index;
       document.getElementById('editUsername').value = user.username;
       document.getElementById('editEmail').value = user.email;
+      document.getElementById('editPassword').value = '';
       document.getElementById('editRole').value = user.role;
+      
+      const permissionsSelect = document.getElementById('editPermissions');
+      Array.from(permissionsSelect.options).forEach(option => {
+        option.selected = user.permissions && user.permissions.includes(option.value);
+      });
+      
       document.getElementById('editModal').classList.remove('hidden');
     }
 
@@ -1143,17 +1187,30 @@ margin-left: 10px;
       const index = parseInt(document.getElementById('editUserIndex').value);
       const username = document.getElementById('editUsername').value;
       const email = document.getElementById('editEmail').value;
+      const password = document.getElementById('editPassword').value;
       const role = document.getElementById('editRole').value;
+      const permissions = Array.from(document.getElementById('editPermissions').selectedOptions).map(option => option.value);
 
       users[index].username = username;
       users[index].email = email;
+      if (password) {
+        users[index].password = password;
+      }
       users[index].role = role;
+      users[index].permissions = permissions;
 
       localStorage.setItem('helperUsers', JSON.stringify(users));
       loadAllUsers();
       closeEditModal();
       showAlert('User updated successfully', 'success');
       setTimeout(clearAlerts, 3000);
+
+      // Update current user session if edited
+      if (currentUser.email === email) {
+        currentUser = users[index];
+        createSession(currentUser);
+        updateMenuAccess();
+      }
     });
 
     // ==================== LOGOUT ====================
@@ -1186,11 +1243,11 @@ margin-left: 10px;
     function loadPage(url, event) {
       const iframe = document.getElementById('content-frame');
       
-      // Check access for restricted pages
+      // Check access for pages
       if (event && event.currentTarget) {
-        const isRestricted = event.currentTarget.getAttribute('data-restricted') === 'true';
-        if (isRestricted && currentUser.role !== 'root') {
-          showAlert('Access denied. This tool is only available for administrators.', 'error');
+        const pageUrl = event.currentTarget.getAttribute('data-page');
+        if (currentUser.role !== 'root' && (!currentUser.permissions || !currentUser.permissions.includes(pageUrl))) {
+          showAlert('Access denied. You do not have permission to view this page.', 'error');
           setTimeout(clearAlerts, 3000);
           return;
         }
