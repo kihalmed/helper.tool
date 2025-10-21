@@ -800,11 +800,14 @@ body.light-mode .modal-content {
   <!-- Main Application -->
   <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
   <div class="sidebar">
-    <div class="logo" onclick="loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com')">
+    <div class="logo" onclick="loadCalendar()">
       <img src="images/support.png" alt="Logo" onerror="this.style.display='none'" />
       <div class="logo-text">Helper</div>
     </div>
     <ul class="menu" id="menuItems">
+      <li class="menu-item" data-page="admin-dashboard" onclick="loadAdminDashboard(event)">
+        <span style="font-size: 20px;">📊</span><span>Admin Dashboard</span>
+      </li>
       <li class="menu-item" data-page="Projet/MSG tk support.html" onclick="loadPage('Projet/MSG tk support.html', event)">
         <span style="font-size: 20px;">✉️</span><span>Messages SMS</span>
       </li>
@@ -905,6 +908,15 @@ body.light-mode .modal-content {
       return session;
     }
 
+    // NEW: Auto-renew session on user activity
+    function renewSession() {
+      const session = getSession();
+      if (session) {
+        session.expiresAt = Date.now() + SESSION_DURATION;
+        localStorage.setItem('helperSession', JSON.stringify(session));
+      }
+    }
+
     function updateSessionTimer() {
       const session = getSession();
       if (!session) {
@@ -925,6 +937,11 @@ body.light-mode .modal-content {
         timerEl.style.color = '#ef4444';
       }
     }
+
+    // NEW: Listen to user activity and renew session
+    ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach(event => {
+      document.addEventListener(event, renewSession, { passive: true });
+    });
 
     // ==================== USER DATA MANAGEMENT ====================
     const DEMO_ROOT = { 
@@ -1049,18 +1066,10 @@ body.light-mode .modal-content {
       // Update menu and content based on user role
       updateMenuAccess();
       
-      if (currentUser.role === 'root') {
-        // Root user: show admin panel by default and allow access to all tools
-        document.getElementById('content-frame').classList.add('hidden');
-        document.getElementById('adminPanel').classList.remove('hidden');
-        loadPendingUsers();
-        loadAllUsers();
-      } else {
-        // Regular user: show only dashboard (iframe) and hide admin panel
-        document.getElementById('content-frame').classList.remove('hidden');
-        document.getElementById('adminPanel').classList.add('hidden');
-        loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com');
-      }
+      // NEW: Always show calendar by default on first load
+      document.getElementById('content-frame').classList.remove('hidden');
+      document.getElementById('adminPanel').classList.add('hidden');
+      loadPage('https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com');
 
       // Start session timer
       setInterval(updateSessionTimer, 1000);
@@ -1073,16 +1082,23 @@ body.light-mode .modal-content {
       const menu = document.getElementById('menuItems');
       
       if (currentUser.role === 'root') {
-        // Root user: show all menu items and unlock them
+        // Root user: show all menu items including Admin Dashboard
         menu.style.display = 'block';
         menuItems.forEach(item => {
           item.classList.remove('locked');
           item.style.display = 'flex';
         });
       } else {
-        // Non-root user: hide menu items unless they have specific permissions
+        // Non-root user: hide Admin Dashboard and filter by permissions
         menuItems.forEach(item => {
           const pageUrl = item.getAttribute('data-page');
+          
+          // Hide Admin Dashboard for non-root users
+          if (pageUrl === 'admin-dashboard') {
+            item.style.display = 'none';
+            return;
+          }
+          
           if (currentUser.permissions && currentUser.permissions.includes(pageUrl)) {
             item.classList.remove('locked');
             item.style.display = 'flex';
@@ -1091,12 +1107,55 @@ body.light-mode .modal-content {
             item.style.display = 'none';
           }
         });
+        
         // Hide the entire menu if no permissions are granted
         if (!currentUser.permissions || currentUser.permissions.length === 0) {
           menu.style.display = 'none';
         } else {
           menu.style.display = 'block';
         }
+      }
+    }
+
+    // ==================== LOAD CALENDAR ====================
+    window.loadCalendar = function() {
+      const iframe = document.getElementById('content-frame');
+      iframe.src = 'https://calendar.google.com/calendar/embed?src=en.ma%23holiday%40group.v.calendar.google.com';
+      document.getElementById('content-frame').classList.remove('hidden');
+      document.getElementById('adminPanel').classList.add('hidden');
+      
+      // Clear active menu items
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+      
+      iframe.onload = () => {
+        applyThemeToIframe();
+        const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+        iframe.contentWindow.postMessage({ theme }, '*');
+      };
+    }
+
+    // ==================== LOAD ADMIN DASHBOARD ====================
+    window.loadAdminDashboard = function(event) {
+      if (currentUser.role !== 'root') {
+        showAlert('Access denied. Only root users can access the admin dashboard.', 'error');
+        setTimeout(clearAlerts, 3000);
+        return;
+      }
+
+      // Show admin panel, hide iframe
+      document.getElementById('adminPanel').classList.remove('hidden');
+      document.getElementById('content-frame').classList.add('hidden');
+      
+      // Load admin data
+      loadPendingUsers();
+      loadAllUsers();
+      
+      // Update active menu item
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
       }
     }
 
@@ -1300,12 +1359,10 @@ body.light-mode .modal-content {
         }
       }
 
-      // Only load iframe for non-root users or if root explicitly selects a tool
-      if (currentUser.role !== 'root' || (event && event.currentTarget)) {
-        iframe.src = url;
-        document.getElementById('content-frame').classList.remove('hidden');
-        document.getElementById('adminPanel').classList.add('hidden');
-      }
+      // Load iframe and hide admin panel
+      iframe.src = url;
+      document.getElementById('content-frame').classList.remove('hidden');
+      document.getElementById('adminPanel').classList.add('hidden');
 
       const menuItems = document.querySelectorAll('.menu-item');
       menuItems.forEach(item => item.classList.remove('active'));
