@@ -687,6 +687,43 @@ body.light-mode .modal-content {
   color: var(--muted);
   margin-left: 10px;
 }
+    .sidebar-logout {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.btn-logout-sidebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 8px 28px rgba(239, 68, 68, 0.25);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.btn-logout-sidebar:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.logout-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.18);
+}
+
 </style>
 </head>
 <body>
@@ -827,13 +864,20 @@ body.light-mode .modal-content {
         <span style="font-size: 20px;">🔍</span><span>Pre-install</span>
       </li>
     </ul>
+    <!-- Sidebar Footer Logout Button -->
+<div class="sidebar-logout">
+  <button class="btn-logout-sidebar" onclick="logout()">
+    <img src="logout.png" alt="Logout" class="logout-img" />
+    Logout
+  </button>
+</div>
+
   </div>
   <div class="content">
     <div class="top-bar">
       <div class="user-info">
         <span class="welcome-message" id="welcomeMessage">Welcome!</span>
         <span class="session-indicator" id="sessionTimer"></span>
-        <button class="btn-logout" onclick="logout()">Logout</button>
       </div>
       <div id="themeToggle" class="theme-toggle">
         <span class="icon sun">☀️</span>
@@ -1431,3 +1475,4 @@ body.light-mode .modal-content {
   </script>
 </body>
 </html>
+
