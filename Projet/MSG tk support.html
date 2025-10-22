@@ -206,7 +206,9 @@
         <div class="dropdown-content">
           <button onclick="selectOption('S1')">RDNS s1</button>
           <button onclick="selectOption('S2')">RDNS s2</button>
-          <button onclick="selectOption('S3')">Remove RDNS</button>
+		  <button onclick="selectOption('S4')">Default rDNS</button>
+          <button onclick="selectOption('S3')">Remove RDNS</button
+		  
         </div>
       </li>
 
@@ -317,6 +319,7 @@
         S1: `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance.`,
         S2: `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`,
         S3: `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`,
+		S4: `Hello, \nPlease we need you to add default rDNS [rdns provider].\n\n${pingInput}\n\nThanks in advance.`,
         ips: `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
         ips2: `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
         allow1: `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`,
@@ -407,4 +410,5 @@
   </script>
 </body>
 </html>
+
 
