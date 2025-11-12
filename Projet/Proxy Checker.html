@@ -258,6 +258,7 @@
             position: sticky;
             top: 0;
             font-weight: 600;
+            z-index: 10;
         }
 
         td {
@@ -305,6 +306,7 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             background: var(--glass);
+            position: relative;
         }
 
         .ip-cell {
@@ -329,6 +331,10 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--muted);
+        }
+
+        .virtual-scroll-spacer {
+            height: 1px;
         }
     </style>
 </head>
@@ -394,6 +400,16 @@
         let proxies = [];
         let currentFilter = 'all';
         let tableBody = null;
+        let tableContainer = null;
+        let isChecking = false;
+        let lastRenderTime = 0;
+        const RENDER_THROTTLE = 500; // Update DOM every 500ms max
+
+        // Virtual scrolling variables
+        const ROW_HEIGHT = 41;
+        const BUFFER_SIZE = 20;
+        let visibleStart = 0;
+        let visibleEnd = 0;
 
         // Dark/Light mode theme sync
         document.addEventListener("DOMContentLoaded", function () {
@@ -473,6 +489,7 @@
             const results = document.getElementById('results');
             const container = document.createElement('div');
             container.className = 'table-container';
+            tableContainer = container;
             
             const table = document.createElement('table');
             table.innerHTML = `
@@ -492,24 +509,71 @@
             results.appendChild(container);
             tableBody = document.getElementById('tableBody');
             
+            // Add scroll listener for virtual scrolling
+            container.addEventListener('scroll', throttleScroll);
+            
             renderVisibleRows();
         }
 
-        function renderVisibleRows() {
+        let scrollTimeout;
+        function throttleScroll() {
+            if (scrollTimeout) return;
+            scrollTimeout = setTimeout(() => {
+                renderVisibleRows();
+                scrollTimeout = null;
+            }, 50);
+        }
+
+        function renderVisibleRows(force = false) {
             if (!tableBody) return;
+            
+            const now = Date.now();
+            if (!force && isChecking && now - lastRenderTime < RENDER_THROTTLE) {
+                return;
+            }
+            lastRenderTime = now;
             
             const filtered = proxies.filter(p => currentFilter === 'all' || p.status === currentFilter);
             
-            const rows = filtered.map(p => 
-                `<tr>
-                    <td class="ip-cell">${p.ip}</td>
-                    <td>${p.port}</td>
-                    <td><span class="status-badge status-${p.status}">${getStatusText(p.status)}</span></td>
-                    <td>${p.time ? p.time + 'ms' : '-'}</td>
-                </tr>`
-            ).join('');
-            
-            tableBody.innerHTML = rows;
+            // Virtual scrolling calculation
+            if (tableContainer && filtered.length > 100) {
+                const scrollTop = tableContainer.scrollTop;
+                const containerHeight = tableContainer.clientHeight;
+                
+                visibleStart = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - BUFFER_SIZE);
+                visibleEnd = Math.min(filtered.length, Math.ceil((scrollTop + containerHeight) / ROW_HEIGHT) + BUFFER_SIZE);
+                
+                const visibleProxies = filtered.slice(visibleStart, visibleEnd);
+                const topSpacer = visibleStart * ROW_HEIGHT;
+                const bottomSpacer = (filtered.length - visibleEnd) * ROW_HEIGHT;
+                
+                const rows = `
+                    <tr class="virtual-scroll-spacer"><td colspan="4" style="height: ${topSpacer}px; padding: 0;"></td></tr>
+                    ${visibleProxies.map(p => 
+                        `<tr>
+                            <td class="ip-cell">${p.ip}</td>
+                            <td>${p.port}</td>
+                            <td><span class="status-badge status-${p.status}">${getStatusText(p.status)}</span></td>
+                            <td>${p.time ? p.time + 'ms' : '-'}</td>
+                        </tr>`
+                    ).join('')}
+                    <tr class="virtual-scroll-spacer"><td colspan="4" style="height: ${bottomSpacer}px; padding: 0;"></td></tr>
+                `;
+                
+                tableBody.innerHTML = rows;
+            } else {
+                // For small lists, render all
+                const rows = filtered.map(p => 
+                    `<tr>
+                        <td class="ip-cell">${p.ip}</td>
+                        <td>${p.port}</td>
+                        <td><span class="status-badge status-${p.status}">${getStatusText(p.status)}</span></td>
+                        <td>${p.time ? p.time + 'ms' : '-'}</td>
+                    </tr>`
+                ).join('');
+                
+                tableBody.innerHTML = rows;
+            }
         }
 
         function getStatusText(status) {
@@ -523,30 +587,37 @@
             
             checkBtn.disabled = true;
             progress.style.display = 'block';
+            isChecking = true;
 
             let checked = 0;
             const total = proxies.length;
-            const batchSize = 15;
+            const batchSize = 50; // Increased batch size
             let updateCounter = 0;
 
             for (let i = 0; i < proxies.length; i += batchSize) {
                 const batch = proxies.slice(i, i + batchSize);
-                await Promise.all(batch.map(p => checkProxy(p)));
+                
+                // Process batch without waiting
+                batch.forEach(p => checkProxy(p));
                 
                 checked += batch.length;
                 const percentage = Math.round((checked / total) * 100);
                 document.getElementById('progressFill').style.width = percentage + '%';
                 document.getElementById('progressFill').textContent = percentage + '%';
                 
+                // Update UI less frequently
                 updateCounter++;
-                if (updateCounter % 3 === 0) {
+                if (updateCounter % 5 === 0) {
                     updateStats();
                     renderVisibleRows();
+                    await new Promise(resolve => setTimeout(resolve, 0)); // Yield to browser
                 }
             }
 
+            // Final updates
+            isChecking = false;
             updateStats();
-            renderVisibleRows();
+            renderVisibleRows(true);
             checkBtn.disabled = false;
             document.getElementById('exportBtn').disabled = false;
             progress.style.display = 'none';
@@ -592,7 +663,8 @@
             currentFilter = filter;
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            renderVisibleRows();
+            if (tableContainer) tableContainer.scrollTop = 0;
+            renderVisibleRows(true);
         }
 
         function exportWorking() {
@@ -616,6 +688,8 @@
             document.getElementById('checkBtn').disabled = true;
             document.getElementById('exportBtn').disabled = true;
             tableBody = null;
+            tableContainer = null;
+            isChecking = false;
             updateStats();
         }
     </script>
