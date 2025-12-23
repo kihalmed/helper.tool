@@ -152,9 +152,9 @@
   <div class="wrap">
     <div class="card">
       <h1>Comma Separating Tool</h1>
-      <p class="lead">Paste your IP addresses (with optional counts) — one per line. Tool will generate valid comma-separated IPs.</p>
+      <p class="lead">Paste any text containing IPv4 addresses. Tool will extract and generate valid comma-separated IPs.</p>
 
-      <label for="input-text">Enter IP addresses and counts:</label>
+      <label for="input-text">Enter text with IPv4 addresses:</label>
       <textarea id="input-text" rows="5"></textarea>
 
       <div class="controls">
@@ -186,15 +186,20 @@
       });
 
       function generateCommaSeparated() {
-        const ipLines = inputEl.value.split("\n");
-        const validIps = ipLines.map(line => line.split(" ")[0])
-          .filter(ip => isValidIp(ip));
-        outputEl.value = validIps.join(",");
-      }
-
-      function isValidIp(ip) {
-        const parts = ip.split(".");
-        return parts.length === 4 && parts.every(part => !isNaN(part) && +part >= 0 && +part <= 255);
+        const text = inputEl.value;
+        // Regex to match IPv4 addresses
+        const ipv4Regex = /\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g;
+        
+        // Extract all IPv4 addresses from the text
+        const matches = text.match(ipv4Regex);
+        
+        if (matches && matches.length > 0) {
+          // Remove duplicates and join with comma
+          const uniqueIps = [...new Set(matches)];
+          outputEl.value = uniqueIps.join(",");
+        } else {
+          outputEl.value = "";
+        }
       }
 
       function copyToClipboard() {
