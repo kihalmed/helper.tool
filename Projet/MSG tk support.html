@@ -217,6 +217,7 @@
         <div class="dropdown-content">
           <button onclick="selectOption('ips')">Additional IPs not working</button>
           <button onclick="selectOption('ips2')">Additional IPs not working</button>
+		   <button onclick="selectOption('ips3')">IP not working</button>
         </div>
       </li>
 
@@ -322,6 +323,7 @@
 		S4: `Hello, \nPlease we need you to add default rDNS [rdns provider].\n\n${pingInput}\n\nThanks in advance.`,
         ips: `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
         ips2: `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
+        ips3: `Hello, \nPlease check this additional ip, it's not working.\n-----\n\n${pingInput}\n\nThanks.`,
         allow1: `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`,
         allow2: `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`,
         SBL: `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`,
@@ -410,5 +412,6 @@
   </script>
 </body>
 </html>
+
 
 
