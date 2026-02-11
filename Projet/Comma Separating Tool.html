@@ -90,6 +90,11 @@
       color: var(--highlight);
     }
 
+    .textarea-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
     textarea {
       width: 100%;
       min-height: 120px;
@@ -108,6 +113,52 @@
       opacity: .85;
     }
 
+    .copy-btn-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .copy-btn-wrapper.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .copy-btn-wrapper img {
+      width: 110px;
+      height: auto;
+      cursor: pointer;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .copy-btn-wrapper img:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+    }
+
+    .copy-btn-wrapper img:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    .copy-btn-wrapper.copied img {
+      animation: pulse 0.5s ease;
+    }
+
     .controls {
       display: flex;
       gap: 10px;
@@ -124,10 +175,6 @@
       cursor: pointer;
       font-weight: 600;
       transition: opacity 0.2s ease;
-    }
-
-    button.btn.warn {
-      background: linear-gradient(180deg, #f97316, #ef4444);
     }
 
     button.btn.ghost {
@@ -163,10 +210,11 @@
       </div>
 
       <label for="output-text">Generated comma-separated IPs:</label>
-      <textarea id="output-text" rows="5" readonly></textarea>
-
-      <div class="controls">
-        <button class="btn warn" id="copy-button">Copy to Clipboard</button>
+      <div class="textarea-wrapper">
+        <textarea id="output-text" rows="5" readonly></textarea>
+        <div class="copy-btn-wrapper" id="copy-btn-wrapper">
+          <img id="copy-image" src="Capture.PNG" alt="Copy" />
+        </div>
       </div>
 
       <div class="footer">All processing is client-side. No data is sent anywhere.</div>
@@ -177,13 +225,18 @@
     document.addEventListener("DOMContentLoaded", function () {
       const inputEl = document.getElementById("input-text");
       const outputEl = document.getElementById("output-text");
+      const copyBtnWrapper = document.getElementById("copy-btn-wrapper");
+      const copyImage = document.getElementById("copy-image");
 
       document.getElementById("generate-button").addEventListener("click", generateCommaSeparated);
-      document.getElementById("copy-button").addEventListener("click", copyToClipboard);
       document.getElementById("clear").addEventListener("click", () => {
         inputEl.value = "";
         outputEl.value = "";
+        copyBtnWrapper.classList.remove("show");
       });
+
+      // Copy button click handler
+      copyImage.addEventListener("click", copyToClipboard);
 
       function generateCommaSeparated() {
         const text = inputEl.value;
@@ -197,14 +250,26 @@
           // Remove duplicates and join with comma
           const uniqueIps = [...new Set(matches)];
           outputEl.value = uniqueIps.join(",");
+          
+          // Show copy button with animation
+          setTimeout(() => {
+            copyBtnWrapper.classList.add("show");
+          }, 100);
         } else {
           outputEl.value = "";
+          copyBtnWrapper.classList.remove("show");
         }
       }
 
       function copyToClipboard() {
         outputEl.select();
         document.execCommand("copy");
+        
+        // Add copied animation
+        copyBtnWrapper.classList.add("copied");
+        setTimeout(() => {
+          copyBtnWrapper.classList.remove("copied");
+        }, 500);
       }
 
       // ========== THEME SYNC (Same as MSG tk support.html) ==========
