@@ -158,7 +158,7 @@
 
       <div class="textarea-wrapper">
         <div class="line-numbers" id="lineNumbers"></div>
-        <textarea class="input" id="input" placeholder="Example:	wvo8oMBG6ThzTijp	ot02/rc22717	5	51.79.7.176, 51.79.7.177, 51.79.7.178"></textarea>
+        <textarea class="input" id="input" placeholder="password1	group1/server1	5	192.168.1.1, 192.168.1.2, 192.168.1.3"></textarea>
       </div>
 
       <div class="controls">
@@ -248,33 +248,53 @@
         const raw = lines[i].trim();
         if (!raw) continue;
 
-        // Format: password  group/server  count  ip1, ip2, ip3, ...
-        // Try tab-split first, then whitespace fallback
-        let password, groupServer, count, ipRaw;
+        let password, groupServer, ipRaw = null;
 
+        // Try tab-split first
         const parts = raw.split(/\t+/);
+
         if (parts.length >= 4) {
-          password  = parts[0].trim();
+          // Format: password  group/server  count  ip1, ip2, ...
+          password    = parts[0].trim();
           groupServer = parts[1].trim();
-          count     = parts[2].trim();
-          ipRaw     = parts.slice(3).join('\t').trim();
+          // parts[2] is count — ignored in output
+          ipRaw       = parts.slice(3).join('\t').trim();
+        } else if (parts.length === 3 || parts.length === 2) {
+          // Format: password  group/server  [count]  — no IPs
+          password    = parts[0].trim();
+          groupServer = parts[1].trim();
         } else {
-          const m = raw.match(/^(\S+)\s+(\S+\/\S+)\s+(\d+)\s+(.+)$/);
-          if (m) {
-            password    = m[1];
-            groupServer = m[2];
-            count       = m[3];
-            ipRaw       = m[4].trim();
+          // Whitespace fallback: try 4-field, then 3-field, then 2-field
+          const m4 = raw.match(/^(\S+)\s+(\S+\/\S+)\s+(\d+)\s+(.+)$/);
+          const m3 = raw.match(/^(\S+)\s+(\S+\/\S+)\s+(\d+)$/);
+          const m2 = raw.match(/^(\S+)\s+(\S+\/\S+)$/);
+          if (m4) {
+            password    = m4[1];
+            groupServer = m4[2];
+            ipRaw       = m4[4].trim();
+          } else if (m3) {
+            password    = m3[1];
+            groupServer = m3[2];
+          } else if (m2) {
+            password    = m2[1];
+            groupServer = m2[2];
           } else {
             errors.push({ lineNumber: i + 1, text: raw });
             continue;
           }
         }
 
-        const ips    = ipRaw.split(',').map(ip => ip.trim()).filter(Boolean).join(',');
-        const server = groupServer.split('/').pop();
+        const server   = groupServer.split('/').pop();
         const pwQuoted = shellQuote(password);
-        const cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}\t--ip4=${ips}`;
+
+        let cmd;
+        if (ipRaw) {
+          const ips = ipRaw.split(',').map(ip => ip.trim()).filter(Boolean).join(',');
+          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}\t--ip4=${ips}`;
+        } else {
+          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}`;
+        }
+
         results.push({ cmd, server, original: raw });
       }
       return { results, errors };
@@ -347,7 +367,7 @@
     });
 
     document.getElementById('pasteExample').addEventListener('click', () => {
-      inputEl.value = 'wvo8oMBG6ThzTijp\tot02/rc22717\t5\t51.79.7.176, 51.79.7.177, 51.79.7.178, 51.79.7.179, 66.70.179.127\nqu1BK7Av9EaLaNGS\tot02/rc22718\t6\t51.68.201.48, 51.68.208.245, 51.75.166.172, 51.77.96.203, 57.128.141.234\nYwG5NRAE2TbcLDLq\tot02/rc22719\t5\t15.235.75.75, 51.222.98.221, 51.222.98.222, 51.222.98.223, 54.39.196.149';
+      inputEl.value = 'password1\tgroup1/server1\t5\n password2\tgroup1/server2\t5\t192.168.1.1, 192.168.1.2, 192.168.1.3, 192.168.1.4, 192.168.1.5';
       updateLineNumbers();
     });
   </script>
