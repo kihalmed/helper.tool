@@ -152,13 +152,13 @@
       <div class="header">
         <div>
           <h1>Preinstall command generator</h1>
-          <p class="lead">Paste lines like: <code>password group/server</code> — one per line.</p>
+          <p class="lead">Paste lines like: <code>password&nbsp;&nbsp;group/server&nbsp;&nbsp;count&nbsp;&nbsp;ip1, ip2, ip3...</code> — one per line.</p>
         </div>
       </div>
 
       <div class="textarea-wrapper">
         <div class="line-numbers" id="lineNumbers"></div>
-        <textarea class="input" id="input" placeholder="Example:	password group/server"></textarea>
+        <textarea class="input" id="input" placeholder="Example:	wvo8oMBG6ThzTijp	ot02/rc22717	5	51.79.7.176, 51.79.7.177, 51.79.7.178"></textarea>
       </div>
 
       <div class="controls">
@@ -167,7 +167,7 @@
         <button class="btn ghost" id="pasteExample">Paste example</button>
       </div>
 
-      <div class="help">Rules: each non-empty line must contain <strong>password</strong> and <strong>group/server</strong> separated by whitespace.</div>
+      <div class="help">Rules: each non-empty line must contain <strong>password</strong>, <strong>group/server</strong>, <strong>count</strong>, and <strong>IPs</strong> separated by whitespace/tabs.</div>
       <div class="status" id="status"></div>
     </div>
 
@@ -247,17 +247,35 @@
       for (let i = 0; i < lines.length; i++) {
         const raw = lines[i].trim();
         if (!raw) continue;
-        const m = raw.match(/^(\S+)\s+(\S+\/\S+)$/);
-        if (m) {
-          const password = m[1];
-          const groupServer = m[2];
-          const server = groupServer.split('/').pop();
-          const pwQuoted = shellQuote(password);
-          const cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}`;
-          results.push({ cmd, original: raw });
+
+        // Format: password  group/server  count  ip1, ip2, ip3, ...
+        // Try tab-split first, then whitespace fallback
+        let password, groupServer, count, ipRaw;
+
+        const parts = raw.split(/\t+/);
+        if (parts.length >= 4) {
+          password  = parts[0].trim();
+          groupServer = parts[1].trim();
+          count     = parts[2].trim();
+          ipRaw     = parts.slice(3).join('\t').trim();
         } else {
-          errors.push({ lineNumber: i + 1, text: raw });
+          const m = raw.match(/^(\S+)\s+(\S+\/\S+)\s+(\d+)\s+(.+)$/);
+          if (m) {
+            password    = m[1];
+            groupServer = m[2];
+            count       = m[3];
+            ipRaw       = m[4].trim();
+          } else {
+            errors.push({ lineNumber: i + 1, text: raw });
+            continue;
+          }
         }
+
+        const ips    = ipRaw.split(',').map(ip => ip.trim()).filter(Boolean).join(',');
+        const server = groupServer.split('/').pop();
+        const pwQuoted = shellQuote(password);
+        const cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}\t--ip4=${ips}`;
+        results.push({ cmd, server, original: raw });
       }
       return { results, errors };
     }
@@ -274,13 +292,14 @@
         const pre = document.createElement('div');
         pre.className = 'cmd';
         const preInner = document.createElement('pre');
+        preInner.style.margin = '0';
         preInner.textContent = r.cmd;
         pre.appendChild(preInner);
         div.appendChild(pre);
 
         const meta = document.createElement('div');
         meta.className = 'meta';
-        const serverName = r.original.split('/').pop();
+        const serverName = r.server;
         const copyBtn = document.createElement('button');
         copyBtn.className = 'copy-btn';
         copyBtn.textContent = serverName;
@@ -328,7 +347,7 @@
     });
 
     document.getElementById('pasteExample').addEventListener('click', () => {
-      inputEl.value = 'pass11 \goup1/server1\npass22 \goup2/server2\npass33 \goup3/server3';
+      inputEl.value = 'wvo8oMBG6ThzTijp\tot02/rc22717\t5\t51.79.7.176, 51.79.7.177, 51.79.7.178, 51.79.7.179, 66.70.179.127\nqu1BK7Av9EaLaNGS\tot02/rc22718\t6\t51.68.201.48, 51.68.208.245, 51.75.166.172, 51.77.96.203, 57.128.141.234\nYwG5NRAE2TbcLDLq\tot02/rc22719\t5\t15.235.75.75, 51.222.98.221, 51.222.98.222, 51.222.98.223, 54.39.196.149';
       updateLineNumbers();
     });
   </script>
