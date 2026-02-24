@@ -290,9 +290,9 @@
         let cmd;
         if (ipRaw) {
           const ips = ipRaw.split(',').map(ip => ip.trim()).filter(Boolean).join(',');
-          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}\t --ip4=${ips}`;
+          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted}\t --ip4=${ips}`;
         } else {
-          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py ${server} ${pwQuoted}`;
+          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted}`;
         }
 
         results.push({ cmd, server, original: raw });
@@ -373,4 +373,5 @@
   </script>
 </body>
 </html>
+
 
