@@ -830,6 +830,9 @@ body.light-mode .modal-content {
             <label class="checkbox-label">
               <input type="checkbox" name="permissions" value="Projet/domain extractor.html"> domain extractor
             </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="permissions" value="Projet/server-extractor.html"> server-extractor
+            </label>
           </div>
         </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -872,6 +875,11 @@ body.light-mode .modal-content {
       </li>
       <li class="menu-item" data-page="Projet/format pre-intsall.html" onclick="loadPage('Projet/format pre-intsall.html', event)">
         <span style="font-size: 20px;">🔍</span><span>Pre-install</span>
+      </li>
+      <li class="menu-item" data-page="Projet/server-extractor.html" onclick="loadPage('Projet/server-extractor.html', event)">
+        <span style="font-size: 20px;">🔍</span><span>server-extractor</span>
+      </li>
+      
     </ul>
     <!-- Sidebar Footer Logout Button -->
 <div class="sidebar-logout">
@@ -1009,7 +1017,8 @@ body.light-mode .modal-content {
         'Projet/Geo File Extractor.html',
         'Projet/Extractor ips.html',
         'Projet/format pre-intsall.html',
-        'Projet/domain extractor.html'
+        'Projet/domain extractor.html',
+        'Projet/server-extractor.html
       ],
       registeredAt: new Date().toISOString()
     };
