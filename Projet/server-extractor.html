@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Server Extractor</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa6bf;
+      --accent: #7c5cff;
+      --accent-dark: #5b3ffd;
+      --highlight: #facc15;
+      --text: #e6eef8;
+      --border: rgba(255,255,255,0.06);
+      --shadow: rgba(2,6,23,0.7);
+      --tag-bg: rgba(124,92,255,0.13);
+      --tag-border: rgba(124,92,255,0.35);
+    }
+    :root.light-mode {
+      --bg: #f5f7fa; --card: #ffffff; --muted: #6b7280;
+      --accent: #7c5cff; --accent-dark: #6846ff; --highlight: #d97706;
+      --text: #1f2937; --border: rgba(0,0,0,0.09); --shadow: rgba(0,0,0,0.1);
+      --tag-bg: rgba(124,92,255,0.09); --tag-border: rgba(124,92,255,0.3);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg); color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding: 36px; display: flex; align-items: flex-start; justify-content: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    .wrap { max-width: 880px; width: 100%; display: flex; flex-direction: column; gap: 24px; }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 20px;
+      box-shadow: 0 8px 30px var(--shadow); border: 1px solid var(--border);
+      transition: background 0.3s, border 0.3s, box-shadow 0.3s;
+    }
+    h1 { font-size: 20px; margin: 0 0 6px; color: var(--text); }
+    p.lead { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
+    code { background: var(--tag-bg); border: 1px solid var(--tag-border); color: var(--accent); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    label { display: block; margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--highlight); }
+    textarea {
+      width: 100%; min-height: 160px; resize: vertical;
+      border-radius: 10px; padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size: 13px; line-height: 1.6; color: var(--text);
+      background: rgba(255,255,255,0.025); border: 1px solid var(--border); outline: none;
+      transition: background 0.3s, color 0.3s, border 0.3s, box-shadow 0.2s;
+    }
+    :root.light-mode textarea { background: rgba(0,0,0,0.03); }
+    textarea:focus { border-color: rgba(124,92,255,0.5); box-shadow: 0 0 0 3px rgba(124,92,255,0.1); }
+    textarea[readonly] { opacity: .85; cursor: default; }
+    .controls { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+    button.btn {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      border: 0; color: white; padding: 8px 14px; border-radius: 10px;
+      cursor: pointer; font-weight: 600; font-size: 13px; font-family: inherit;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    button.btn:hover { opacity: .9; }
+    button.btn:active { transform: scale(0.97); }
+    button.btn.warn { background: linear-gradient(180deg, #f97316, #ef4444); }
+    button.btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .chip {
+      font-size: 12px; font-weight: 600; font-family: ui-monospace, monospace;
+      padding: 3px 10px; border-radius: 8px;
+      background: var(--tag-bg); border: 1px solid var(--tag-border); color: var(--accent);
+    }
+    .footer { margin-top: 12px; font-size: 13px; color: var(--muted); text-align: center; }
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--accent); color: white; font-size: 13px; font-weight: 600;
+      padding: 10px 18px; border-radius: 10px; box-shadow: 0 6px 24px rgba(124,92,255,0.4);
+      opacity: 0; transform: translateY(10px); pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="card">
+      <h1>Server Extractor</h1>
+      <p class="lead">Paste your alert/monitoring text. Only IDs starting with <code>vs</code>, <code>vsv</code>, or <code>rc</code> will be extracted.</p>
+
+      <label for="inputTextarea">Paste Alert Text:</label>
+      <textarea id="inputTextarea" placeholder="vs23254 - vistas05&#10;Linux: High swap space usage: Warning&#10;vs23251 - opti2&#10;powerdns: Critical&#10;rc23250 - opti&#10;powerdns: Critical"></textarea>
+
+      <div class="controls">
+        <button class="btn" onclick="extract()">&#9881; Extract Servers</button>
+        <button class="btn ghost" onclick="loadExample()">Load Example</button>
+        <button class="btn ghost" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label for="outputTextarea">Extracted Result:</label>
+      <textarea id="outputTextarea" readonly placeholder="Result will appear here after extraction..."></textarea>
+
+      <div id="statsRow" class="stats" style="display:none"></div>
+
+      <div class="controls">
+        <button class="btn warn" onclick="copyOutput()">Copy to Clipboard</button>
+      </div>
+
+      <div class="footer">All processing is client-side. No data is sent anywhere.</div>
+    </div>
+
+  </div>
+
+  <div id="toast">Copied!</div>
+
+  <script>
+    var EXAMPLE = "vs23254 - vistas05\nLinux: High swap space usage: Warning\nvs23251 - opti2\npowerdns: Critical\nrc23250 - opti\npowerdns: Critical\nrc23205 - ec01\npowerdns: Critical\nvs23193 - tmt2\nLinux: Number of installed packages has been changed: Warning";
+
+    function extract() {
+      var text = document.getElementById('inputTextarea').value;
+      var outputEl = document.getElementById('outputTextarea');
+      var statsRow = document.getElementById('statsRow');
+
+      // Match any token at the start of a line that begins with vsv, vs, or rc
+      var lines = text.split('\n');
+      var found = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var trimmed = lines[i].trim();
+        // Must start with vsv, vs, or rc (case-insensitive), followed by alphanumerics
+        var m = trimmed.match(/^(vsv[A-Za-z0-9_\-.]+|vs[A-Za-z0-9_\-.]+|rc[A-Za-z0-9_\-.]+)/i);
+        if (m) {
+          found.push(m[1]);
+        }
+      }
+
+      if (found.length === 0) {
+        outputEl.value = 'No server IDs found. Lines must start with vs, vsv, or rc followed by numbers/letters.';
+        statsRow.style.display = 'none';
+        return;
+      }
+
+      outputEl.value = 'in(' + found.join(',') + ')';
+
+      var vsv = found.filter(function(s){ return /^vsv/i.test(s); }).length;
+      var vs  = found.filter(function(s){ return /^vs[^v]/i.test(s); }).length;
+      var rc  = found.filter(function(s){ return /^rc/i.test(s); }).length;
+
+      var html = '<div class="chip">Total: ' + found.length + '</div>';
+      if (vs)  html += '<div class="chip">vs: '  + vs  + '</div>';
+      if (vsv) html += '<div class="chip">vsv: ' + vsv + '</div>';
+      if (rc)  html += '<div class="chip">rc: '  + rc  + '</div>';
+      statsRow.innerHTML = html;
+      statsRow.style.display = 'flex';
+    }
+
+    function copyOutput() {
+      var el = document.getElementById('outputTextarea');
+      el.select();
+      document.execCommand('copy');
+      showToast('Copied!');
+    }
+
+    function clearAll() {
+      document.getElementById('inputTextarea').value = '';
+      document.getElementById('outputTextarea').value = '';
+      document.getElementById('statsRow').style.display = 'none';
+    }
+
+    function loadExample() {
+      document.getElementById('inputTextarea').value = EXAMPLE;
+      extract();
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function(){ t.classList.remove('show'); }, 2000);
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'light') document.documentElement.classList.add('light-mode');
+      else document.documentElement.classList.remove('light-mode');
+    }
+
+    function checkParentTheme() {
+      try {
+        if (window.parent && window.parent !== window) {
+          var isLight = window.parent.document.body.classList.contains('light-mode');
+          applyTheme(isLight ? 'light' : 'dark');
+          return;
+        }
+      } catch(e) {}
+      applyTheme(localStorage.getItem('theme') || 'dark');
+    }
+
+    checkParentTheme();
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.theme) { applyTheme(e.data.theme); localStorage.setItem('theme', e.data.theme); }
+    });
+    setInterval(checkParentTheme, 200);
+    window.addEventListener('focus', checkParentTheme);
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) checkParentTheme(); });
+  </script>
+</body>
+</html>
