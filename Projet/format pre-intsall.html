@@ -1,377 +1,512 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Preinstall Command Generator</title>
-  <style>
-    :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --muted: #9aa6bf;
-      --accent: #7c5cff;
-      --accent-dark: #5b3ffd;
-      --glass: rgba(255,255,255,0.04);
-      --success: #16a34a;
-      --danger: #ef4444;
-      --highlight: #facc15;
-      --text: #e6eef8;
-      --border: rgba(255,255,255,0.05);
-      --shadow: rgba(2,6,23,0.6);
-    }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Preinstall Command Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 
-    :root.light-mode {
-      --bg: #f5f7fa;
-      --card: #ffffff;
-      --muted: #6b7280;
-      --accent: #7c5cff;
-      --accent-dark: #6846ff;
-      --glass: rgba(0,0,0,0.04);
-      --danger: #ef4444;
-      --success: #16a34a;
-      --highlight: #d97706;
-      --text: #1f2937;
-      --border: rgba(0,0,0,0.08);
-      --shadow: rgba(0,0,0,0.1);
-    }
+<style>
+:root{
+  --bg:#080d17;
+  --surface:#0d1526;
+  --surface2:#111c30;
+  --surface3:#162036;
+  --muted:#5a6a85;
+  --muted2:#7a8fa8;
+  --accent:#3b82f6;
+  --accent2:#60a5fa;
+  --accent-glow:rgba(59,130,246,0.18);
+  --green:#22c55e;
+  --red:#ef4444;
+  --amber:#f59e0b;
+  --highlight:#fbbf24;
+  --text:#dde8f5;
+  --text2:#a8bdd4;
+  --border:rgba(59,130,246,0.12);
+  --border2:rgba(255,255,255,0.06);
+  --shadow:rgba(0,0,0,0.5);
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Syne',sans-serif;
+}
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-      padding: 36px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
+*{box-sizing:border-box;margin:0;padding:0}
 
-    .wrap {
-      max-width: 980px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: 22px;
-    }
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding:32px 24px;
+  display:flex;
+  justify-content:center;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+}
 
-    @media (max-width: 980px) {
-      .wrap { grid-template-columns: 1fr; }
-    }
+.wrap{
+  max-width:1060px;
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr 460px;
+  gap:24px;
+  align-items:start;
+}
 
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 8px 30px var(--shadow);
-      border: 1px solid var(--border);
-      transition: background 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-    }
+.card{
+  background:var(--surface);
+  border-radius:16px;
+  padding:24px;
+  border:1px solid var(--border2);
+  box-shadow:0 4px 40px var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
 
-    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    h1 { font-size: 18px; margin: 0; }
-    p.lead { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
+.card::before{
+  content:"";
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:0.5;
+}
 
-    .textarea-wrapper {
-      display: flex;
-      height: 480px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      background: var(--glass);
-    }
+.card.notes-clear{
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  padding:12px 0 0;
+}
+.card.notes-clear::before{display:none}
 
-    .line-numbers {
-      counter-reset: line;
-      text-align: right;
-      padding: 14px 10px;
-      color: var(--muted);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size: 13px;
-      user-select: none;
-      background: rgba(255,255,255,0.02);
-      border-right: 1px solid rgba(255,255,255,0.05);
-      min-width: 40px;
-      overflow-y: auto;
-    }
+.card-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
 
-    .line-numbers span { display: block; counter-increment: line; line-height: 1.6em; }
-    .line-numbers span::before { content: counter(line); display: block; }
+.card-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--accent-glow);
+  border:1px solid rgba(59,130,246,0.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
 
-    textarea.input {
-      flex: 1;
-      resize: none;
-      padding: 14px;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: var(--text);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size: 13px;
-      line-height: 1.6em;
-      overflow-y: auto;
-      height: 100%;
-    }
+h1{font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--text)}
+h2{font-size:15px;font-weight:700;color:var(--text)}
 
-    .controls { display: flex; gap: 8px; margin-top: 12px; }
-    button.btn {
-      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
-      border: 0;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: opacity 0.2s ease;
-    }
-    button.btn.ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-weight: 600;
-    }
-    button.btn:hover { opacity: .9; }
+.hint{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted2);
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:10px 12px;
+  margin-bottom:14px;
+  line-height:1.7;
+}
+.hint code{color:var(--accent2)}
 
-    .right { display: flex; flex-direction: column; gap: 12px; }
-    .output-list { display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow: auto; padding-right: 6px; }
-    .line { display: flex; gap: 8px; align-items: center; background: var(--glass); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.02); }
-    .cmd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .line .meta { display: flex; gap: 8px; margin-left: auto; }
-    .copy-btn { background: transparent; border: 1px solid var(--border); padding: 6px 9px; border-radius: 8px; cursor: pointer; color: var(--muted); transition: all .3s ease; }
-    .copy-btn.highlighted { background: var(--highlight); color: #000; }
-    .copy-btn.rotated { transform: rotate(360deg); }
-    .help, .status, .footer { font-size: 13px; color: var(--muted); margin-top: 8px; }
-  </style>
+.textarea-wrap{position:relative;margin-bottom:14px}
+.textarea-wrap::before{
+  content:"INPUT";
+  position:absolute;
+  top:10px;right:12px;
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  color:var(--muted);font-family:var(--sans);
+}
+
+textarea{
+  width:100%;height:420px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:12px;outline:none;
+  color:var(--text);
+  font-family:var(--mono);font-size:12.5px;
+  padding:14px;resize:none;line-height:1.8;
+  transition:border-color .2s;
+}
+textarea:focus{
+  border-color:rgba(59,130,246,0.4);
+  box-shadow:0 0 0 3px rgba(59,130,246,0.07);
+}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+
+.btn{
+  font-family:var(--sans);font-weight:600;font-size:13px;
+  padding:9px 18px;border-radius:10px;border:0;cursor:pointer;
+  transition:all .2s;letter-spacing:0.2px;
+}
+.btn-primary{
+  background:var(--accent);color:#fff;
+  box-shadow:0 2px 12px rgba(59,130,246,0.35);
+}
+.btn-primary:hover{
+  background:var(--accent2);
+  box-shadow:0 4px 20px rgba(59,130,246,0.45);
+  transform:translateY(-1px);
+}
+.btn-ghost{
+  background:var(--surface3);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+}
+.btn-ghost:hover{border-color:rgba(59,130,246,0.3);color:var(--text)}
+
+.status{
+  font-size:12px;color:var(--green);
+  font-family:var(--mono);margin-top:10px;
+  min-height:18px;display:flex;align-items:center;gap:6px;
+}
+.status::before{
+  content:"";display:inline-block;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 6px var(--green);
+  opacity:0;transition:opacity .3s;
+}
+.status.active::before{opacity:1}
+
+.right-col{display:flex;flex-direction:column;gap:16px}
+
+.column-labels{
+  display:flex;gap:16px;margin-bottom:10px;justify-content:flex-end;
+}
+.col-label{
+  width:96px;text-align:center;
+  font-size:11px;font-weight:700;letter-spacing:0.4px;
+  padding:6px 4px;border-radius:8px;position:relative;
+}
+.col-label.blue{
+  background:linear-gradient(135deg,#1d4ed8,#2563eb);
+  color:#fff;box-shadow:0 2px 10px rgba(37,99,235,0.4);
+}
+.col-label:not(:last-child)::after{
+  content:"";position:absolute;
+  right:-5px;top:7px;height:18px;width:2px;
+  background:var(--red);border-radius:2px;opacity:0.7;
+}
+
+.output-list{
+  display:flex;flex-direction:column;gap:6px;
+  max-height:500px;overflow-y:auto;overflow-x:hidden;padding-right:2px;
+}
+.output-list::-webkit-scrollbar{width:4px}
+.output-list::-webkit-scrollbar-track{background:transparent}
+.output-list::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
+.output-list::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+.line{
+  display:flex;gap:8px;align-items:center;
+  background:var(--surface2);border:1px solid var(--border2);
+  padding:10px 10px 10px 30px;border-radius:11px;position:relative;
+  transition:border-color .2s, background .2s;
+  animation:rowIn .25s ease both;
+}
+.line:hover{border-color:rgba(59,130,246,0.2);background:var(--surface3)}
+
+@keyframes rowIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.line:nth-child(1){animation-delay:.03s}
+.line:nth-child(2){animation-delay:.06s}
+.line:nth-child(3){animation-delay:.09s}
+.line:nth-child(4){animation-delay:.12s}
+.line:nth-child(5){animation-delay:.15s}
+
+.cmd{
+  font-family:var(--mono);font-size:11.5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--text2);flex:1;min-width:0;
+}
+
+.meta{display:flex;gap:8px;flex-shrink:0}
+
+.copy-btn{
+  background:var(--surface3);border:1px solid var(--border2);
+  padding:6px 0;border-radius:8px;cursor:pointer;
+  color:var(--muted2);font-family:var(--mono);
+  font-size:11px;font-weight:600;transition:all .2s;
+  position:relative;width:96px;text-align:center;
+  white-space:nowrap;overflow:hidden;
+}
+.copy-btn:hover{
+  border-color:rgba(59,130,246,0.4);
+  color:var(--accent2);background:rgba(59,130,246,0.08);
+}
+.copy-btn.highlighted{
+  background:var(--highlight);border-color:var(--highlight);
+  color:#000;box-shadow:0 2px 12px rgba(251,191,36,0.35);
+}
+.meta .copy-btn:not(:last-child)::after{
+  content:"";position:absolute;right:-5px;top:5px;
+  height:18px;width:2px;background:var(--red);
+  border-radius:2px;opacity:0.6;
+}
+
+.warn{
+  position:absolute;left:8px;font-size:13px;
+  cursor:default;user-select:none;line-height:1;
+}
+
+#globalTooltip{
+  display:none;position:fixed;
+  background:#0d1a2e;border:1px solid rgba(245,158,11,0.6);
+  color:var(--text);padding:10px 14px;border-radius:10px;
+  font-size:12px;font-family:var(--sans);white-space:nowrap;
+  box-shadow:0 8px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.1);
+  z-index:9999;pointer-events:none;line-height:2;
+  backdrop-filter:blur(8px);
+}
+#globalTooltip::after{
+  content:"";position:absolute;bottom:-7px;left:14px;
+  width:0;height:0;
+  border-left:6px solid transparent;border-right:6px solid transparent;
+  border-top:7px solid rgba(245,158,11,0.6);
+}
+#globalTooltip ul{list-style:none}
+#globalTooltip ul li{display:flex;align-items:center;gap:8px;font-weight:600}
+#globalTooltip ul li::before{content:"›";color:var(--amber);font-size:16px;line-height:1}
+
+.notes-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.notes-list li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:12.5px;color:var(--muted2);line-height:1.5;
+}
+.notes-list li::before{
+  content:"—";color:var(--accent);opacity:0.6;
+  flex-shrink:0;margin-top:1px;
+}
+.notes-title{
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;margin-bottom:10px;
+}
+
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:48px 0;
+  color:var(--muted);gap:10px;font-size:13px;
+}
+.empty-icon{font-size:28px;opacity:0.3}
+
+.rules{
+  font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7;
+  padding:10px 12px;background:var(--surface2);border-radius:8px;
+  border-left:2px solid rgba(59,130,246,0.3);
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="header">
-        <div>
-          <h1>Preinstall command generator</h1>
-          <p class="lead">Paste lines like: <code>password&nbsp;&nbsp;group/server&nbsp;&nbsp;count&nbsp;&nbsp;ip1, ip2, ip3...</code> — one per line.</p>
-        </div>
-      </div>
 
-      <div class="textarea-wrapper">
-        <div class="line-numbers" id="lineNumbers"></div>
-        <textarea class="input" id="input" placeholder="password1	group1/server1	5	192.168.1.1, 192.168.1.2, 192.168.1.3"></textarea>
-      </div>
+<div id="globalTooltip">
+  <ul>
+    <li>Subdomains</li>
+    <li>RDNS</li>
+    <li>no need Ipv6</li>
+  </ul>
+</div>
 
-      <div class="controls">
-        <button class="btn" id="generate">Generate</button>
-        <button class="btn ghost" id="clear">Clear</button>
-        <button class="btn ghost" id="pasteExample">Paste example</button>
-      </div>
+<div class="wrap">
 
-      <div class="help">Rules: each non-empty line must contain <strong>password</strong>, <strong>group/server</strong>, <strong>count</strong>, and <strong>IPs</strong> separated by whitespace/tabs.</div>
-      <div class="status" id="status"></div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">⚡</div>
+      <h1>Preinstall Command Generator</h1>
     </div>
-
-    <div class="right">
-      <div class="card">
-        <h2 style="margin:0 0 10px 0; font-size:15px">Generated commands</h2>
-        <div class="output-list" id="outputList" aria-live="polite"></div>
-        <div class="footer">Each line has a copy button. Use "Copy all" to copy everything at once.</div>
-      </div>
-
-      <div class="card" style="padding:12px">
-        <strong>Notes</strong>
-        <ul style="margin-top:8px">
-          <li>Passwords containing single quotes will use a double-quoted wrapper automatically.</li>
-          <li>Blank lines are ignored.</li>
-          <li>This is client-side only — nothing is sent to a server.</li>
-        </ul>
-      </div>
+    <div class="hint">
+      Paste lines as: <code>password &nbsp;group/server &nbsp;count &nbsp;ip1, ip2…</code> — one per line, tab-separated.
     </div>
+    <div class="textarea-wrap">
+      <textarea id="input" spellcheck="false" placeholder="password1&#9;vistas06/server1&#9;5&#10;password2&#9;wp/server2&#9;5&#9;192.168.1.1, 192.168.1.2"></textarea>
+    </div>
+    <div class="controls">
+      <button class="btn btn-primary" id="generate">⚙ &nbsp;Generate</button>
+      <button class="btn btn-ghost" id="clear">✕ &nbsp;Clear</button>
+      <button class="btn btn-ghost" id="pasteExample">⊕ &nbsp;Paste example</button>
+    </div>
+    <div class="rules">
+      Each non-empty line must contain <b>password</b>, <b>group/server</b>, <b>count</b>, and optional <b>IPs</b> (tab-separated).
+    </div>
+    <div class="status" id="status"></div>
   </div>
 
-  <script>
-    // Dark/Light mode theme sync
-    document.addEventListener("DOMContentLoaded", function () {
-      function applyTheme(theme) {
-        if (theme === 'light') document.documentElement.classList.add('light-mode');
-        else document.documentElement.classList.remove('light-mode');
-      }
+  <div class="right-col">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <h2>Generated Commands</h2>
+      </div>
+      <div class="column-labels">
+        <span class="col-label blue">Pre-install</span>
+        <span class="col-label blue">install(small)</span>
+        <span class="col-label blue">install(large)</span>
+      </div>
+      <div id="outputList" class="output-list">
+        <div class="empty-state">
+          <div class="empty-icon">⌨</div>
+          <span>Paste your input and click Generate</span>
+        </div>
+      </div>
+    </div>
 
-      function checkParentTheme() {
-        try {
-          if (window.parent && window.parent !== window) {
-            const parentHasLightMode = window.parent.document.body.classList.contains('light-mode');
-            applyTheme(parentHasLightMode ? 'light' : 'dark');
-            return true;
-          }
-        } catch(e) {
-          const savedTheme = localStorage.getItem('theme') || 'dark';
-          applyTheme(savedTheme);
-          return false;
-        }
-      }
+    <div class="card notes-clear">
+      <div class="notes-title">Notes</div>
+      <ul class="notes-list">
+        <li>Passwords containing quotes will be escaped automatically.</li>
+        <li>Blank lines are silently ignored.</li>
+        <li>This tool runs entirely in your browser — nothing is sent anywhere.</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-      checkParentTheme();
+<script>
+const inputEl  = document.getElementById("input")
+const outList  = document.getElementById("outputList")
+const statusEl = document.getElementById("status")
+const tooltip  = document.getElementById("globalTooltip")
+let lastClicked = null
 
-      window.addEventListener('message', (event) => {
-        if (event.data && event.data.theme) {
-          applyTheme(event.data.theme);
-          localStorage.setItem('theme', event.data.theme);
-        }
-      });
+function showTooltip(anchor){
+  tooltip.style.display = "block"
+  const r   = anchor.getBoundingClientRect()
+  const ttW = tooltip.offsetWidth
+  const ttH = tooltip.offsetHeight
+  let top  = r.top - ttH - 10
+  let left = r.left - 6
+  if(left + ttW > window.innerWidth - 8) left = window.innerWidth - ttW - 8
+  if(left < 4) left = 4
+  if(top < 4)  top  = r.bottom + 10
+  tooltip.style.top  = top  + "px"
+  tooltip.style.left = left + "px"
+}
+function hideTooltip(){ tooltip.style.display = "none" }
 
-      setInterval(() => { checkParentTheme(); }, 200);
-      window.addEventListener('focus', () => checkParentTheme());
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) checkParentTheme(); });
-      window.addEventListener('mouseenter', () => checkParentTheme());
-      window.addEventListener('click', () => checkParentTheme());
-    });
+function shellQuote(pw){
+  if(!pw.includes("'")) return `'${pw}'`
+  if(!pw.includes('"')) return `"${pw.replace(/"/g,'\\"')}"`
+  return "'" + pw.replace(/'/g,"'\"'\"'") + "'"
+}
 
-    // ================= Original functionality =================
-    const inputEl = document.getElementById('input');
-    const outList = document.getElementById('outputList');
-    const statusEl = document.getElementById('status');
-    const lineNumbers = document.getElementById('lineNumbers');
-    let lastClicked = null;
-
-    function shellQuote(pw) {
-      if (!pw.includes("'")) return `'${pw}'`;
-      if (!pw.includes('"')) return `"${pw.replace(/"/g, '\\"')}"`;
-      return "'" + pw.replace(/'/g, "'\"'\"'") + "'";
+function parseLines(text){
+  const lines=text.split(/\r?\n/), results=[], errors=[]
+  for(let i=0;i<lines.length;i++){
+    const raw=lines[i].trim()
+    if(!raw) continue
+    const parts=raw.split(/\t+/)
+    const password=parts[0], groupServer=parts[1], ipRaw=parts[3]||null
+    if(!password||!groupServer){errors.push(i+1);continue}
+    const groupName=groupServer.split('/')[0].toLowerCase()
+    const server=groupServer.split('/').pop()
+    const warn=groupName==="vistas06"||groupName==="vistas09"
+    const pwQuoted=shellQuote(password)
+    let cmd
+    if(ipRaw){
+      const ips=ipRaw.split(',').map(s=>s.trim()).filter(Boolean).join(',')
+      cmd=`cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted} --ip4=${ips}`
+    }else{
+      cmd=`cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted}`
     }
+    let startCmd,treeCmd
+    if(groupName==="wp"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_proxy,Install_multiTemplates,Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_proxy,Install_multiTemplates ${server}`
+    }else if(groupName==="tmt2"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a ${server}`
+    }else if(groupName==="vistas01"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a ${server}`
+    }else{
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_multiTemplates,Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_multiTemplates ${server}`
+    }
+    results.push({cmd,startCmd,treeCmd,server,warn})
+  }
+  return{results,errors}
+}
 
-    function parseLines(text) {
-      const lines = text.split(/\r?\n/);
-      const results = [];
-      const errors = [];
-      for (let i = 0; i < lines.length; i++) {
-        const raw = lines[i].trim();
-        if (!raw) continue;
-
-        let password, groupServer, ipRaw = null;
-
-        // Try tab-split first
-        const parts = raw.split(/\t+/);
-
-        if (parts.length >= 4) {
-          // Format: password  group/server  count  ip1, ip2, ...
-          password    = parts[0].trim();
-          groupServer = parts[1].trim();
-          // parts[2] is count — ignored in output
-          ipRaw       = parts.slice(3).join('\t').trim();
-        } else if (parts.length === 3 || parts.length === 2) {
-          // Format: password  group/server  [count]  — no IPs
-          password    = parts[0].trim();
-          groupServer = parts[1].trim();
-        } else {
-          // Whitespace fallback: try 4-field, then 3-field, then 2-field
-          const m4 = raw.match(/^(\S+)\s+(\S+\/\S+)\s+(\d+)\s+(.+)$/);
-          const m3 = raw.match(/^(\S+)\s+(\S+\/\S+)\s+(\d+)$/);
-          const m2 = raw.match(/^(\S+)\s+(\S+\/\S+)$/);
-          if (m4) {
-            password    = m4[1];
-            groupServer = m4[2];
-            ipRaw       = m4[4].trim();
-          } else if (m3) {
-            password    = m3[1];
-            groupServer = m3[2];
-          } else if (m2) {
-            password    = m2[1];
-            groupServer = m2[2];
-          } else {
-            errors.push({ lineNumber: i + 1, text: raw });
-            continue;
-          }
+function renderResults(results){
+  outList.innerHTML=""
+  if(results.length===0){
+    outList.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><span>No valid lines found</span></div>`
+    return
+  }
+  results.forEach(r=>{
+    const div=document.createElement("div")
+    div.className="line"
+    if(r.warn){
+      const warnEl=document.createElement("span")
+      warnEl.className="warn"
+      warnEl.textContent="⚠️"
+      warnEl.addEventListener("mouseenter",()=>showTooltip(warnEl))
+      warnEl.addEventListener("mouseleave",hideTooltip)
+      div.appendChild(warnEl)
+    }
+    const cmd=document.createElement("div")
+    cmd.className="cmd"
+    cmd.title=r.cmd
+    cmd.textContent=r.cmd
+    div.appendChild(cmd)
+    const meta=document.createElement("div")
+    meta.className="meta"
+    function createButton(label,command){
+      const btn=document.createElement("button")
+      btn.className="copy-btn"
+      btn.textContent=label
+      btn.addEventListener("click",async()=>{
+        try{await navigator.clipboard.writeText(command)}
+        catch(e){
+          const ta=document.createElement("textarea")
+          ta.value=command;document.body.appendChild(ta);ta.select()
+          document.execCommand("copy");ta.remove()
         }
-
-        const server   = groupServer.split('/').pop();
-        const pwQuoted = shellQuote(password);
-
-        let cmd;
-        if (ipRaw) {
-          const ips = ipRaw.split(',').map(ip => ip.trim()).filter(Boolean).join(',');
-          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted}\t --ip4=${ips}`;
-        } else {
-          cmd = `cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted}`;
-        }
-
-        results.push({ cmd, server, original: raw });
-      }
-      return { results, errors };
+        const orig=btn.textContent
+        btn.textContent="✓ Copied"
+        if(lastClicked&&lastClicked!==btn) lastClicked.classList.remove("highlighted")
+        btn.classList.add("highlighted")
+        lastClicked=btn
+        setTimeout(()=>{btn.textContent=orig;btn.classList.remove("highlighted")},1400)
+      })
+      return btn
     }
+    meta.appendChild(createButton(r.server,r.cmd))
+    meta.appendChild(createButton(r.server,r.startCmd))
+    meta.appendChild(createButton(r.server,r.treeCmd))
+    div.appendChild(meta)
+    outList.appendChild(div)
+  })
+}
 
-    function renderResults(results) {
-      outList.innerHTML = '';
-      if (results.length === 0) {
-        outList.innerHTML = '<div style="color:var(--muted)">No commands generated.</div>';
-        return;
-      }
-      results.forEach((r) => {
-        const div = document.createElement('div');
-        div.className = 'line';
-        const pre = document.createElement('div');
-        pre.className = 'cmd';
-        const preInner = document.createElement('pre');
-        preInner.style.margin = '0';
-        preInner.textContent = r.cmd;
-        pre.appendChild(preInner);
-        div.appendChild(pre);
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        const serverName = r.server;
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'copy-btn';
-        copyBtn.textContent = serverName;
-        copyBtn.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(r.cmd);
-            copyBtn.textContent = 'Copied';
-            if (lastClicked && lastClicked !== copyBtn) lastClicked.classList.remove('highlighted','rotated');
-            if (lastClicked === copyBtn) copyBtn.classList.add('rotated'); else copyBtn.classList.add('highlighted');
-            lastClicked = copyBtn;
-            setTimeout(() => copyBtn.textContent = serverName, 1200);
-          } catch(e) {
-            copyBtn.textContent = 'Failed';
-            setTimeout(() => copyBtn.textContent = serverName, 1200);
-          }
-        });
-        meta.appendChild(copyBtn);
-        div.appendChild(meta);
-        outList.appendChild(div);
-      });
-    }
-
-    function updateLineNumbers() {
-      const lines = inputEl.value.split(/\r?\n/).length;
-      lineNumbers.innerHTML = Array.from({length: lines}, () => "<span></span>").join("");
-    }
-
-    inputEl.addEventListener("input", updateLineNumbers);
-    inputEl.addEventListener("scroll", () => { lineNumbers.scrollTop = inputEl.scrollTop; });
-    updateLineNumbers();
-
-    document.getElementById('generate').addEventListener('click', () => {
-      const { results, errors } = parseLines(inputEl.value);
-      renderResults(results);
-      if (errors.length > 0) {
-        statusEl.innerHTML = `<span style=color:var(--danger)>Skipped ${errors.length} line(s):</span> ` + errors.map(e => `(line ${e.lineNumber})`).join(' ');
-      } else statusEl.textContent = `OK — ${results.length} command(s) generated.`;
-    });
-
-    document.getElementById('clear').addEventListener('click', () => {
-      inputEl.value = '';
-      outList.innerHTML = '';
-      statusEl.textContent = '';
-      updateLineNumbers();
-    });
-
-    document.getElementById('pasteExample').addEventListener('click', () => {
-      inputEl.value = 'password1\tgroup1/server1\t5\n password2\tgroup1/server2\t5\t192.168.1.1, 192.168.1.2, 192.168.1.3, 192.168.1.4, 192.168.1.5';
-      updateLineNumbers();
-    });
-  </script>
+document.getElementById("generate").addEventListener("click",()=>{
+  const{results,errors}=parseLines(inputEl.value)
+  renderResults(results)
+  statusEl.className="status"+(results.length?" active":"")
+  statusEl.textContent=results.length
+    ?`Generated ${results.length} command${results.length>1?"s":""}${errors.length?` · ${errors.length} line(s) skipped`:""}`
+    :""
+})
+document.getElementById("clear").addEventListener("click",()=>{
+  inputEl.value=""
+  outList.innerHTML=`<div class="empty-state"><div class="empty-icon">⌨</div><span>Paste your input and click Generate</span></div>`
+  statusEl.textContent=""
+  statusEl.className="status"
+})
+document.getElementById("pasteExample").addEventListener("click",()=>{
+  inputEl.value="password1\tvistas06/server1\t5\npassword2\tvistas09/server2\t5\t192.168.1.1, 192.168.1.2"
+})
+</script>
 </body>
 </html>
-
-
