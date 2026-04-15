@@ -269,10 +269,203 @@ textarea:focus{
 </head>
 <body>
 
-<!-- JS remains unchanged -->
-<script>
-// (your original JS code unchanged)
-</script>
+<div id="globalTooltip">
+  <ul>
+    <li>Subdomains</li>
+    <li>RDNS</li>
+    <li>no need Ipv6</li>
+  </ul>
+</div>
 
+<div class="wrap">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">⚡</div>
+      <h1>Preinstall Command Generator</h1>
+    </div>
+    <div class="hint">
+      Paste lines as: <code>password &nbsp;group/server &nbsp;count &nbsp;ip1, ip2…</code> — one per line, tab-separated.
+    </div>
+    <div class="textarea-wrap">
+      <textarea id="input" spellcheck="false" placeholder="password1&#9;vistas06/server1&#9;5&#10;password2&#9;wp/server2&#9;5&#9;192.168.1.1, 192.168.1.2"></textarea>
+    </div>
+    <div class="controls">
+      <button class="btn btn-primary" id="generate">⚙ &nbsp;Generate</button>
+      <button class="btn btn-ghost" id="clear">✕ &nbsp;Clear</button>
+      <button class="btn btn-ghost" id="pasteExample">⊕ &nbsp;Paste example</button>
+    </div>
+    <div class="rules">
+      Each non-empty line must contain <b>password</b>, <b>group/server</b>, <b>count</b>, and optional <b>IPs</b> (tab-separated).
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="right-col">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <h2>Generated Commands</h2>
+      </div>
+      <div class="column-labels">
+        <span class="col-label blue">Pre-install</span>
+        <span class="col-label blue">install(small)</span>
+        <span class="col-label blue">install(large)</span>
+      </div>
+      <div id="outputList" class="output-list">
+        <div class="empty-state">
+          <div class="empty-icon">⌨</div>
+          <span>Paste your input and click Generate</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card notes-clear">
+      <div class="notes-title">Notes</div>
+      <ul class="notes-list">
+        <li>Passwords containing quotes will be escaped automatically.</li>
+        <li>Blank lines are silently ignored.</li>
+        <li>This tool runs entirely in your browser — nothing is sent anywhere.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const inputEl  = document.getElementById("input")
+const outList  = document.getElementById("outputList")
+const statusEl = document.getElementById("status")
+const tooltip  = document.getElementById("globalTooltip")
+let lastClicked = null
+
+function showTooltip(anchor){
+  tooltip.style.display = "block"
+  const r   = anchor.getBoundingClientRect()
+  const ttW = tooltip.offsetWidth
+  const ttH = tooltip.offsetHeight
+  let top  = r.top - ttH - 10
+  let left = r.left - 6
+  if(left + ttW > window.innerWidth - 8) left = window.innerWidth - ttW - 8
+  if(left < 4) left = 4
+  if(top < 4)  top  = r.bottom + 10
+  tooltip.style.top  = top  + "px"
+  tooltip.style.left = left + "px"
+}
+function hideTooltip(){ tooltip.style.display = "none" }
+
+function shellQuote(pw){
+  if(!pw.includes("'")) return `'${pw}'`
+  if(!pw.includes('"')) return `"${pw.replace(/"/g,'\\"')}"`
+  return "'" + pw.replace(/'/g,"'\"'\"'") + "'"
+}
+
+function parseLines(text){
+  const lines=text.split(/\r?\n/), results=[], errors=[]
+  for(let i=0;i<lines.length;i++){
+    const raw=lines[i].trim()
+    if(!raw) continue
+    const parts=raw.split(/\t+/)
+    const password=parts[0], groupServer=parts[1], ipRaw=parts[3]||null
+    if(!password||!groupServer){errors.push(i+1);continue}
+    const groupName=groupServer.split('/')[0].toLowerCase()
+    const server=groupServer.split('/').pop()
+    const warn=groupName==="vistas06"||groupName==="vistas09"
+    const pwQuoted=shellQuote(password)
+    let cmd
+    if(ipRaw){
+      const ips=ipRaw.split(',').map(s=>s.trim()).filter(Boolean).join(',')
+      cmd=`cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted} --ip4=${ips}`
+    }else{
+      cmd=`cd /srv/salt/sls/SETUP/; venv/bin/python preinstall.py -x ClamAV_Scan ${server} ${pwQuoted}`
+    }
+    let startCmd,treeCmd
+    if(groupName==="wp"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_proxy,Install_multiTemplates,Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_proxy,Install_multiTemplates ${server}`
+    }else if(groupName==="tmt2"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a ${server}`
+    }else if(groupName==="vistas01"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a ${server}`
+    }else{
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_multiTemplates,Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_multiTemplates ${server}`
+    }
+    results.push({cmd,startCmd,treeCmd,server,warn})
+  }
+  return{results,errors}
+}
+
+function renderResults(results){
+  outList.innerHTML=""
+  if(results.length===0){
+    outList.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><span>No valid lines found</span></div>`
+    return
+  }
+  results.forEach(r=>{
+    const div=document.createElement("div")
+    div.className="line"
+    if(r.warn){
+      const warnEl=document.createElement("span")
+      warnEl.className="warn"
+      warnEl.textContent="⚠️"
+      warnEl.addEventListener("mouseenter",()=>showTooltip(warnEl))
+      warnEl.addEventListener("mouseleave",hideTooltip)
+      div.appendChild(warnEl)
+    }
+    const cmd=document.createElement("div")
+    cmd.className="cmd"
+    cmd.title=r.cmd
+    cmd.textContent=r.cmd
+    div.appendChild(cmd)
+    const meta=document.createElement("div")
+    meta.className="meta"
+    function createButton(label,command){
+      const btn=document.createElement("button")
+      btn.className="copy-btn"
+      btn.textContent=label
+      btn.addEventListener("click",async()=>{
+        try{await navigator.clipboard.writeText(command)}
+        catch(e){
+          const ta=document.createElement("textarea")
+          ta.value=command;document.body.appendChild(ta);ta.select()
+          document.execCommand("copy");ta.remove()
+        }
+        const orig=btn.textContent
+        btn.textContent="✓ Copied"
+        if(lastClicked&&lastClicked!==btn) lastClicked.classList.remove("highlighted")
+        btn.classList.add("highlighted")
+        lastClicked=btn
+        setTimeout(()=>{btn.textContent=orig;btn.classList.remove("highlighted")},1400)
+      })
+      return btn
+    }
+    meta.appendChild(createButton(r.server,r.cmd))
+    meta.appendChild(createButton(r.server,r.startCmd))
+    meta.appendChild(createButton(r.server,r.treeCmd))
+    div.appendChild(meta)
+    outList.appendChild(div)
+  })
+}
+
+document.getElementById("generate").addEventListener("click",()=>{
+  const{results,errors}=parseLines(inputEl.value)
+  renderResults(results)
+  statusEl.className="status"+(results.length?" active":"")
+  statusEl.textContent=results.length
+    ?`Generated ${results.length} command${results.length>1?"s":""}${errors.length?` · ${errors.length} line(s) skipped`:""}`
+    :""
+})
+document.getElementById("clear").addEventListener("click",()=>{
+  inputEl.value=""
+  outList.innerHTML=`<div class="empty-state"><div class="empty-icon">⌨</div><span>Paste your input and click Generate</span></div>`
+  statusEl.textContent=""
+  statusEl.className="status"
+})
+document.getElementById("pasteExample").addEventListener("click",()=>{
+  inputEl.value="password1\tvistas06/server1\t5\npassword2\tvistas09/server2\t5\t192.168.1.1, 192.168.1.2"
+})
+</script>
 </body>
 </html>
