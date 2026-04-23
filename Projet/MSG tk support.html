@@ -277,28 +277,7 @@
         ssh: `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`,
         password: `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`,
         ipv6: `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`,
-        allowports: `Hello, 
-
-Please allow the following ports:
-
-PORT     STATE     SERVICE
-25/tcp   filtered  smtp
-53/tcp   filtered  domain
-80/tcp   open      http
-110/tcp  filtered  pop3
-995/tcp  filtered  pop3s
-3128/tcp closed    squid-http
-3306/tcp filtered  mysql
-4555/tcp filtered  rsip
-4566/tcp filtered  kwtc
-8090/tcp filtered  opsmessaging
-8181/tcp filtered  intermapper
-8282/tcp closed    libelle
-10050/tcp closed   zabbix-agent
-22122/tcp filtered unknown
-25125/tcp closed   unknown
-
-Thanks.`
+        allowports: `Hello, \n\nPlease allow the following ports:\n\nPORT     STATE     SERVICE\n25/tcp   filtered  smtp\n53/tcp   filtered  domain\n80/tcp   open      http\n110/tcp  filtered  pop3\n995/tcp  filtered  pop3s\n3128/tcp closed    squid-http\n3306/tcp filtered  mysql\n4555/tcp filtered  rsip\n4566/tcp filtered  kwtc\n8090/tcp filtered  opsmessaging\n8181/tcp filtered  intermapper\n8282/tcp closed    libelle\n10050/tcp closed   zabbix-agent\n22122/tcp filtered unknown\n25125/tcp closed   unknown\n\nThanks.`,
 		unstable: `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`,
         S1: `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance.`,
         S2: `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`,
