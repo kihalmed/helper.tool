@@ -6,7 +6,7 @@
   <title>Support Ticket Helper</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
- :root {
+    :root {
       --bg: #0f1724;
       --card: #0b1220;
       --muted: #9aa6bf;
@@ -198,7 +198,7 @@
           <button onclick="selectOption('ssh')">via ssh</button>
           <button onclick="selectOption('password')">reset password</button>
           <button onclick="selectOption('ipv6')">Add ipv6</button>
-	      <button onclick="selectOption('allowports')">Allow ports</button>
+          <button onclick="selectOption('allowports')">Allow ports</button>
         </div>
       </li>
 
@@ -207,9 +207,8 @@
         <div class="dropdown-content">
           <button onclick="selectOption('S1')">RDNS s1</button>
           <button onclick="selectOption('S2')">RDNS s2</button>
-		  <button onclick="selectOption('S4')">Default rDNS</button>
-          <button onclick="selectOption('S3')">Remove RDNS</button
-		  
+          <button onclick="selectOption('S4')">Default rDNS</button>
+          <button onclick="selectOption('S3')">Remove RDNS</button>
         </div>
       </li>
 
@@ -218,7 +217,7 @@
         <div class="dropdown-content">
           <button onclick="selectOption('ips')">Additional IPs not working</button>
           <button onclick="selectOption('ips2')">Additional IPs not working</button>
-		   <button onclick="selectOption('ips3')">IP not working</button>
+          <button onclick="selectOption('ips3')">IP not working</button>
         </div>
       </li>
 
@@ -278,12 +277,14 @@
         password: `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`,
         ipv6: `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`,
         allowports: `Hello, \n\nPlease allow the following ports:\n\nPORT     STATE     SERVICE\n25/tcp   filtered  smtp\n53/tcp   filtered  domain\n80/tcp   open      http\n110/tcp  filtered  pop3\n995/tcp  filtered  pop3s\n3128/tcp closed    squid-http\n3306/tcp filtered  mysql\n4555/tcp filtered  rsip\n4566/tcp filtered  kwtc\n8090/tcp filtered  opsmessaging\n8181/tcp filtered  intermapper\n8282/tcp closed    libelle\n10050/tcp closed   zabbix-agent\n22122/tcp filtered unknown\n25125/tcp closed   unknown\n\nThanks.`,
-		unstable: `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`,
+        unstable: `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`,
         S1: `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance.`,
         S2: `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`,
         S3: `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`,
+        S4: `Hello, \nPlease we need you to add default rDNS [rdns provider].\n\n${pingInput}\n\nThanks in advance.`,
         ips: `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
         ips2: `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
+        ips3: `Hello, \nPlease check this additional ip, it's not working.\n-----\n\n${pingInput}\n\nThanks.`,
         allow1: `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`,
         allow2: `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`,
         SBL: `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`,
@@ -306,114 +307,43 @@
       outputTextarea.select();
       document.execCommand('copy');
     }
-	
-	 // Generate templates
-  function selectOption(option) {
-    const pingInput = document.getElementById('pingInput').value;
-    const outputTextarea = document.getElementById('outputTextarea');
-      const templates = {
-        down: `Hello,\nThis server is down, please try to fix it asap.\n\n${pingInput}\n\nThanks.`,
-        stillDown: `Hello,\nthis server still down until now, Check it again please,\n\n${pingInput}\n\nThanks.`,
-        connect: `Hello, \n\nWe can't connect to this server, please try to fix it asap. \n\n${pingInput}\n\nThanks.`,
-        ssh: `Hello, \n\nWe can't access this server via ssh, please fix it asap. \n\n${pingInput}\n\nThanks.`,
-        password: `Hello \n\nPlease provide the correct root password. \n\n${pingInput}\n\nThanks.`,
-        ipv6: `Hello, \n\nplease we need you to add ipv6 /64 to This server \n\n${pingInput}\n\nThanks.`,
-        unstable: `Hello, \nConnection is unstable. please check and fix it ASAP. \n\n${pingInput}\n\nThanks.`,
-        S1: `Hello,\nPlease change the following RDNS :\n\n${pingInput}\n\nThanks in advance.`,
-        S2: `Hi,\nPlease update rDNS\n\n${pingInput}\n\nThanks in advance.`,
-        S3: `Hello, \nPlease remove all rDNS records.\n\n${pingInput}\n\nThanks in advance.`,
-		S4: `Hello, \nPlease we need you to add default rDNS [rdns provider].\n\n${pingInput}\n\nThanks in advance.`,
-        ips: `Hello,\nPlease check these additional ips, they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
-        ips2: `Hello, \nplease check the following additional ips,they are not working.\n-----\n\n${pingInput}\n\nThanks.`,
-        ips3: `Hello, \nPlease check this additional ip, it's not working.\n-----\n\n${pingInput}\n\nThanks.`,
-        allow1: `Hello,\nplease we need you to allow port25 for in/out traffic for this server\n-----\n\n${pingInput}\n\nThanks.`,
-        allow2: `Hi, \nPlease Allow Port25 for outgoing traffic for all ips for this server :\n-----\n\n${pingInput}\n\nThanks.`,
-        SBL: `Hi,\nplease we need you to delist this range from SBL\n-----\n\n${pingInput}\n\nThanks.`,
-        PBL: `Hi, \nplease we need you to delist the following IPs from PBL\n-----\n\n${pingInput}\n\nThanks.`,
-        Speed1: `Hi,\nplease we need you to upgrade the Download/upload speed of this server.\n-----\n\n${pingInput}\n\nThanks.`,
-        Speed2: `Hi, \nStill we have the same issue, we need you to upgrade the Download/upload speed of this server more, it's very slow\n-----\n\n${pingInput}\n\nThanks.`,
-        Speed3: `Hello, \nPlease upgrade the network speed of this server , It's very slow :\n-----\n\n${pingInput}\n\nThanks.`
-    };
-    outputTextarea.value = templates[option] || "";
-  }
 
-  function clearFields() {
-    document.getElementById("pingInput").value = "";
-    document.getElementById("outputTextarea").value = "";
-  }
-
-  function copyToClipboard() {
-    const outputTextarea = document.getElementById('outputTextarea');
-    outputTextarea.select();
-    document.execCommand('copy');
-  }
-
-  // Function to apply theme
-  function applyTheme(theme) {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light-mode');
-    } else {
-      document.documentElement.classList.remove('light-mode');
-    }
-  }
-
-  // Check parent window theme immediately on load
-  function checkParentTheme() {
-    try {
-      // Try to access parent's theme
-      if (window.parent && window.parent !== window) {
-        const parentHasLightMode = window.parent.document.body.classList.contains('light-mode');
-        applyTheme(parentHasLightMode ? 'light' : 'dark');
-        return true;
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.classList.add('light-mode');
+      } else {
+        document.documentElement.classList.remove('light-mode');
       }
-    } catch (e) {
-      // If cross-origin, fall back to localStorage
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      applyTheme(savedTheme);
-      return false;
     }
-  }
 
-  // Apply theme immediately when page loads
-  checkParentTheme();
-
-  // Listen for theme messages from parent
-  window.addEventListener('message', (event) => {
-    if (event.data && event.data.theme) {
-      applyTheme(event.data.theme);
-      localStorage.setItem('theme', event.data.theme);
+    function checkParentTheme() {
+      try {
+        if (window.parent && window.parent !== window) {
+          const parentHasLightMode = window.parent.document.body.classList.contains('light-mode');
+          applyTheme(parentHasLightMode ? 'light' : 'dark');
+          return true;
+        }
+      } catch (e) {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        applyTheme(savedTheme);
+        return false;
+      }
     }
-  });
 
-  // Continuous polling to always stay in sync with parent
-  setInterval(() => {
     checkParentTheme();
-  }, 200);
 
-  // Re-check theme when window regains focus (user comes back to tab)
-  window.addEventListener('focus', () => {
-    checkParentTheme();
-  });
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.theme) {
+        applyTheme(event.data.theme);
+        localStorage.setItem('theme', event.data.theme);
+      }
+    });
 
-  // Re-check theme when page becomes visible again
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      checkParentTheme();
-    }
-  });
-
-  // Re-check when mouse enters the iframe
-  window.addEventListener('mouseenter', () => {
-    checkParentTheme();
-  });
-
-  // Re-check on any user interaction
-  window.addEventListener('click', () => {
-    checkParentTheme();
-  });
+    setInterval(() => { checkParentTheme(); }, 200);
+    window.addEventListener('focus', () => { checkParentTheme(); });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkParentTheme(); });
+    window.addEventListener('mouseenter', () => { checkParentTheme(); });
+    window.addEventListener('click', () => { checkParentTheme(); });
   </script>
 </body>
 </html>
-
-
-
