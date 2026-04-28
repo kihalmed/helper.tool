@@ -429,6 +429,10 @@ function parseLines(text){
     }else if(groupName==="vistas01"){
       startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_pdns,Config_pdns ${server}`
       treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a ${server}`
+    }
+    else if(groupName==="opti2"){
+      startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_pdns,Config_pdns ${server}`
+      treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a ${server}`
     }else{
       startCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_multiTemplates,Install_pdns,Config_pdns ${server}`
       treeCmd=`cd /srv/salt/sls/SETUP/; sudo venv/bin/python start.py -a -x Install_multiTemplates ${server}`
