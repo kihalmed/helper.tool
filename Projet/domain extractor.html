@@ -1,680 +1,2941 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domain Extractor</title>
-    <style>
-        :root {
-            --bg: #0f1724;
-            --card: #0b1220;
-            --muted: #9aa6bf;
-            --accent: #7c5cff;
-            --accent-dark: #5b3ffd;
-            --glass: rgba(255,255,255,0.04);
-            --success: #16a34a;
-            --danger: #ef4444;
-            --highlight: #facc15;
-            --text: #e6eef8;
-            --border: rgba(255,255,255,0.03);
-            --shadow: rgba(2,6,23,0.6);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        :root.light-mode {
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --muted: #6b7280;
-            --accent: #7c5cff;
-            --accent-dark: #6846ff;
-            --glass: rgba(0,0,0,0.04);
-            --success: #16a34a;
-            --danger: #ef4444;
-            --highlight: #d97706;
-            --text: #1f2937;
-            --border: rgba(0,0,0,0.08);
-            --shadow: rgba(0,0,0,0.1);
-        }
+  <title>Domain Extractor — Domain Extract</title>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        html, body {
-            height: 100%;
-        }
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
 
-        body {
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: var(--bg);
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            padding: 36px;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+  <style>
 
-        .wrap {
-            max-width: 1000px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+    /* =========================================================
+       THEME VARIABLES
+       Theme switch is controlled from index.html
+    ========================================================= */
 
-        .card {
-            background: var(--card);
-            border-radius: 14px;
-            padding: 24px;
-            box-shadow: 0 8px 30px var(--shadow);
-            border: 1px solid var(--border);
-            transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
-        }
+    :root {
+      --bg: #0b1220;
+      --surface: #111827;
+      --surface-2: #172033;
 
-        h1 {
-            font-size: 24px;
-            margin: 0 0 8px;
-            color: var(--text);
-            font-weight: 700;
-        }
+      --ink: #e6eef8;
+      --ink-soft: #9aa6bf;
 
-        .lead {
-            color: var(--muted);
-            margin: 0 0 20px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+      --line: rgba(255,255,255,.09);
+      --line-strong: rgba(255,255,255,.16);
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+      --moss: #7c5cff;
+      --moss-deep: #5b3ffd;
 
-        .stat-item {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            text-align: center;
-            transition: background 0.3s ease;
-        }
+      --ochre: #facc15;
+      --ochre-soft: rgba(250,204,21,.12);
 
-        .stat-label {
-            font-size: 10px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
+      --radius: 12px;
 
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--accent);
-        }
+      --shadow:
+        0 18px 50px rgba(2,6,23,.45);
+    }
 
-        label {
-            display: block;
-            margin: 0 0 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--highlight);
-        }
 
-        textarea {
-            width: 100%;
-            min-height: 140px;
-            resize: vertical;
-            border-radius: 10px;
-            padding: 20px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-            font-size: 13px;
-            line-height: 1.5;
-            color: var(--text);
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
-            border: 1px solid var(--border);
-            transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
-        }
+    html.light-mode {
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
+      --bg: #f5f7fa;
 
-        textarea[readonly] {
-            opacity: 0.85;
-            cursor: default;
-        }
+      --surface: #ffffff;
 
-        textarea::placeholder {
-            color: var(--muted);
-            opacity: 0.5;
-        }
+      --surface-2: #f8fafc;
 
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
+      --ink: #1f2937;
 
-        button.btn {
-            background: linear-gradient(180deg, var(--accent), var(--accent-dark));
-            border: 0;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: opacity 0.2s ease, transform 0.1s ease;
-        }
+      --ink-soft: #6b7280;
 
-        button.btn:hover {
-            opacity: 0.9;
-        }
+      --line: rgba(0,0,0,.08);
 
-        button.btn:active {
-            transform: scale(0.97);
-        }
+      --line-strong: rgba(0,0,0,.16);
 
-        button.btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
+      --moss: #6d4aff;
 
-        button.btn.success {
-            background: linear-gradient(180deg, var(--success), #15803d);
-        }
+      --moss-deep: #5635e8;
 
-        button.btn.danger {
-            background: linear-gradient(180deg, var(--danger), #dc2626);
-        }
+      --ochre: #b7791f;
 
-        button.btn.ghost {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--muted);
-        }
+      --ochre-soft: #fff7df;
 
-        .format-options {
-            display: flex;
-            gap: 16px;
-            padding: 16px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+      --shadow:
+        0 18px 50px rgba(15,23,42,.10);
+    }
 
-        .format-title {
-            font-weight: 600;
-            color: var(--accent);
-            margin-right: 10px;
-            font-size: 14px;
-        }
 
-        .format-options label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text);
-            font-weight: 500;
-            margin: 0;
-        }
+    /* =========================================================
+       GLOBAL
+    ========================================================= */
 
-        .format-options input[type="radio"] {
-            cursor: pointer;
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .info-box {
-            background: var(--glass);
-            padding: 16px;
-            border-radius: 10px;
-            border-left: 4px solid var(--accent);
-            margin-top: 20px;
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.7;
-        }
 
-        .info-box strong {
-            color: var(--text);
-        }
+    html {
+      background: var(--bg);
+    }
 
-        .info-box code {
-            background: rgba(124, 92, 255, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: ui-monospace, monospace;
-            font-size: 12px;
-            color: var(--accent);
-        }
 
-        .toast {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            background: var(--success);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-            z-index: 1000;
-            font-weight: 600;
-            font-size: 14px;
-        }
+    body {
 
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+      margin: 0;
 
-        .theme-toggle {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.2s ease;
-            z-index: 100;
-        }
+      padding: 0;
 
-        .theme-toggle:hover {
-            background: var(--accent);
-            transform: scale(1.05);
-        }
+      background: var(--bg);
 
-        @media (max-width: 768px) {
-            body {
-                padding: 20px;
-            }
+      color: var(--ink);
 
-            .stats {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
+      font-family:
+        'Work Sans',
+        sans-serif;
 
-            .controls {
-                flex-direction: column;
-            }
+      line-height: 1.5;
 
-            button.btn {
-                width: 100%;
-            }
+      -webkit-font-smoothing: antialiased;
 
-            h1 {
-                font-size: 20px;
-            }
+      transition:
+        background-color .25s ease,
+        color .25s ease;
+    }
 
-            .theme-toggle {
-                top: 16px;
-                right: 16px;
-            }
-        }
-    </style>
+
+    h1,
+    h2,
+    h3 {
+
+      font-family:
+        'Fraunces',
+        serif;
+
+      margin: 0;
+
+      font-weight: 500;
+    }
+
+
+    button,
+    input,
+    textarea,
+    select {
+
+      font: inherit;
+    }
+
+
+    /* =========================================================
+       PAGE
+    ========================================================= */
+
+    .wrap {
+
+      max-width: 760px;
+
+      margin: 0 auto;
+
+      padding:
+        48px 24px 80px;
+    }
+
+
+    /* =========================================================
+       HEADER
+       No theme button here.
+       Theme is controlled from index.html.
+    ========================================================= */
+
+    header.top {
+
+      display: flex;
+
+      align-items: baseline;
+
+      justify-content: space-between;
+
+      margin-bottom: 56px;
+
+      padding-bottom: 14px;
+
+      border-bottom:
+        1px solid var(--line);
+    }
+
+
+    .wordmark {
+
+      font-family:
+        'Fraunces',
+        serif;
+
+      font-size: 1.05rem;
+
+      font-weight: 600;
+
+      letter-spacing: .01em;
+    }
+
+
+    .wordmark span {
+
+      color:
+        var(--moss);
+    }
+
+
+    .back-link {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      text-decoration: none;
+
+      color: var(--ink-soft);
+
+      font-size: .82rem;
+
+      border:
+        1px solid var(--line-strong);
+
+      border-radius: 999px;
+
+      padding: 7px 12px;
+
+      background:
+        var(--surface);
+
+      transition:
+        color .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+    }
+
+
+    .back-link:hover {
+
+      color: var(--ink);
+
+      border-color:
+        var(--moss);
+
+      background:
+        var(--surface-2);
+    }
+
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .hero {
+
+      margin-bottom: 40px;
+    }
+
+
+    .hero h1 {
+
+      font-size: 2.15rem;
+
+      line-height: 1.18;
+
+      max-width: 20ch;
+
+      color:
+        var(--moss);
+    }
+
+
+    .hero p {
+
+      margin:
+        16px 0 0;
+
+      max-width: 52ch;
+
+      color:
+        var(--ink-soft);
+
+      font-size: 1rem;
+    }
+
+
+    /* =========================================================
+       INPUT CARD
+    ========================================================= */
+
+    .input-card {
+
+      background:
+        var(--surface);
+
+      border:
+        1px solid var(--line);
+
+      border-radius:
+        var(--radius);
+
+      padding: 20px;
+
+      position: relative;
+
+      box-shadow:
+        var(--shadow);
+
+      transition:
+        border-color .15s ease,
+        box-shadow .15s ease,
+        background-color .25s ease;
+    }
+
+
+    .input-card.drag {
+
+      border-color:
+        var(--moss);
+
+      box-shadow:
+        0 0 0 3px rgba(124,92,255,.14),
+        var(--shadow);
+    }
+
+
+    .input-card label {
+
+      display: block;
+
+      font-size: .82rem;
+
+      color:
+        var(--ink-soft);
+
+      margin-bottom: 8px;
+    }
+
+
+    textarea#input {
+
+      width: 100%;
+
+      min-height: 150px;
+
+      resize: vertical;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 8px;
+
+      padding:
+        12px 14px;
+
+      font-family:
+        'IBM Plex Mono',
+        monospace;
+
+      font-size: .88rem;
+
+      color:
+        var(--ink);
+
+      background:
+        var(--surface-2);
+
+      outline: none;
+
+      box-shadow:
+        inset 0 1px 2px rgba(0,0,0,.04);
+
+      transition:
+        border-color .2s ease,
+        background-color .25s ease,
+        color .25s ease,
+        box-shadow .2s ease;
+    }
+
+
+    textarea#input::placeholder {
+
+      color:
+        var(--ink-soft);
+
+      opacity: .7;
+    }
+
+
+    textarea#input:focus {
+
+      border-color:
+        var(--moss);
+
+      box-shadow:
+        0 0 0 3px rgba(124,92,255,.12),
+        inset 0 1px 2px rgba(0,0,0,.04);
+    }
+
+
+    .drop-caption {
+
+      margin-top: 8px;
+
+      font-size: .78rem;
+
+      color:
+        var(--ink-soft);
+    }
+
+
+    /* =========================================================
+       BUTTONS
+    ========================================================= */
+
+    .input-actions {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-top: 14px;
+
+      flex-wrap: wrap;
+    }
+
+
+    .btn {
+
+      font-family:
+        'Work Sans',
+        sans-serif;
+
+      font-size: .88rem;
+
+      font-weight: 500;
+
+      padding:
+        9px 16px;
+
+      border-radius: 7px;
+
+      border:
+        1px solid transparent;
+
+      cursor: pointer;
+
+      transition:
+        transform .08s ease,
+        background .15s ease,
+        border-color .15s ease,
+        color .15s ease,
+        box-shadow .15s ease;
+    }
+
+
+    .btn:active {
+
+      transform:
+        translateY(1px);
+    }
+
+
+    .btn.primary {
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--moss),
+          var(--moss-deep)
+        );
+
+      color:
+        #fff;
+
+      box-shadow:
+        0 7px 18px rgba(91,63,253,.20);
+    }
+
+
+    .btn.primary:hover {
+
+      box-shadow:
+        0 9px 24px rgba(91,63,253,.30);
+
+      transform:
+        translateY(-1px);
+    }
+
+
+    .btn.ghost {
+
+      background:
+        var(--surface);
+
+      border-color:
+        var(--line-strong);
+
+      color:
+        var(--ink-soft);
+    }
+
+
+    .btn.ghost:hover {
+
+      border-color:
+        var(--moss);
+
+      color:
+        var(--ink);
+
+      background:
+        var(--surface-2);
+    }
+
+
+    .btn.small {
+
+      padding:
+        6px 11px;
+
+      font-size: .8rem;
+    }
+
+
+    .kbd-hint {
+
+      font-size: .76rem;
+
+      color:
+        var(--ink-soft);
+
+      margin-left: auto;
+    }
+
+
+    .kbd-hint kbd {
+
+      font-family:
+        'IBM Plex Mono',
+        monospace;
+
+      background:
+        var(--surface-2);
+
+      border:
+        1px solid var(--line-strong);
+
+      border-radius: 4px;
+
+      padding:
+        1px 5px;
+
+      font-size: .72rem;
+    }
+
+
+    /* =========================================================
+       OPTIONS
+    ========================================================= */
+
+    .options-row {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-top: 18px;
+
+      flex-wrap: wrap;
+    }
+
+
+    .chip {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      font-size: .82rem;
+
+      padding:
+        7px 12px;
+
+      border:
+        1px solid var(--line-strong);
+
+      border-radius: 20px;
+
+      cursor: pointer;
+
+      background:
+        var(--surface);
+
+      color:
+        var(--ink-soft);
+
+      user-select: none;
+
+      transition:
+        border-color .15s ease,
+        color .15s ease,
+        background .15s ease;
+    }
+
+
+    .chip input {
+
+      display: none;
+    }
+
+
+    .chip .dot {
+
+      width: 8px;
+
+      height: 8px;
+
+      border-radius: 50%;
+
+      background:
+        var(--line-strong);
+
+      transition:
+        background .15s ease;
+    }
+
+
+    .chip.active {
+
+      border-color:
+        var(--moss);
+
+      color:
+        var(--moss);
+
+      background:
+        var(--ochre-soft);
+    }
+
+
+    .chip.active .dot {
+
+      background:
+        var(--moss);
+    }
+
+
+    .select-wrap {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      font-size: .82rem;
+
+      color:
+        var(--ink-soft);
+
+      margin-left: auto;
+    }
+
+
+    select#sortSelect {
+
+      font-family:
+        'Work Sans',
+        sans-serif;
+
+      font-size: .82rem;
+
+      padding:
+        6px 10px;
+
+      border-radius: 7px;
+
+      border:
+        1px solid var(--line-strong);
+
+      background:
+        var(--surface);
+
+      color:
+        var(--ink);
+
+      outline: none;
+    }
+
+
+    select#sortSelect:focus {
+
+      border-color:
+        var(--moss);
+    }
+
+
+    /* =========================================================
+       MOTIF
+    ========================================================= */
+
+    .motif {
+
+      margin:
+        34px 0 30px;
+
+      display: flex;
+
+      justify-content: center;
+
+      color:
+        var(--line-strong);
+    }
+
+
+    .motif svg {
+
+      display: block;
+    }
+
+
+    /* =========================================================
+       RESULTS
+    ========================================================= */
+
+    .results {
+
+      display: none;
+    }
+
+
+    .results.visible {
+
+      display: block;
+    }
+
+
+    .stats {
+
+      display: flex;
+
+      gap: 28px;
+
+      margin-bottom: 22px;
+
+      flex-wrap: wrap;
+    }
+
+
+    .stat {
+
+      display: flex;
+
+      flex-direction: column;
+    }
+
+
+    .stat .num {
+
+      font-family:
+        'Fraunces',
+        serif;
+
+      font-size: 1.7rem;
+
+      font-weight: 500;
+
+      color:
+        var(--moss);
+
+      line-height: 1.1;
+    }
+
+
+    .stat .num.ochre {
+
+      color:
+        var(--ochre);
+    }
+
+
+    .stat .label {
+
+      font-size: .76rem;
+
+      color:
+        var(--ink-soft);
+
+      margin-top: 2px;
+    }
+
+
+    /* =========================================================
+       LIST TOOLBAR
+    ========================================================= */
+
+    .list-toolbar {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 12px;
+
+      flex-wrap: wrap;
+    }
+
+
+    input#filterInput {
+
+      flex: 1;
+
+      min-width: 140px;
+
+      font-family:
+        'Work Sans',
+        sans-serif;
+
+      font-size: .85rem;
+
+      padding:
+        8px 12px;
+
+      border:
+        1px solid var(--line-strong);
+
+      border-radius: 7px;
+
+      background:
+        var(--surface);
+
+      color:
+        var(--ink);
+
+      outline: none;
+
+      box-shadow:
+        inset 0 1px 2px rgba(0,0,0,.04);
+    }
+
+
+    input#filterInput::placeholder {
+
+      color:
+        var(--ink-soft);
+    }
+
+
+    input#filterInput:focus {
+
+      border-color:
+        var(--moss);
+
+      box-shadow:
+        0 0 0 3px rgba(124,92,255,.10);
+    }
+
+
+    .list-actions {
+
+      display: flex;
+
+      gap: 8px;
+    }
+
+
+    /* =========================================================
+       DOMAIN LIST
+    ========================================================= */
+
+    ol.domain-list {
+
+      list-style: none;
+
+      margin: 0;
+
+      padding: 0;
+
+      border:
+        1px solid var(--line);
+
+      border-radius:
+        var(--radius);
+
+      overflow: hidden;
+
+      background:
+        var(--surface);
+
+      box-shadow:
+        var(--shadow);
+    }
+
+
+    ol.domain-list li {
+
+      display: grid;
+
+      grid-template-columns:
+        34px 1fr 48px 90px;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding:
+        9px 14px;
+
+      border-bottom:
+        1px solid var(--line);
+
+      font-size: .88rem;
+
+      transition:
+        background .15s ease;
+    }
+
+
+    ol.domain-list li:last-child {
+
+      border-bottom: none;
+    }
+
+
+    ol.domain-list li:hover {
+
+      background:
+        var(--surface-2);
+    }
+
+
+    .rank {
+
+      font-family:
+        'IBM Plex Mono',
+        monospace;
+
+      color:
+        var(--ink-soft);
+
+      font-size: .78rem;
+    }
+
+
+    .domain-name {
+
+      font-family:
+        'IBM Plex Mono',
+        monospace;
+
+      color:
+        var(--ink);
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+      white-space: nowrap;
+    }
+
+
+    .count {
+
+      font-family:
+        'IBM Plex Mono',
+        monospace;
+
+      font-size: .8rem;
+
+      color:
+        var(--ochre);
+
+      text-align: right;
+    }
+
+
+    .bar-track {
+
+      height: 6px;
+
+      background:
+        var(--surface-2);
+
+      border-radius: 4px;
+
+      overflow: hidden;
+    }
+
+
+    .bar-fill {
+
+      height: 100%;
+
+      background:
+        var(--moss);
+
+      border-radius: 4px;
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+    ========================================================= */
+
+    .empty-state {
+
+      color:
+        var(--ink-soft);
+
+      font-size: .9rem;
+
+      padding:
+        26px 4px;
+
+      text-align: left;
+    }
+
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    .toast {
+
+      position: fixed;
+
+      bottom: 24px;
+
+      left: 50%;
+
+      transform:
+        translateX(-50%)
+        translateY(8px);
+
+      background:
+        var(--moss-deep);
+
+      color:
+        #fff;
+
+      font-size: .85rem;
+
+      padding:
+        9px 18px;
+
+      border-radius: 20px;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition:
+        opacity .18s ease,
+        transform .18s ease;
+    }
+
+
+    .toast.show {
+
+      opacity: 1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    footer.note {
+
+      margin-top: 52px;
+
+      padding-top: 16px;
+
+      border-top:
+        1px solid var(--line);
+
+      font-size: .78rem;
+
+      color:
+        var(--ink-soft);
+
+      max-width: 60ch;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 620px) {
+
+      .wrap {
+
+        padding:
+          32px 16px 60px;
+      }
+
+
+      header.top {
+
+        margin-bottom: 40px;
+      }
+
+
+      .hero h1 {
+
+        font-size: 1.7rem;
+      }
+
+
+      ol.domain-list li {
+
+        grid-template-columns:
+          26px 1fr 40px;
+      }
+
+
+      .bar-track {
+
+        display: none;
+      }
+
+
+      .kbd-hint {
+
+        display: none;
+      }
+
+
+      .select-wrap {
+
+        margin-left: 0;
+
+        width: 100%;
+
+        justify-content:
+          space-between;
+      }
+
+
+      .back-link {
+
+        font-size: .75rem;
+
+        padding:
+          6px 9px;
+      }
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+      * {
+
+        transition:
+          none !important;
+      }
+    }
+
+  </style>
 </head>
+
+
 <body>
 
-    <div class="wrap">
-        <div class="card">
-            <h1>🌐 Domain Extractor</h1>
-            <p class="lead">Extract clean domain names from URLs, emails, and mixed text content. Supports multiple formats and intelligent parsing.</p>
+  <div class="wrap">
 
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-label">Domains Found</div>
-                    <div class="stat-value" id="domainCount">0</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Processing Time</div>
-                    <div class="stat-value" id="processTime">0ms</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Input Size</div>
-                    <div class="stat-value" id="inputSize">0</div>
-                </div>
-            </div>
 
-            <label for="inputText">📥 Input Text</label>
-            <textarea id="inputText" placeholder="Paste URLs, emails, HTML, or mixed text here...
+    <!-- =====================================================
+         HEADER
+         NO THEME SWITCH HERE
+    ====================================================== -->
 
-Examples:
-https://www.example.com/path?query=value
-user@domain.com
-<a href='https://test.org'>Link</a>
-Visit example.net for more info"></textarea>
+    <header class="top">
 
-            <div class="controls">
-                <button class="btn" onclick="extractDomains()">⚡ Extract Domains</button>
-                <button class="btn danger" onclick="clearFields()">🗑️ Clear</button>
-                <button class="btn success" id="copyBtn" onclick="copyToClipboard()" disabled>📋 Copy Results</button>
-            </div>
+      <div class="wordmark">
+        domain<span>.</span>extract
+      </div>
+
+
+      <!-- Optional return button -->
+      <a
+        href="index.html"
+        class="back-link"
+      >
+        ← Back to Home
+      </a>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero">
+
+      <h1>
+        Pull every domain out of a wall of text.
+      </h1>
+
+
+      <p>
+        Paste raw text, server logs, a CSV export,
+        or a pile of URLs and email addresses.
+        This finds every domain hiding in it,
+        counts how often each one shows up,
+        and lets you export a clean list —
+        nothing leaves your browser.
+      </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         INPUT TOOL
+    ====================================================== -->
+
+    <section class="tool">
+
+
+      <!-- INPUT CARD -->
+
+      <div
+        class="input-card"
+        id="dropzone"
+      >
+
+        <label for="input">
+          Text to search
+        </label>
+
+
+        <textarea
+          id="input"
+          placeholder="Paste anything — URLs, log lines, an email list, raw HTML, a CSV column…"
+        ></textarea>
+
+
+        <div class="drop-caption">
+
+          Drag a .txt, .csv or .log file
+          in here to load it
+
         </div>
 
-        <div class="card">
-            <div class="format-options">
-                <span class="format-title">📋 Output Format:</span>
-                <label>
-                    <input type="radio" name="format" value="domains" checked onchange="reExtractIfNeeded()">
-                    Domains Only
-                </label>
-                <label>
-                    <input type="radio" name="format" value="both" onchange="reExtractIfNeeded()">
-                    Email + Domain (Both)
-                </label>
-            </div>
 
-            <label for="outputText">📤 Extracted Domains</label>
-            <textarea id="outputText" readonly placeholder="Extracted domains will appear here (one per line)..."></textarea>
+        <div class="input-actions">
+
+
+          <button
+            class="btn primary"
+            id="extractBtn"
+            type="button"
+          >
+            Extract domains
+          </button>
+
+
+          <button
+            class="btn ghost"
+            id="sampleBtn"
+            type="button"
+          >
+            Load sample
+          </button>
+
+
+          <button
+            class="btn ghost"
+            id="clearBtn"
+            type="button"
+          >
+            Clear
+          </button>
+
+
+          <span class="kbd-hint">
+
+            <kbd>Ctrl</kbd>
+            /
+            <kbd>⌘</kbd>
+            +
+            <kbd>Enter</kbd>
+
+          </span>
+
         </div>
-    </div>
 
-    <div class="toast" id="toast">Copied to clipboard!</div>
+      </div>
 
-    <script>
-        // Domain Extraction Logic
-        class DomainExtractor {
-            constructor() {
-                this.patterns = {
-                    url: /(?:https?|ftp|ftps):\/\/([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*)/gi,
-                    email: /\b([a-zA-Z0-9._%+\-\[\]]+@([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*))\b/gi,
-                    standalone: /(?:^|[\s>'"(])((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+(?:com|org|net|edu|gov|mil|int|info|biz|name|museum|coop|aero|xxx|idv|pro|asia|cat|jobs|mobi|tel|travel|ac|ad|ae|af|ag|ai|al|am|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw))(?:$|[\s<'"/)])/gi
-                };
-                
-                this.invalidPatterns = [
-                    /^localhost$/i,
-                    /^127\.0\.0\.1$/,
-                    /^0\.0\.0\.0$/,
-                    /^\d+\.\d+\.\d+\.\d+$/,
-                    /^::1$/,
-                    /\.(jpg|jpeg|png|gif|pdf|doc|docx|zip|rar|exe|dmg)$/i
-                ];
-            }
 
-            extract(text, format = 'domains') {
-                const startTime = performance.now();
-                const domains = new Set();
-                const emailDomainPairs = [];
-                const seenEmails = new Set();
+      <!-- =====================================================
+           OPTIONS
+      ====================================================== -->
 
-                // Extract from URLs
-                let matches = text.matchAll(this.patterns.url);
-                for (const match of matches) {
-                    const domain = this.cleanDomain(match[1]);
-                    if (domain && this.isValidDomain(domain)) {
-                        domains.add(domain);
-                    }
-                }
+      <div class="options-row">
 
-                // Extract from emails
-                matches = text.matchAll(this.patterns.email);
-                for (const match of matches) {
-                    const fullEmail = match[1];
-                    const domain = this.cleanDomain(match[2]);
-                    
-                    if (domain && this.isValidDomain(domain)) {
-                        domains.add(domain);
-                        
-                        if (!seenEmails.has(fullEmail)) {
-                            seenEmails.add(fullEmail);
-                            emailDomainPairs.push({
-                                email: fullEmail,
-                                domain: domain
-                            });
-                        }
-                    }
-                }
 
-                // Extract standalone domains from quoted strings
-                const quotedDomainPattern = /['"]([a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+)['"]/g;
-                matches = text.matchAll(quotedDomainPattern);
-                for (const match of matches) {
-                    const domain = this.cleanDomain(match[1]);
-                    if (domain && this.isValidDomain(domain)) {
-                        domains.add(domain);
-                    }
-                }
+        <label
+          class="chip"
+          id="rootChip"
+        >
 
-                // Extract standalone domains
-                matches = text.matchAll(this.patterns.standalone);
-                for (const match of matches) {
-                    const domain = this.cleanDomain(match[1]);
-                    if (domain && this.isValidDomain(domain)) {
-                        domains.add(domain);
-                    }
-                }
+          <input
+            type="checkbox"
+            id="rootOnly"
+          >
 
-                const endTime = performance.now();
-                const processTime = Math.round(endTime - startTime);
+          <span class="dot"></span>
 
-                return {
-                    domains: Array.from(domains).sort(),
-                    emailDomainPairs: emailDomainPairs,
-                    count: domains.size,
-                    processTime: processTime,
-                    format: format
-                };
-            }
+          Root domains only
 
-            cleanDomain(domain) {
-                if (!domain) return null;
-                domain = domain.replace(/^(?:https?|ftp|ftps):\/\//i, '');
-                domain = domain.split('/')[0];
-                domain = domain.split('?')[0];
-                domain = domain.split('#')[0];
-                domain = domain.split(':')[0];
-                domain = domain.replace(/\.+$/, '');
-                domain = domain.toLowerCase().trim();
-                return domain;
-            }
+        </label>
 
-            isValidDomain(domain) {
-                if (!domain || domain.length < 3) return false;
-                
-                for (const pattern of this.invalidPatterns) {
-                    if (pattern.test(domain)) return false;
-                }
-                
-                if (!domain.includes('.')) return false;
-                if (/^[.-]|[.-]$/.test(domain)) return false;
-                
-                const parts = domain.split('.');
-                const tld = parts[parts.length - 1];
-                if (tld.length < 2) return false;
-                
-                if (/[^a-z0-9.-]/.test(domain)) return false;
-                
-                return true;
-            }
+
+        <label
+          class="chip active"
+          id="dedupeChip"
+        >
+
+          <input
+            type="checkbox"
+            id="dedupe"
+            checked
+          >
+
+          <span class="dot"></span>
+
+          Merge duplicates
+
+        </label>
+
+
+        <div class="select-wrap">
+
+          Sort by
+
+
+          <select id="sortSelect">
+
+            <option value="freq">
+              Frequency
+            </option>
+
+            <option value="alpha">
+              A–Z
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           DECORATIVE MOTIF
+      ====================================================== -->
+
+      <div
+        class="motif"
+        aria-hidden="true"
+      >
+
+        <svg
+          width="220"
+          height="26"
+          viewBox="0 0 220 26"
+        >
+
+          <line
+            x1="0"
+            y1="13"
+            x2="220"
+            y2="13"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+
+          <line
+            x1="60"
+            y1="13"
+            x2="45"
+            y2="2"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+
+          <line
+            x1="90"
+            y1="13"
+            x2="90"
+            y2="24"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+
+          <line
+            x1="150"
+            y1="13"
+            x2="165"
+            y2="3"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+
+          <line
+            x1="170"
+            y1="13"
+            x2="178"
+            y2="22"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+
+          <circle
+            cx="110"
+            cy="13"
+            r="3.5"
+            fill="currentColor"
+          />
+
+        </svg>
+
+      </div>
+
+
+      <!-- =====================================================
+           RESULTS
+      ====================================================== -->
+
+      <div
+        class="results"
+        id="results"
+      >
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+
+          <div class="stat">
+
+            <span
+              class="num"
+              id="statFound"
+            >
+              0
+            </span>
+
+            <span class="label">
+              domain mentions found
+            </span>
+
+          </div>
+
+
+          <div class="stat">
+
+            <span
+              class="num"
+              id="statUnique"
+            >
+              0
+            </span>
+
+            <span class="label">
+              unique domains
+            </span>
+
+          </div>
+
+
+          <div class="stat">
+
+            <span
+              class="num ochre"
+              id="statTop"
+            >
+              —
+            </span>
+
+            <span class="label">
+              most frequent
+            </span>
+
+          </div>
+
+
+        </div>
+
+
+        <!-- LIST TOOLBAR -->
+
+        <div class="list-toolbar">
+
+
+          <input
+            type="search"
+            id="filterInput"
+            placeholder="Filter the list…"
+            autocomplete="off"
+          >
+
+
+          <div class="list-actions">
+
+
+            <button
+              class="btn ghost small"
+              id="copyBtn"
+              type="button"
+            >
+              Copy list
+            </button>
+
+
+            <button
+              class="btn ghost small"
+              id="downloadTxt"
+              type="button"
+            >
+              .txt
+            </button>
+
+
+            <button
+              class="btn ghost small"
+              id="downloadCsv"
+              type="button"
+            >
+              .csv
+            </button>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- DOMAIN LIST -->
+
+        <ol
+          class="domain-list"
+          id="domainList"
+        ></ol>
+
+
+      </div>
+
+
+      <!-- EMPTY STATE -->
+
+      <p
+        class="empty-state"
+        id="emptyState"
+      >
+        No domains yet — paste something above
+        and hit Extract.
+      </p>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="note">
+
+      Full URLs and www-links are trusted as-is,
+      so internal or non-public hostnames
+      (like .local or .test) still come through.
+
+      Bare mentions with no "http://" or "www."
+      — plain text, log lines, email addresses —
+      are checked against the full IANA list of
+      ~1,400 top-level domains before being accepted,
+      so stray text like "e.g." or a file named
+      "archive.zip" isn't mistaken for a domain.
+
+      Root-domain grouping uses a list of common
+      multi-part suffixes (.co.uk, .com.au, .co.jp,
+      etc.); it covers the vast majority of
+      real-world domains but isn't a full public-suffix list.
+
+    </footer>
+
+
+  </div>
+
+
+  <!-- =======================================================
+       TOAST
+  ======================================================== -->
+
+  <div
+    class="toast"
+    id="toast"
+  >
+    Copied to clipboard
+  </div>
+
+
+  <script>
+
+    (function () {
+
+
+      /* =====================================================
+         THEME
+         
+         IMPORTANT:
+         There is NO theme button on this page.
+
+         The main index.html controls the theme and stores:
+         
+         localStorage:
+         "domain-extractor-theme"
+
+         Values:
+         "dark"
+         "light"
+      ====================================================== */
+
+
+      function applyStoredTheme() {
+
+        let theme = 'dark';
+
+
+        try {
+
+          const saved =
+            localStorage.getItem(
+              'domain-extractor-theme'
+            );
+
+
+          if (
+            saved === 'light' ||
+            saved === 'dark'
+          ) {
+
+            theme = saved;
+
+          }
+
+        } catch (error) {
+          // Keep dark mode as fallback.
         }
 
-        // Global extractor instance
-        const extractor = new DomainExtractor();
 
-        function getSelectedFormat() {
-            const selected = document.querySelector('input[name="format"]:checked');
-            return selected ? selected.value : 'domains';
+        document.documentElement.classList.toggle(
+          'light-mode',
+          theme === 'light'
+        );
+
+      }
+
+
+      applyStoredTheme();
+
+
+      /* =====================================================
+         DOM REFERENCES
+      ====================================================== */
+
+      const input =
+        document.getElementById('input');
+
+      const dropzone =
+        document.getElementById('dropzone');
+
+      const extractBtn =
+        document.getElementById('extractBtn');
+
+      const sampleBtn =
+        document.getElementById('sampleBtn');
+
+      const clearBtn =
+        document.getElementById('clearBtn');
+
+      const rootOnly =
+        document.getElementById('rootOnly');
+
+      const rootChip =
+        document.getElementById('rootChip');
+
+      const dedupe =
+        document.getElementById('dedupe');
+
+      const dedupeChip =
+        document.getElementById('dedupeChip');
+
+      const sortSelect =
+        document.getElementById('sortSelect');
+
+      const results =
+        document.getElementById('results');
+
+      const emptyState =
+        document.getElementById('emptyState');
+
+      const domainList =
+        document.getElementById('domainList');
+
+      const statFound =
+        document.getElementById('statFound');
+
+      const statUnique =
+        document.getElementById('statUnique');
+
+      const statTop =
+        document.getElementById('statTop');
+
+      const filterInput =
+        document.getElementById('filterInput');
+
+      const copyBtn =
+        document.getElementById('copyBtn');
+
+      const downloadTxt =
+        document.getElementById('downloadTxt');
+
+      const downloadCsv =
+        document.getElementById('downloadCsv');
+
+      const toast =
+        document.getElementById('toast');
+
+
+      /* =====================================================
+         TWO-PART SUFFIXES
+      ====================================================== */
+
+      const TWO_PART_SUFFIXES = new Set([
+
+        'co.uk',
+        'org.uk',
+        'me.uk',
+        'ac.uk',
+        'gov.uk',
+        'ltd.uk',
+        'plc.uk',
+        'net.uk',
+        'police.uk',
+        'nhs.uk',
+        'sch.uk',
+
+        'co.jp',
+        'ne.jp',
+        'ac.jp',
+        'or.jp',
+        'go.jp',
+        'gr.jp',
+        'ad.jp',
+
+        'co.kr',
+        'ne.kr',
+        'or.kr',
+        'pe.kr',
+        'go.kr',
+
+        'co.nz',
+        'net.nz',
+        'org.nz',
+        'ac.nz',
+        'govt.nz',
+
+        'co.za',
+        'org.za',
+        'net.za',
+        'gov.za',
+
+        'co.in',
+        'net.in',
+        'org.in',
+        'firm.in',
+        'gen.in',
+        'ind.in',
+
+        'com.au',
+        'net.au',
+        'org.au',
+        'edu.au',
+        'gov.au',
+        'id.au',
+
+        'com.br',
+        'net.br',
+        'org.br',
+        'gov.br',
+
+        'com.mx',
+        'org.mx',
+        'gob.mx',
+
+        'com.tr',
+        'org.tr',
+        'gov.tr',
+        'edu.tr',
+
+        'com.sg',
+        'net.sg',
+        'org.sg',
+        'edu.sg',
+        'gov.sg',
+
+        'com.hk',
+        'org.hk',
+        'net.hk',
+        'edu.hk',
+        'gov.hk',
+
+        'co.il',
+        'org.il',
+        'net.il',
+        'gov.il',
+
+        'com.tw',
+        'org.tw',
+        'net.tw',
+        'edu.tw',
+        'gov.tw',
+
+        'com.cn',
+        'net.cn',
+        'org.cn',
+        'edu.cn',
+        'gov.cn',
+
+        'co.th',
+        'net.th',
+        'org.th',
+        'ac.th',
+        'go.th',
+
+        'com.vn',
+        'net.vn',
+        'org.vn',
+        'edu.vn',
+        'gov.vn',
+
+        'com.ar',
+        'net.ar',
+        'org.ar',
+        'gov.ar',
+
+        'com.co',
+        'net.co',
+        'org.co',
+        'gov.co',
+
+        'com.pe',
+        'net.pe',
+        'org.pe',
+        'gob.pe',
+
+        'com.ph',
+        'net.ph',
+        'org.ph',
+        'gov.ph',
+
+        'com.my',
+        'net.my',
+        'org.my',
+        'gov.my',
+        'edu.my',
+
+        'com.pk',
+        'net.pk',
+        'org.pk',
+        'gov.pk',
+
+        'com.eg',
+        'net.eg',
+        'org.eg',
+        'gov.eg',
+
+        'com.sa',
+        'net.sa',
+        'org.sa',
+        'gov.sa',
+
+        'co.id',
+        'net.id',
+        'org.id',
+        'go.id',
+        'ac.id',
+
+        'com.ua',
+        'net.ua',
+        'org.ua',
+        'gov.ua',
+
+        'com.pl',
+        'net.pl',
+        'org.pl',
+        'gov.pl',
+
+        'co.at',
+        'or.at',
+
+        'com.ec',
+        'com.uy',
+        'com.bo',
+        'com.py',
+        'com.gt',
+        'com.sv',
+        'com.do'
+      ]);
+
+
+      /* =====================================================
+         IANA TLD LIST
+      ====================================================== */
+
+      const IANA_TLDS = "aaa aarp abb abbott abbvie abc able abogado abudhabi ac academy accenture accountant accountants aco actor ad ads adult ae aero af africa ag agency ai airbus airforce airtel akdn al alibaba alipay allfinanz allstate ally alsace alstom am amazon americanexpress americanfamily amex amfam amica amsterdam analytics android anquan anz ao aol apartments app apple aq ar arab aramco archi army arpa art arte as asda asia associates at attorney au auction audi audible audio auspost author auto autos aw aws ax axa az azure ba baby baidu banamex band bank bar barcelona barclaycard barclays barefoot bargains baseball basketball bauhaus bayern bb bbc bbt bbva bcg bcn bd be beats beauty beer berlin best bestbuy bet bf bg bh bharti bi bible bid bike bing bingo bio biz bj black blackfriday blockbuster blog bloomberg blue bm bms bmw bn bnpparibas bo boats boehringer bofa bom bond boo book booking bosch bostik boston bot boutique box br bradesco bridgestone broadway broker brother brussels bs bt build builders business buy buzz bv bw by bz bzh ca cab cafe cal call cam camera camp canon capetown capital capitalone car caravan cards care career careers cars casa case cash casino cat catering catholic cba cbn cbre cc cd center ceo cern cf cfa cfd cg ch chanel channel charity chase chat cheap chintai christmas chrome church ci cipriani circle cisco citadel citi citic city ck cl claims cleaning click clinic clothing cloud club clubmed cm cn co coach codes coffee college com company compare computer condos construction consulting contact contractors cooking cool coop country coupon coupons courses cpa cr credit creditcard creditunion cricket crown cruise cruises cu cv cw cx cy cymru cyou cz dad dance data date dating datsun day dclk de deal dealer deals degree delivery dell deloitte delta democrat dental dentist desi design dev dhl diamonds diet digital direct directory discount discover dish diy dj dk dm dnp do docs doctor dog domains download drive dtv dubai dz earth eat ec eco edu education ee eg email energy engineer engineering enterprises equipment er es estate et eu events exchange expert exposed express extraspace fail faith family fan fans farm fashion fast fedex feedback fi film finance financial fire firm fish fishing fit fitness fj fk flights florist flowers fly fm fo foo food football ford forex forsale forum foundation fox fr free fun fund furniture futbol fyi ga gallery game games garden gay gb gbiz gd gdn ge gent gg gh gi gift gifts gives giving gl glass global gmail gmbh gmo gmx gn godaddy gold golf goodyear gp gq gr graphics gratis green group gs gt gu guide guitars guru gw gy hair hamburg hangout haus health healthcare help here hiphop hk hn hockey holdings holiday homes honda horse hospital host hosting hot hotels house how hr hsbc ht hu hyatt hyundai ibm ice icu id ie ieee il im imdb immo in inc industries info institute insurance insure int international investments io iq ir is it java je jobs jp journal joy joyce ke kg kh ki kitchen kiwi km kn kp kr ky kz la land law lawyer lb lc lease legal li life lighting limited limo link live llc loan loans lol london love ltd lu luxe luxury lv ly ma madrid maison management mango market marketing markets marriott md me media meet meme men menu miami mobi mobile moda moe moi mom money monster mortgage moto movie mp mq mr ms mt mu museum music mv mw mx my mz na name navy nba nc ne net network news next nexus nf ng ngo nhk ni nike ninja nl no nokia now np nr nu nyc nz observer office okinawa one online ong onl open oracle orange org organic origins page paris partners parts party pay pe pet pf pg ph photo photography photos pics pizza pk pl place play plumbing plus pm pn pro productions prof promo properties property protection ps pt pub pw py qa racing radio real realestate recipes red rehab repair report rest restaurant review reviews rich rip ro rocks room rs rsvp ru run rw sa sale salon samsung sauce school science search secure security services shop shopping show si site ski skin sky sl smart smile sn soccer social software solar solutions sony space sport spot sr store stream studio style su support surf surgery sv sx sy systems sz tech technology tel tennis tf tg th theater theatre tickets tips tires tk tl tm tn to today tools top tours town toys tr trade training travel trust tt tube tv tw tz ua ug uk university uno us uy uz va vacations vc ve ventures verisign vet vg vi video villas vip vision viva vivo vn vote voting voyage vu wales wang watch watches weather web website wedding wiki win wine work works world ws wtf www xyz yachts yahoo ye yoga yokohama you youtube za zero zip zone zw";
+
+      const TLD_SET =
+        new Set(
+          IANA_TLDS.split(' ')
+        );
+
+
+      /* =====================================================
+         DOMAIN REGEX
+      ====================================================== */
+
+      const LABEL =
+        "[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?";
+
+
+      const HOST_CORE =
+        LABEL +
+        "(?:\\." +
+        LABEL +
+        ")*\\.[a-zA-Z]{2,24}";
+
+
+      function urlTokenRegex() {
+
+        return new RegExp(
+
+          '(?:[a-zA-Z][a-zA-Z0-9+.-]*:\\/\\/(?:www\\.)?|www\\.)(' +
+          HOST_CORE +
+          ')(?::\\d{1,5})?((?:[\\/?#][^\\s"\'<>\\)\\]]*)?)',
+
+          'g'
+
+        );
+
+      }
+
+
+      const BARE_DOMAIN_REGEX =
+        new RegExp(
+
+          '(' +
+          HOST_CORE +
+          ')(?=[\\s"\'<>,;:)\\]}\\/?#.!]|$)',
+
+          'g'
+
+        );
+
+
+      function isRealTld(host) {
+
+        const parts =
+          host.split('.');
+
+
+        return TLD_SET.has(
+          parts[
+            parts.length - 1
+          ]
+        );
+
+      }
+
+
+      function rootDomainOf(host) {
+
+        const parts =
+          host.split('.');
+
+
+        if (
+          parts.length <= 2
+        ) {
+
+          return host;
+
         }
 
-        function extractDomains() {
-            const input = document.getElementById('inputText').value;
-            
-            if (!input.trim()) {
-                showToast('Please enter some text first', '#ef4444');
-                return;
+
+        const lastTwo =
+          parts
+            .slice(-2)
+            .join('.');
+
+
+        if (
+          TWO_PART_SUFFIXES.has(lastTwo) &&
+          parts.length > 2
+        ) {
+
+          return parts
+            .slice(-3)
+            .join('.');
+
+        }
+
+
+        return lastTwo;
+
+      }
+
+
+      /* =====================================================
+         EXTRACT DOMAINS
+      ====================================================== */
+
+      function extract(text) {
+
+        const found = [];
+
+        let masked = text;
+
+
+        /* ---------------------------------------------------
+           PASS 1
+           Explicit URLs / www-prefixed hosts
+        --------------------------------------------------- */
+
+        const urlRegex =
+          urlTokenRegex();
+
+
+        let m;
+
+
+        while (
+          (m = urlRegex.exec(text)) !== null
+        ) {
+
+          const host =
+            m[1]
+              .toLowerCase()
+              .replace(/\.+$/, '');
+
+
+          found.push(host);
+
+
+          const rest =
+            m[2] || '';
+
+
+          const embeddedRegex =
+            urlTokenRegex();
+
+
+          let em;
+
+
+          while (
+            (em = embeddedRegex.exec(rest)) !== null
+          ) {
+
+            found.push(
+              em[1]
+                .toLowerCase()
+                .replace(/\.+$/, '')
+            );
+
+          }
+
+
+          const full =
+            m[0];
+
+
+          masked =
+            masked.slice(
+              0,
+              m.index
+            ) +
+
+            ' '.repeat(
+              full.length
+            ) +
+
+            masked.slice(
+              m.index + full.length
+            );
+
+        }
+
+
+        /* ---------------------------------------------------
+           PASS 2
+           Bare domains
+        --------------------------------------------------- */
+
+        BARE_DOMAIN_REGEX.lastIndex = 0;
+
+
+        while (
+          (m = BARE_DOMAIN_REGEX.exec(masked)) !== null
+        ) {
+
+          const host =
+            m[1]
+              .toLowerCase()
+              .replace(/\.+$/, '');
+
+
+          if (
+            isRealTld(host)
+          ) {
+
+            found.push(host);
+
+          }
+
+        }
+
+
+        return found;
+
+      }
+
+
+      /* =====================================================
+         RENDER
+      ====================================================== */
+
+      function render() {
+
+        const raw =
+          extract(
+            input.value
+          );
+
+
+        if (
+          raw.length === 0
+        ) {
+
+          results.classList.remove(
+            'visible'
+          );
+
+
+          emptyState.style.display =
+            'block';
+
+
+          emptyState.textContent =
+            input.value.trim()
+
+              ? 'No domains found in that text.'
+
+              : 'No domains yet — paste something above and hit Extract.';
+
+
+          return;
+
+        }
+
+
+        const useRoot =
+          rootOnly.checked;
+
+
+        const mapped =
+          raw.map(
+            h =>
+              useRoot
+                ? rootDomainOf(h)
+                : h
+          );
+
+
+        const counts =
+          new Map();
+
+
+        mapped.forEach(
+          d =>
+            counts.set(
+              d,
+              (counts.get(d) || 0) + 1
+            )
+        );
+
+
+        let entries =
+          Array.from(
+            counts.entries()
+          );
+
+
+        if (
+          !dedupe.checked
+        ) {
+
+          entries =
+            mapped.map(
+              d =>
+                [
+                  d,
+                  counts.get(d)
+                ]
+            );
+
+        }
+
+
+        if (
+          sortSelect.value === 'alpha'
+        ) {
+
+          entries.sort(
+            (a, b) =>
+              a[0].localeCompare(
+                b[0]
+              )
+          );
+
+        } else {
+
+          entries.sort(
+            (a, b) =>
+              b[1] - a[1] ||
+              a[0].localeCompare(
+                b[0]
+              )
+          );
+
+        }
+
+
+        window.__lastEntries =
+          entries;
+
+
+        window.__lastMax =
+          Math.max(
+            ...entries.map(
+              e => e[1]
+            ),
+            1
+          );
+
+
+        statFound.textContent =
+          raw.length.toLocaleString();
+
+
+        statUnique.textContent =
+          counts.size.toLocaleString();
+
+
+        const top =
+          Array.from(
+            counts.entries()
+          )
+          .sort(
+            (a, b) =>
+              b[1] - a[1]
+          )[0];
+
+
+        statTop.textContent =
+          top
+            ? top[0]
+            : '—';
+
+
+        emptyState.style.display =
+          'none';
+
+
+        results.classList.add(
+          'visible'
+        );
+
+
+        filterInput.value =
+          '';
+
+
+        renderList(
+          entries,
+          window.__lastMax
+        );
+
+      }
+
+
+      /* =====================================================
+         RENDER LIST
+      ====================================================== */
+
+      function renderList(
+        entries,
+        max
+      ) {
+
+        domainList.innerHTML =
+          '';
+
+
+        const filterVal =
+          filterInput.value
+            .trim()
+            .toLowerCase();
+
+
+        const filtered =
+          filterVal
+
+            ? entries.filter(
+                ([d]) =>
+                  d.includes(
+                    filterVal
+                  )
+              )
+
+            : entries;
+
+
+        if (
+          filtered.length === 0
+        ) {
+
+          const li =
+            document.createElement(
+              'li'
+            );
+
+
+          li.style.gridTemplateColumns =
+            '1fr';
+
+
+          li.innerHTML =
+            '<span class="rank" style="color:var(--ink-soft)">No domains match that filter.</span>';
+
+
+          domainList.appendChild(
+            li
+          );
+
+
+          return;
+
+        }
+
+
+        filtered.forEach(
+          ([domain, count], i) => {
+
+            const li =
+              document.createElement(
+                'li'
+              );
+
+
+            const pct =
+              Math.max(
+                6,
+                Math.round(
+                  (count / max) * 100
+                )
+              );
+
+
+            li.innerHTML = `
+
+              <span class="rank">
+                ${i + 1}
+              </span>
+
+              <span
+                class="domain-name"
+                title="${domain}"
+              >
+                ${domain}
+              </span>
+
+              <span class="count">
+                ×${count}
+              </span>
+
+              <span class="bar-track">
+
+                <span
+                  class="bar-fill"
+                  style="width:${pct}%"
+                ></span>
+
+              </span>
+
+            `;
+
+
+            domainList.appendChild(
+              li
+            );
+
+          }
+        );
+
+      }
+
+
+      /* =====================================================
+         CURRENT ENTRIES
+      ====================================================== */
+
+      function currentEntries() {
+
+        return (
+          window.__lastEntries ||
+          []
+        );
+
+      }
+
+
+      /* =====================================================
+         TOAST
+      ====================================================== */
+
+      function showToast(msg) {
+
+        toast.textContent =
+          msg;
+
+
+        toast.classList.add(
+          'show'
+        );
+
+
+        clearTimeout(
+          window.__toastTimer
+        );
+
+
+        window.__toastTimer =
+          setTimeout(
+            () =>
+              toast.classList.remove(
+                'show'
+              ),
+            1600
+          );
+
+      }
+
+
+      /* =====================================================
+         EXTRACT BUTTON
+      ====================================================== */
+
+      extractBtn.addEventListener(
+        'click',
+        render
+      );
+
+
+      /* =====================================================
+         CTRL + ENTER
+      ====================================================== */
+
+      input.addEventListener(
+        'keydown',
+        function (e) {
+
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            e.key === 'Enter'
+          ) {
+
+            e.preventDefault();
+
+            render();
+
+          }
+
+        }
+      );
+
+
+      /* =====================================================
+         CLEAR
+      ====================================================== */
+
+      clearBtn.addEventListener(
+        'click',
+        function () {
+
+          input.value =
+            '';
+
+
+          results.classList.remove(
+            'visible'
+          );
+
+
+          emptyState.style.display =
+            'block';
+
+
+          emptyState.textContent =
+            'No domains yet — paste something above and hit Extract.';
+
+
+          input.focus();
+
+        }
+      );
+
+
+      /* =====================================================
+         SAMPLE
+      ====================================================== */
+
+      sampleBtn.addEventListener(
+        'click',
+        function () {
+
+          input.value = `Team update — links from this week's research:
+
+Primary source: https://www.nature.com/articles/s41586-024-example
+Cross-posted on blog.nature.com and again on nature.com/news/archive
+Competitor coverage: https://sub.example.co.uk/reports/q3?ref=email
+Same competitor, root site: https://example.co.uk/about
+Reached out to press@example.co.uk and editor@Nature.com
+Raw log line: 203.0.113.4 - - [12/Sep/2026] "GET /favicon.ico" 200 www.github.com
+Also seen: github.com, github.com/anthropics, docs.github.com
+Newsletter signups from mailinator.com, gmail.com, gmail.com, protonmail.com
+One more: https://shop.example.co.uk/cart and ftp://files.example.co.uk/archive.zip`;
+
+
+          render();
+
+        }
+      );
+
+
+      /* =====================================================
+         ROOT DOMAIN
+      ====================================================== */
+
+      rootChip.addEventListener(
+        'click',
+        function () {
+
+          setTimeout(
+            function () {
+
+              rootChip.classList.toggle(
+                'active',
+                rootOnly.checked
+              );
+
+
+              if (
+                currentEntries().length ||
+                input.value.trim()
+              ) {
+
+                render();
+
+              }
+
+            },
+            0
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         DEDUPE
+      ====================================================== */
+
+      dedupeChip.addEventListener(
+        'click',
+        function () {
+
+          setTimeout(
+            function () {
+
+              dedupeChip.classList.toggle(
+                'active',
+                dedupe.checked
+              );
+
+
+              if (
+                currentEntries().length ||
+                input.value.trim()
+              ) {
+
+                render();
+
+              }
+
+            },
+            0
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         SORT
+      ====================================================== */
+
+      sortSelect.addEventListener(
+        'change',
+        function () {
+
+          if (
+            input.value.trim()
+          ) {
+
+            render();
+
+          }
+
+        }
+      );
+
+
+      /* =====================================================
+         FILTER
+      ====================================================== */
+
+      filterInput.addEventListener(
+        'input',
+        function () {
+
+          renderList(
+            currentEntries(),
+            window.__lastMax || 1
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         COPY
+      ====================================================== */
+
+      copyBtn.addEventListener(
+        'click',
+        async function () {
+
+          const list =
+            currentEntries()
+              .map(
+                ([d]) => d
+              );
+
+
+          const unique =
+            Array.from(
+              new Set(list)
+            );
+
+
+          try {
+
+            await navigator.clipboard.writeText(
+              unique.join('\n')
+            );
+
+
+            showToast(
+              'Copied ' +
+              unique.length +
+              ' domains'
+            );
+
+          } catch (error) {
+
+            showToast(
+              'Could not access clipboard'
+            );
+
+          }
+
+        }
+      );
+
+
+      /* =====================================================
+         DOWNLOAD
+      ====================================================== */
+
+      function download(
+        filename,
+        content,
+        type
+      ) {
+
+        const blob =
+          new Blob(
+            [content],
+            {
+              type: type
             }
+          );
 
-            const format = getSelectedFormat();
-            const result = extractor.extract(input, format);
-            
-            if (format === 'both') {
-                const lines = [];
-                const domainsFromEmails = new Set();
-                
-                result.emailDomainPairs.forEach(pair => {
-                    lines.push(pair.email);
-                    lines.push(pair.domain);
-                    domainsFromEmails.add(pair.domain);
-                });
-                
-                result.domains.forEach(domain => {
-                    if (!domainsFromEmails.has(domain)) {
-                        lines.push(domain);
-                    }
-                });
-                
-                document.getElementById('outputText').value = lines.join('\n');
-            } else {
-                document.getElementById('outputText').value = result.domains.join('\n');
+
+        const url =
+          URL.createObjectURL(
+            blob
+          );
+
+
+        const a =
+          document.createElement(
+            'a'
+          );
+
+
+        a.href =
+          url;
+
+
+        a.download =
+          filename;
+
+
+        document.body.appendChild(
+          a
+        );
+
+
+        a.click();
+
+
+        document.body.removeChild(
+          a
+        );
+
+
+        URL.revokeObjectURL(
+          url
+        );
+
+      }
+
+
+      /* =====================================================
+         TXT EXPORT
+      ====================================================== */
+
+      downloadTxt.addEventListener(
+        'click',
+        function () {
+
+          const list =
+            Array.from(
+              new Set(
+                currentEntries()
+                  .map(
+                    ([d]) => d
+                  )
+              )
+            );
+
+
+          download(
+            'domains.txt',
+            list.join('\n'),
+            'text/plain'
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         CSV EXPORT
+      ====================================================== */
+
+      downloadCsv.addEventListener(
+        'click',
+        function () {
+
+          const rows = [
+            [
+              'domain',
+              'count'
+            ],
+            ...currentEntries()
+          ];
+
+
+          const csv =
+            rows
+              .map(
+                row =>
+                  row
+                    .map(
+                      value =>
+                        `"${String(value).replace(
+                          /"/g,
+                          '""'
+                        )}"`
+                    )
+                    .join(',')
+              )
+              .join('\n');
+
+
+          download(
+            'domains.csv',
+            csv,
+            'text/csv'
+          );
+
+        }
+      );
+
+
+      /* =====================================================
+         DRAG & DROP
+      ====================================================== */
+
+      [
+        'dragenter',
+        'dragover'
+      ].forEach(
+        function (eventName) {
+
+          dropzone.addEventListener(
+            eventName,
+            function (e) {
+
+              e.preventDefault();
+
+              dropzone.classList.add(
+                'drag'
+              );
+
             }
-            
-            document.getElementById('domainCount').textContent = result.count;
-            document.getElementById('processTime').textContent = result.processTime + 'ms';
-            
-            document.getElementById('copyBtn').disabled = result.count === 0;
-            
-            if (result.count === 0) {
-                showToast('No domains found', '#f97316');
+          );
+
+        }
+      );
+
+
+      [
+        'dragleave',
+        'drop'
+      ].forEach(
+        function (eventName) {
+
+          dropzone.addEventListener(
+            eventName,
+            function (e) {
+
+              e.preventDefault();
+
+              dropzone.classList.remove(
+                'drag'
+              );
+
             }
+          );
+
         }
+      );
 
-        function reExtractIfNeeded() {
-            if (document.getElementById('outputText').value) {
-                extractDomains();
-            }
+
+      dropzone.addEventListener(
+        'drop',
+        function (e) {
+
+          const file =
+            e.dataTransfer.files &&
+            e.dataTransfer.files[0];
+
+
+          if (!file) {
+            return;
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function () {
+
+              input.value =
+                reader.result;
+
+
+              render();
+
+            };
+
+
+          reader.readAsText(
+            file
+          );
+
         }
+      );
 
-        function clearFields() {
-            document.getElementById('inputText').value = '';
-            document.getElementById('outputText').value = '';
-            document.getElementById('domainCount').textContent = '0';
-            document.getElementById('processTime').textContent = '0ms';
-            document.getElementById('inputSize').textContent = '0';
-            document.getElementById('copyBtn').disabled = true;
-        }
 
-        function updateInputSize() {
-            const size = document.getElementById('inputText').value.length;
-            if (size > 1000) {
-                document.getElementById('inputSize').textContent = (size / 1000).toFixed(1) + 'k';
-            } else {
-                document.getElementById('inputSize').textContent = size;
-            }
-        }
+    })();
 
-        async function copyToClipboard() {
-            const output = document.getElementById('outputText');
-            try {
-                await navigator.clipboard.writeText(output.value);
-                showToast('Copied to clipboard!', '#16a34a');
-            } catch (err) {
-                output.select();
-                document.execCommand('copy');
-                showToast('Copied to clipboard!', '#16a34a');
-            }
-        }
+  </script>
 
-        function showToast(message, color = '#16a34a') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.background = color;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function toggleTheme() {
-            const root = document.documentElement;
-            const isLight = root.classList.contains('light-mode');
-            const newTheme = isLight ? 'dark' : 'light';
-            
-            applyTheme(newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            // Notify parent window if in iframe
-            try {
-                if (window.parent && window.parent !== window) {
-                    window.parent.postMessage({ theme: newTheme }, '*');
-                }
-            } catch (e) {}
-        }
-
-        function applyTheme(theme) {
-            const root = document.documentElement;
-            const toggleBtn = document.getElementById('themeToggle');
-            
-            if (theme === 'light') {
-                root.classList.add('light-mode');
-                if (toggleBtn) toggleBtn.textContent = '☀️';
-            } else {
-                root.classList.remove('light-mode');
-                if (toggleBtn) toggleBtn.textContent = '🌙';
-            }
-        }
-
-        function checkParentTheme() {
-            try {
-                if (window.parent && window.parent !== window) {
-                    const isLight = window.parent.document.body.classList.contains('light-mode');
-                    applyTheme(isLight ? 'light' : 'dark');
-                    return true;
-                }
-            } catch {
-                const saved = localStorage.getItem('theme') || 'dark';
-                applyTheme(saved);
-            }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            checkParentTheme();
-            
-            document.getElementById('inputText').addEventListener('input', updateInputSize);
-            document.getElementById('inputText').addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    extractDomains();
-                }
-            });
-        });
-
-        // Theme sync with parent window
-        window.addEventListener('message', (event) => {
-            if (event.data?.theme) {
-                applyTheme(event.data.theme);
-                localStorage.setItem('theme', event.data.theme);
-            }
-        });
-
-        setInterval(checkParentTheme, 200);
-        window.addEventListener('focus', checkParentTheme);
-        document.addEventListener('visibilitychange', () => { 
-            if (!document.hidden) checkParentTheme(); 
-        });
-        window.addEventListener('mouseenter', checkParentTheme);
-        window.addEventListener('click', checkParentTheme);
-    </script>
 </body>
 </html>
