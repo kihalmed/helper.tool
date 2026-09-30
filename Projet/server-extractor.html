@@ -43,7 +43,7 @@
     h1 { font-size: 20px; margin: 0 0 6px; color: var(--text); }
     p.lead { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
     code { background: var(--tag-bg); border: 1px solid var(--tag-border); color: var(--accent); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-    label { display: block; margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--highlight); }
+    label.title { display: block; margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--highlight); }
     textarea {
       width: 100%; min-height: 160px; resize: vertical;
       border-radius: 10px; padding: 14px;
@@ -66,6 +66,8 @@
     button.btn:active { transform: scale(0.97); }
     button.btn.warn { background: linear-gradient(180deg, #f97316, #ef4444); }
     button.btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .opt { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; }
+    .opt input { accent-color: var(--accent); cursor: pointer; }
     .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .chip {
       font-size: 12px; font-weight: 600; font-family: ui-monospace, monospace;
@@ -88,20 +90,21 @@
 
     <div class="card">
       <h1>Server Extractor</h1>
-      <p class="lead">Paste your alert/monitoring text. Only IDs starting with <code>vs</code>, <code>vsv</code>, or <code>rc</code> will be extracted.</p>
+      <p class="lead">Paste any content (alerts, logs, emails, tables, JSON...). IDs starting with <code>vs</code>, <code>vsv</code>, or <code>rc</code> followed by a number are extracted from anywhere in the text.</p>
 
-      <label for="inputTextarea">Paste Alert Text:</label>
-      <textarea id="inputTextarea" placeholder="vs11223 - group1&#10;Linux: High swap space usage: Warning&#10;vs11111 - goup2&#10;powerdns: Critical&#10;rc5555 - group5&#10;powerdns: Critical"></textarea>
+      <label class="title" for="inputTextarea">Paste Content:</label>
+      <textarea id="inputTextarea" placeholder="vs11223 - group1&#10;Linux: High swap space usage: Warning&#10;Host rc5555 is down, see also vsv204 and vs11111&#10;powerdns: Critical"></textarea>
 
       <div class="controls">
         <button class="btn" onclick="extract()">&#9881; Extract Servers</button>
         <button class="btn ghost" onclick="loadExample()">Load Example</button>
         <button class="btn ghost" onclick="clearAll()">Clear</button>
+        <label class="opt"><input type="checkbox" id="dedupe" checked onchange="extract()"> Remove duplicates</label>
       </div>
     </div>
 
     <div class="card">
-      <label for="outputTextarea">Extracted Result:</label>
+      <label class="title" for="outputTextarea">Extracted Result:</label>
       <textarea id="outputTextarea" readonly placeholder="Result will appear here after extraction..."></textarea>
 
       <div id="statsRow" class="stats" style="display:none"></div>
@@ -118,48 +121,76 @@
   <div id="toast">Copied!</div>
 
   <script>
-    var EXAMPLE = "vs11111 - group5\nLinux: High swap space usage: Warning\nvs22222 - goup2\npowerdns: Critical\nrc3333 - group5\npowerdns: Critical\nrc6666 - goup1\npowerdns: Critical\nvs55555 - goup5\nLinux: Number of installed packages has been changed: Warning";
+    var EXAMPLE =
+      "vs11111 - group5\nLinux: High swap space usage: Warning\n" +
+      "vs22222 - goup2\npowerdns: Critical\n" +
+      "Alert: host rc3333 unreachable, failover to vsv4444 (see also vs11111)\n" +
+      "{\"server\":\"rc6666\",\"status\":\"critical\"}\n" +
+      "| vs55555 | Linux: Number of installed packages has been changed | Warning |\n" +
+      "Ignore words like vsphere or src123.";
+
+    // Matches vsv / vs / rc followed by digits (and optional trailing alphanumerics),
+    // anywhere in the text. \b prevents matches inside longer words (e.g. "src123").
+    var SERVER_REGEX = /\b(?:vsv|vs|rc)\d+[A-Za-z0-9]*\b/gi;
 
     function extract() {
       var text = document.getElementById('inputTextarea').value;
       var outputEl = document.getElementById('outputTextarea');
       var statsRow = document.getElementById('statsRow');
+      var dedupe = document.getElementById('dedupe').checked;
 
-      // Match any token at the start of a line that begins with vsv, vs, or rc
-      var lines = text.split('\n');
-      var found = [];
+      var matches = text.match(SERVER_REGEX) || [];
+      var found = matches;
 
-      for (var i = 0; i < lines.length; i++) {
-        var trimmed = lines[i].trim();
-        // Must start with vsv, vs, or rc (case-insensitive), followed by alphanumerics
-        var m = trimmed.match(/^(vsv[A-Za-z0-9_\-.]+|vs[A-Za-z0-9_\-.]+|rc[A-Za-z0-9_\-.]+)/i);
-        if (m) {
-          found.push(m[1]);
-        }
+      if (dedupe) {
+        var seen = {};
+        found = matches.filter(function (s) {
+          var key = s.toLowerCase();
+          if (seen[key]) return false;
+          seen[key] = true;
+          return true;
+        });
       }
 
       if (found.length === 0) {
-        outputEl.value = 'No server IDs found. Lines must start with vs, vsv, or rc followed by numbers/letters.';
+        outputEl.value = text.trim()
+          ? 'No server IDs found. Looking for vs / vsv / rc followed by numbers (e.g. vs11223).'
+          : '';
         statsRow.style.display = 'none';
         return;
       }
 
       outputEl.value = 'in(' + found.join(',') + ')';
 
-      var vsv = found.filter(function(s){ return /^vsv/i.test(s); }).length;
-      var vs  = found.filter(function(s){ return /^vs[^v]/i.test(s); }).length;
-      var rc  = found.filter(function(s){ return /^rc/i.test(s); }).length;
+      var vsv = found.filter(function (s) { return /^vsv/i.test(s); }).length;
+      var vs  = found.filter(function (s) { return /^vs(?!v)/i.test(s); }).length;
+      var rc  = found.filter(function (s) { return /^rc/i.test(s); }).length;
 
       var html = '<div class="chip">Total: ' + found.length + '</div>';
       if (vs)  html += '<div class="chip">vs: '  + vs  + '</div>';
       if (vsv) html += '<div class="chip">vsv: ' + vsv + '</div>';
       if (rc)  html += '<div class="chip">rc: '  + rc  + '</div>';
+      if (dedupe && matches.length > found.length) {
+        html += '<div class="chip">Duplicates removed: ' + (matches.length - found.length) + '</div>';
+      }
       statsRow.innerHTML = html;
       statsRow.style.display = 'flex';
     }
 
     function copyOutput() {
       var el = document.getElementById('outputTextarea');
+      if (!el.value) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(el.value).then(
+          function () { showToast('Copied!'); },
+          function () { fallbackCopy(el); }
+        );
+      } else {
+        fallbackCopy(el);
+      }
+    }
+
+    function fallbackCopy(el) {
       el.select();
       document.execCommand('copy');
       showToast('Copied!');
@@ -180,7 +211,7 @@
       var t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
-      setTimeout(function(){ t.classList.remove('show'); }, 2000);
+      setTimeout(function () { t.classList.remove('show'); }, 2000);
     }
 
     function applyTheme(theme) {
@@ -195,17 +226,20 @@
           applyTheme(isLight ? 'light' : 'dark');
           return;
         }
-      } catch(e) {}
-      applyTheme(localStorage.getItem('theme') || 'dark');
+      } catch (e) {}
+      try { applyTheme(localStorage.getItem('theme') || 'dark'); } catch (e) { applyTheme('dark'); }
     }
 
     checkParentTheme();
-    window.addEventListener('message', function(e) {
-      if (e.data && e.data.theme) { applyTheme(e.data.theme); localStorage.setItem('theme', e.data.theme); }
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.theme) {
+        applyTheme(e.data.theme);
+        try { localStorage.setItem('theme', e.data.theme); } catch (err) {}
+      }
     });
     setInterval(checkParentTheme, 200);
     window.addEventListener('focus', checkParentTheme);
-    document.addEventListener('visibilitychange', function(){ if (!document.hidden) checkParentTheme(); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) checkParentTheme(); });
   </script>
 </body>
 </html>
